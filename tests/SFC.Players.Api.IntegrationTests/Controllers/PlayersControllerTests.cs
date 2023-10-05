@@ -585,7 +585,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
     private async Task<HttpResponseMessage> CreateNewPlayer()
     {
         HttpClient client = _factory.CreateClient()
-                                   .SetAuthenticationToken();
+                                    .SetAuthenticationToken();
 
         CreatePlayerRequest request = new()
         {

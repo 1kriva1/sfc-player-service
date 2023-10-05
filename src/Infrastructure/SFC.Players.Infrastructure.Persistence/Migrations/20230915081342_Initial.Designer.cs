@@ -12,7 +12,7 @@ using SFC.Players.Infrastructure.Persistence;
 namespace SFC.Players.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(PlayersDbContext))]
-    [Migration("20230903073536_Initial")]
+    [Migration("20230915081342_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -21,7 +21,7 @@ namespace SFC.Players.Infrastructure.Persistence.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("Players")
-                .HasAnnotation("ProductVersion", "7.0.9")
+                .HasAnnotation("ProductVersion", "7.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);

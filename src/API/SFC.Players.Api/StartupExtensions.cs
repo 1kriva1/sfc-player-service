@@ -45,7 +45,7 @@ public static class StartupExtensions
         })
         .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true)
         .AddDataAnnotationsLocalization(options => options.DataAnnotationLocalizerProvider = (type, factory) =>
-                factory.Create(typeof(Resources)));        
+                factory.Create(typeof(Resources)));
 
         builder.AddLocalization();
 
@@ -80,7 +80,14 @@ public static class StartupExtensions
 
     private static void AddApiServices(this WebApplicationBuilder builder)
     {
-        builder.Services.AddScoped<IUserService, UserService>();
+        if (builder.Environment.IsDevelopment())
+        {
+            builder.Services.AddScoped<IUserService, UserServiceDevelopment>();
+        }
+        else
+        {
+            builder.Services.AddScoped<IUserService, UserService>();
+        }
     }
 
     private static void AddAuthentication(this WebApplicationBuilder builder)

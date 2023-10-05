@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using SFC.Players.Application.Interfaces.Persistence;
 using SFC.Players.Infrastructure.Persistence.Interceptors;
 using SFC.Players.Infrastructure.Persistence.Repositories;
+using SFC.Players.Infrastructure.Persistence.Seeds.Players;
 
 namespace SFC.Players.Infrastructure.Persistence;
 
@@ -35,6 +36,7 @@ public static class PersistenceRegistration
             {
                 await context.Database.EnsureDeletedAsync();
                 await context.Database.MigrateAsync();
+                await context.SeedUsers();
             }
         }
         catch (Exception ex)
