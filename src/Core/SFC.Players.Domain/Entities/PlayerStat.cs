@@ -1,9 +1,9 @@
 ﻿namespace SFC.Players.Domain.Entities;
 public class PlayerStat : BasePlayerEntity
 {
-    public StatType Type { get; set; }
+    public int TypeId { get; set; } = default!;
 
-    public StatCategory Category { get; set; }
+    public int CategoryId { get; set; } = default!;
 
     public byte Value { get; set; }
 }

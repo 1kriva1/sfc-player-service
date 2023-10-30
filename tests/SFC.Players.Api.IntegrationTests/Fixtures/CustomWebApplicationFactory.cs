@@ -1,12 +1,16 @@
 ﻿using System.Data.Common;
 
+using MassTransit;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
+using SFC.Players.Infrastructure.Consumers;
 using SFC.Players.Infrastructure.Persistence;
 
 namespace SFC.Players.Api.IntegrationTests.Fixtures;
@@ -43,7 +47,12 @@ public class CustomWebApplicationFactory<TStartup>
             {
                 DbConnection connection = container.GetRequiredService<DbConnection>();
                 options.UseSqlite(connection);
-            });            
+            });
+
+            services.AddMassTransitTestHarness(configure =>
+            {
+                configure.AddConsumer<DataInitializationEventConsumer>();
+            });
         });
 
         builder.UseEnvironment(TEST_ENVIROMENT);
@@ -57,8 +66,6 @@ public class CustomWebApplicationFactory<TStartup>
 
         PlayersDbContext context = scopedServices.GetRequiredService<PlayersDbContext>();
 
-        context.Database.EnsureCreated();        
-
-        context.Players.ExecuteDelete();
+        context.RefreshData();
     }
 }

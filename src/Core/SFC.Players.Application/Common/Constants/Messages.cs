@@ -90,10 +90,6 @@ public class Messages
                      GetValue(_localizer?.GetString("MustBeNotEqual"),
                          "'{{PropertyName}}' must not to be equal to '{0}'.")!;
 
-    public static string LengthMustBeEqual =>
-                     GetValue(_localizer?.GetString("LengthMustBeEqual"),
-                         "The length of '{0}' must be equal to {1}.")!;
-
     public static string MustBeInCategoryRange =>
                      GetValue(_localizer?.GetString("MustBeInCategoryRange"),
                          "Each value from '{0}' must have {1} in Stat Category range.")!;
@@ -117,6 +113,14 @@ public class Messages
     public static string PlayerNotRelatedToThisUser =>
                      GetValue(_localizer?.GetString("PlayerNotRelatedToThisUser"),
                          "Player not related for this user.")!;
+
+    public static string DataValidator =>
+                     GetValue(_localizer?.GetString("DataValidator"),
+                         "'{PropertyName}' has a range of values which does not include '{PropertyValue}'.")!;
+
+    public static string StatLength =>
+                     GetValue(_localizer?.GetString("StatLength"),
+                         "Stat count is invalid.")!;
 
     private static string GetValue(LocalizedString? @string, string defaultValue)
     {

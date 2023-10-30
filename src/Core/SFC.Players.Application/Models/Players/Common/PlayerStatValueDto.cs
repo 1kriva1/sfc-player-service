@@ -1,13 +1,9 @@
-﻿using SFC.Players.Application.Common.Mappings;
-using SFC.Players.Domain.Entities;
-using SFC.Players.Domain.Enums;
-
-namespace SFC.Players.Application.Models.Players.Common;
-public record PlayerStatValueDto : IMapFromReverse<PlayerStat>
+﻿namespace SFC.Players.Application.Models.Players.Common;
+public record PlayerStatValueDto
 {
-    public StatCategory Category { get; set; }
+    public int Category { get; set; } = default!;
 
-    public StatType Type { get; set; }
+    public int Type { get; set; } = default!;
 
     public byte Value { get; set; }
 }

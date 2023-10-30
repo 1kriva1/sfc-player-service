@@ -9,7 +9,6 @@ using SFC.Players.Application.Models.Players.Create;
 using SFC.Players.Application.Models.Players.Update;
 using SFC.Players.Domain.Entities;
 
-
 namespace SFC.Players.Application.Common.Mappings;
 public class MappingProfile : Profile
 {
@@ -56,6 +55,16 @@ public class MappingProfile : Profile
         CreateMap<PlayerGeneralProfileDto, PlayerGeneralProfile>()
             .IgnoreAllNonExisting();
 
+        CreateMap<PlayerFootballProfileDto, PlayerFootballProfile>()
+            .ForMember(p => p.PositionId, d => d.MapFrom(z => z.Position))
+            .ForMember(p => p.AdditionalPositionId, d => d.MapFrom(z => z.AdditionalPosition))
+            .ForMember(p => p.WorkingFootId, d => d.MapFrom(z => z.WorkingFoot))
+            .ForMember(p => p.GameStyleId, d => d.MapFrom(z => z.GameStyle))
+            .ForMember(p => p.DomainEvents, d => d.Ignore())
+            .ForMember(p => p.Id, d => d.Ignore())
+            .ForMember(p => p.Player, d => d.Ignore())
+            .ReverseMap();
+
         CreateMap<PlayerPhotoDto, PlayerPhoto>()
             .IgnoreAllNonExisting();
 
@@ -80,6 +89,14 @@ public class MappingProfile : Profile
 
         CreateMap<UpdatePlayerDto, Player>()
             .IncludeBase<BasePlayerDto, Player>();
+
+        CreateMap<PlayerStatValueDto, PlayerStat>()
+            .ForMember(p => p.TypeId, d => d.MapFrom(z => z.Type))
+            .ForMember(p => p.CategoryId, d => d.MapFrom(z => z.Category))
+            .ForMember(p => p.DomainEvents, d => d.Ignore())
+            .ForMember(p => p.Id, d => d.Ignore())
+            .ForMember(p => p.Player, d => d.Ignore())
+            .ReverseMap();
 
         #endregion Complex types
     }

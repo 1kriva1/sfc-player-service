@@ -5,7 +5,6 @@ using SFC.Players.Api.IntegrationTests.Fixtures;
 using SFC.Players.Application.Models.Players.Create;
 using SFC.Players.Application.Models.Players.Common.Models;
 using SFC.Players.Application.Models.Players.Common;
-using SFC.Players.Domain.Enums;
 using System.Text.Json;
 using SFC.Players.Application.Common.Constants;
 using SFC.Players.Application.Common.Models;
@@ -68,7 +67,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
                     },
                     Football = new PlayerFootballProfileDto
                     {
-                        Position = FootballPosition.Forward
+                        Position = 3
                     }
                 },
                 Stats = new PlayerStatsDto
@@ -109,7 +108,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
                     },
                     Football = new PlayerFootballProfileDto
                     {
-                        Position = FootballPosition.Forward
+                        Position = 3
                     }
                 },
                 Stats = new PlayerStatsDto
@@ -162,7 +161,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
                     },
                     Football = new PlayerFootballProfileDto
                     {
-                        Position = FootballPosition.Forward
+                        Position = 3
                     }
                 },
                 Stats = new PlayerStatsDto
@@ -217,7 +216,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
                     },
                     Football = new PlayerFootballProfileDto
                     {
-                        Position = FootballPosition.Forward
+                        Position = 3
                     }
                 },
                 Stats = new PlayerStatsDto
@@ -260,7 +259,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
                     },
                     Football = new PlayerFootballProfileDto
                     {
-                        Position = FootballPosition.Forward
+                        Position = 3
                     }
                 },
                 Stats = new PlayerStatsDto
@@ -303,7 +302,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
                     },
                     Football = new PlayerFootballProfileDto
                     {
-                        Position = FootballPosition.Forward
+                        Position = 3
                     }
                 },
                 Stats = new PlayerStatsDto
@@ -358,7 +357,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
                     },
                     Football = new PlayerFootballProfileDto
                     {
-                        Position = FootballPosition.Forward
+                        Position = 3
                     }
                 },
                 Stats = new PlayerStatsDto
@@ -601,7 +600,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
                     },
                     Football = new PlayerFootballProfileDto
                     {
-                        Position = FootballPosition.Forward
+                        Position = 3
                     }
                 },
                 Stats = new PlayerStatsDto

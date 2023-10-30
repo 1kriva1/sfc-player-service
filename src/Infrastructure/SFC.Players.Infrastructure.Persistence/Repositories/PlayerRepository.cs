@@ -5,13 +5,13 @@ using SFC.Players.Domain.Entities;
 
 namespace SFC.Players.Infrastructure.Persistence.Repositories;
 
-public class PlayerRepository : BaseRepository<Player>, IPlayerRepository
+public class PlayerRepository : Repository<Player>, IPlayerRepository
 {
-    public PlayerRepository(PlayersDbContext dbContext) : base(dbContext) { }
+    public PlayerRepository(PlayersDbContext context) : base(context) { }
 
     public override async Task<Player?> GetByIdAsync(long id)
     {
-        Player? player = await _dbContext.Players
+        Player? player = await _context.Players
             .Include(p => p.GeneralProfile)
             .Include(p => p.FootballProfile)
             .Include(p => p.Availability)
@@ -27,7 +27,7 @@ public class PlayerRepository : BaseRepository<Player>, IPlayerRepository
 
     public async Task<Player?> GetByUserIdAsync(Guid userId)
     {
-        Player? player = await _dbContext.Players
+        Player? player = await _context.Players
             .Include(p => p.GeneralProfile)
             .Include(p => p.FootballProfile)
             .Include(p => p.Photo)

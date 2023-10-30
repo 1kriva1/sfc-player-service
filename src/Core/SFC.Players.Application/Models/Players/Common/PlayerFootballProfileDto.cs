@@ -1,24 +1,20 @@
-﻿using SFC.Players.Application.Common.Mappings;
-using SFC.Players.Domain.Entities;
-using SFC.Players.Domain.Enums;
+﻿namespace SFC.Players.Application.Models.Players.Common;
 
-namespace SFC.Players.Application.Models.Players.Common;
-
-public class PlayerFootballProfileDto: IMapFromReverse<PlayerFootballProfile>
+public class PlayerFootballProfileDto
 {
     public int? Height { get; set; }
 
     public int? Weight { get; set; }
 
-    public FootballPosition? Position { get; set; }
+    public int? Position { get; set; }
 
-    public FootballPosition? AdditionalPosition { get; set; }
+    public int? AdditionalPosition { get; set; }
 
-    public WorkingFoot? WorkingFoot { get; set; }
+    public int? WorkingFoot { get; set; }
 
     public int? Number { get; set; }
 
-    public GameStyle? GameStyle { get; set; }
+    public int? GameStyle { get; set; }
 
     public int? Skill { get; set; }
 

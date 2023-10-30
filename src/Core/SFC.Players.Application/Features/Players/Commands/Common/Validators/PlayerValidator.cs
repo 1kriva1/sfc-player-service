@@ -3,24 +3,42 @@
 using SFC.Players.Application.Common.Constants;
 using SFC.Players.Application.Common.Extensions;
 using SFC.Players.Application.Interfaces.Common;
+using SFC.Players.Application.Interfaces.Persistence;
 using SFC.Players.Application.Models.Players.Common;
-using SFC.Players.Domain.Enums;
+using SFC.Players.Domain.Entities.Data;
 
 namespace SFC.Players.Application.Features.Players.Commands.Common.Validators;
 
 public class PlayerValidator<T> : AbstractValidator<T> where T : BasePlayerDto
 {
     private readonly IDateTimeService _dateTimeService;
+    private readonly IStatCategoryRepository _statCategoryRepository;
+    private readonly IStatTypeRepository _statTypeRepository;
+    private readonly IDataRepository<FootballPosition> _footballPositionRepository;
+    private readonly IDataRepository<WorkingFoot> _workingFootRepository;
+    private readonly IDataRepository<GameStyle> _gameStyleRepository;
 
-    public PlayerValidator(IDateTimeService dateTimeService)
+    public PlayerValidator(
+        IDateTimeService dateTimeService,
+        IStatCategoryRepository statCategoryRepository,
+        IStatTypeRepository statTypeRepository,
+        IDataRepository<FootballPosition> footballPositionRepository,
+        IDataRepository<WorkingFoot> workingFootRepository,
+        IDataRepository<GameStyle> gameStyleRepository)
     {
         _dateTimeService = dateTimeService;
+        _statCategoryRepository = statCategoryRepository;
+        _statTypeRepository = statTypeRepository;
+        _footballPositionRepository = footballPositionRepository;
+        _workingFootRepository = workingFootRepository;
+        _gameStyleRepository = gameStyleRepository;
 
         SetRulesForGeneralProfile();
 
         SetRulesForFootballProfile();
 
         SetRulesForStats();
+        
     }
 
     private void SetRulesForGeneralProfile()
@@ -125,7 +143,9 @@ public class PlayerValidator<T> : AbstractValidator<T> where T : BasePlayerDto
         When(p => p.Profile.Football.Position.HasValue, () =>
         {
             RuleFor(p => p.Profile.Football.Position)
-                .IsInEnum()
+                .MustAsync((position, cancellation) => _footballPositionRepository.AnyAsync(position!.Value))
+                .WithName(nameof(PlayerFootballProfileDto.Position))
+                .WithMessage(Messages.DataValidator)
                 .NotEqual(p => p.Profile.Football.AdditionalPosition)
                 .WithName(nameof(PlayerFootballProfileDto.Position))
                 .WithMessage(string.Format(Messages.MustBeNotEqual, nameof(PlayerFootballProfileDto.AdditionalPosition)));
@@ -134,7 +154,9 @@ public class PlayerValidator<T> : AbstractValidator<T> where T : BasePlayerDto
         When(p => p.Profile.Football.AdditionalPosition.HasValue, () =>
         {
             RuleFor(p => p.Profile.Football.AdditionalPosition)
-                .IsInEnum()
+                .MustAsync((additionalPosition, cancellation) => _footballPositionRepository.AnyAsync(additionalPosition!.Value))
+                .WithName(nameof(PlayerFootballProfileDto.AdditionalPosition))
+                .WithMessage(Messages.DataValidator)
                 .NotEqual(p => p.Profile.Football.Position)
                 .WithName(nameof(PlayerFootballProfileDto.AdditionalPosition))
                 .WithMessage(string.Format(Messages.MustBeNotEqual, nameof(PlayerFootballProfileDto.Position)));
@@ -143,8 +165,9 @@ public class PlayerValidator<T> : AbstractValidator<T> where T : BasePlayerDto
         When(p => p.Profile.Football.WorkingFoot.HasValue, () =>
         {
             RuleFor(p => p.Profile.Football.WorkingFoot)
-                .IsInEnum()
-                .WithName(nameof(PlayerFootballProfileDto.WorkingFoot));
+                .MustAsync((foot, cancellation) => _workingFootRepository.AnyAsync(foot!.Value))
+                .WithName(nameof(PlayerFootballProfileDto.WorkingFoot))
+                .WithMessage(Messages.DataValidator);
         });
 
         When(p => p.Profile.Football.Number.HasValue, () =>
@@ -157,8 +180,9 @@ public class PlayerValidator<T> : AbstractValidator<T> where T : BasePlayerDto
         When(p => p.Profile.Football.GameStyle.HasValue, () =>
         {
             RuleFor(p => p.Profile.Football.GameStyle)
-                .IsInEnum()
-                .WithName(nameof(PlayerFootballProfileDto.GameStyle));
+                .MustAsync((style, cancellation) => _gameStyleRepository.AnyAsync(style!.Value))
+                .WithName(nameof(PlayerFootballProfileDto.GameStyle))
+                .WithMessage(Messages.DataValidator);
         });
 
         When(p => p.Profile.Football.Skill.HasValue, () =>
@@ -194,23 +218,9 @@ public class PlayerValidator<T> : AbstractValidator<T> where T : BasePlayerDto
             .WithName(nameof(PlayerStatPointsDto.Used));
 
         RuleFor(p => p.Stats.Values)
-            .Must(stats => stats.Count() == ValidationConstants.STATS_COUNT)
-            .WithName(nameof(BasePlayerDto.Stats))
-            .WithMessage(string.Format(Messages.LengthMustBeEqual, nameof(BasePlayerDto.Stats), ValidationConstants.STATS_COUNT));
+            .SetValidator(new StatValueValidator(_statTypeRepository, _statCategoryRepository));
 
         RuleForEach(p => p.Stats.Values)
-            .Must(stat => Enum.IsDefined(typeof(StatCategory), stat.Category))
-            .WithName(nameof(PlayerStatValueDto.Category))
-            .WithMessage(string.Format(Messages.MustBeInCategoryRange, nameof(BasePlayerDto.Stats), nameof(PlayerStatValueDto.Category)))
-            .Must(stat => Enum.IsDefined(typeof(StatType), stat.Type))
-            .WithName(nameof(PlayerStatValueDto.Type))
-            .WithMessage(string.Format(Messages.MustBeInStatTypeRange, nameof(BasePlayerDto.Stats), nameof(PlayerStatValueDto.Type)))
-            .Must(stat =>
-            {
-                ValidationConstants.CATEGORY_TYPE_STAT_RELATIONS.TryGetValue(stat.Category, out IEnumerable<StatType>? types);
-                return types?.Contains(stat.Type) ?? false;
-            })
-            .WithMessage(string.Format(Messages.EachStatTypeMustBeInSpecificCategory, nameof(BasePlayerDto.Stats), nameof(PlayerStatValueDto.Type), nameof(PlayerStatValueDto.Category)))
             .Must(stat => ValidationConstants.STAT_VALUE_RANGE.Item1 <= stat.Value && stat.Value <= ValidationConstants.STAT_VALUE_RANGE.Item2)
             .WithName(nameof(PlayerStatValueDto.Value))
             .WithMessage(string.Format(Messages.StatValueMustBeInRange, nameof(BasePlayerDto.Stats), nameof(PlayerStatValueDto.Value),

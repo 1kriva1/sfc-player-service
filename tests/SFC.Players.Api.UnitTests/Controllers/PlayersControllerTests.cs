@@ -33,9 +33,9 @@ public class PlayersControllerTests
     {
         Mock<HttpContext> httpContext = new();
         httpContext.Setup(x => x.RequestServices.GetService(typeof(ISender)))
-            .Returns(_mediatorMock.Object);
+           .Returns(_mediatorMock.Object);
         _mapper = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>())
-                                         .CreateMapper();
+           .CreateMapper();
         httpContext.Setup(x => x.RequestServices.GetService(typeof(IMapper)))
            .Returns(_mapper);
         httpContext.Setup(x => x.RequestServices.GetService(typeof(IUserService)))

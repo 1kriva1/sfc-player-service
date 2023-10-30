@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 using SFC.Players.Application.Interfaces.Common;
@@ -26,7 +25,7 @@ public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
         return base.SavingChanges(eventData, result);
     }
 
-    public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, 
+    public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData,
         InterceptionResult<int> result, CancellationToken cancellationToken = default)
     {
         UpdateEntities(eventData.Context);
@@ -38,19 +37,10 @@ public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
     {
         if (context == null) return;
 
-        foreach (EntityEntry<BaseAuditableEntity> entry in context.ChangeTracker.Entries<BaseAuditableEntity>())
-        {
-            if (entry.State == EntityState.Added)
-            {
-                entry.Entity.CreatedBy = _userService.UserId;
-                entry.Entity.CreatedDate = _dateTimeService.Now;
-            }
+        context.ChangeTracker.Entries<BaseAuditableEntity>()
+            .SetAuditable(_userService, _dateTimeService);
 
-            if (entry.State == EntityState.Added || entry.State == EntityState.Modified || entry.HasChangedOwnedEntities())
-            {
-                entry.Entity.LastModifiedBy = _userService.UserId;
-                entry.Entity.LastModifiedDate = _dateTimeService.Now;
-            }
-        }
+        context.ChangeTracker.Entries<BaseDataEntity>()
+            .SetAuditable(_dateTimeService);
     }
 }

@@ -10,8 +10,8 @@ public class BaseEntityConfiguration<TEntity> : IEntityTypeConfiguration<TEntity
         builder.HasKey(e => e.Id);
 
         builder.Property(e => e.Id)
-            .ValueGeneratedOnAdd()
-            .HasColumnOrder(0)
-            .IsRequired();
+               .ValueGeneratedOnAdd()
+               .HasColumnOrder(0)
+               .IsRequired(true);
     }
 }

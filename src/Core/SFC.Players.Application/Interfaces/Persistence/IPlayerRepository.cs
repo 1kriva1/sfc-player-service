@@ -2,7 +2,7 @@
 
 namespace SFC.Players.Application.Interfaces.Persistence;
 
-public interface IPlayerRepository : IAsyncRepository<Player>
+public interface IPlayerRepository : IRepository<Player>
 {
     Task<Player?> GetByUserIdAsync(Guid userId);
 }

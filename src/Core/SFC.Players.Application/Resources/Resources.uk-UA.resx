@@ -123,6 +123,9 @@
   <data name="AvailableDaysSize" xml:space="preserve">
     <value>Кількість '{0}' має бути меншою або дорівнювати {1}.</value>
   </data>
+  <data name="DataValidator" xml:space="preserve">
+    <value>'{PropertyName}' має діапазон значень, який не включає '{PropertyValue}'.</value>
+  </data>
   <data name="EachStatTypeMustBeInSpecificCategory" xml:space="preserve">
     <value>Кожне значення з '{0}' має мати {1} для певного {2}.</value>
   </data>
@@ -143,9 +146,6 @@
   </data>
   <data name="InvalidTagsSize" xml:space="preserve">
     <value>Кількість '{0}' має бути меншою або дорівнювати {1}.</value>
-  </data>
-  <data name="LengthMustBeEqual" xml:space="preserve">
-    <value>Кількість '{0}' має дорівнювати {1}.</value>
   </data>
   <data name="MustBeGreaterThan" xml:space="preserve">
     <value>Значення '{0}' має бути більшим за значення {1}.</value>
@@ -173,6 +173,9 @@
   </data>
   <data name="RequestBodyRequired" xml:space="preserve">
     <value>Потрібне тіло запиту.</value>
+  </data>
+  <data name="StatLength" xml:space="preserve">
+    <value>Кількість статів невалідна.</value>
   </data>
   <data name="StatValueMustBeInRange" xml:space="preserve">
     <value>Кожне значення з '{0}' має мати {1} між {2} і {3}.</value>

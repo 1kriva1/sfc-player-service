@@ -7,35 +7,45 @@ using Moq;
 using SFC.Players.Application.Common.Constants;
 using SFC.Players.Application.Features.Players.Commands.Common.Validators;
 using SFC.Players.Application.Interfaces.Common;
+using SFC.Players.Application.Interfaces.Persistence;
 using SFC.Players.Application.Models.Players.Common;
+using SFC.Players.Domain.Entities.Data;
 using SFC.Players.Domain.Enums;
 
 namespace SFC.Players.Application.UnitTests.Features.Players.Commands.Common.Validators;
 public class PlayerValidatorTests
 {
     private readonly Mock<IDateTimeService> _mockDateTimeService = new();
-    private readonly BasePlayerDto VALID_PLAYER = new()
+    private readonly Mock<IStatCategoryRepository> _statCategoryRepository = new();
+    private readonly Mock<IStatTypeRepository> _statTypeRepository = new();
+    private readonly Mock<IDataRepository<FootballPosition>> _footballPositionRepository = new();
+    private readonly Mock<IDataRepository<GameStyle>> _gameStyleRepository = new();
+    private readonly Mock<IDataRepository<WorkingFoot>> _workingFootRepository = new();
+
+    private PlayerValidator<BasePlayerDto> Validator
     {
-        Profile = new PlayerProfileDto
+        get
         {
-            General = new PlayerGeneralProfileDto
-            {
-                FirstName = "First Name",
-                LastName = "Last Name",
-                City = "City Value"
-            },
-            Football = new PlayerFootballProfileDto()
-        },
-        Stats = new PlayerStatsDto
-        {
-            Points = new PlayerStatPointsDto(),
-            Values = PlayerTestConstants.VALID_STATS
+            return new(
+                _mockDateTimeService.Object,
+                _statCategoryRepository.Object,
+                _statTypeRepository.Object,
+                _footballPositionRepository.Object,
+                _workingFootRepository.Object,
+                _gameStyleRepository.Object);
         }
-    };
+    }
 
     public PlayerValidatorTests()
     {
         _mockDateTimeService.Setup(dt => dt.Now).Returns(DateTime.UtcNow);
+        _statCategoryRepository.Setup(r => r.CountAsync(It.IsAny<IEnumerable<int>>())).ReturnsAsync(PlayerTestConstants.STAT_CATEGORIES_COUNT);
+        _statTypeRepository.Setup(r => r.CountAsync(It.IsAny<IEnumerable<int>>())).ReturnsAsync(PlayerTestConstants.STAT_TYPES_COUNT);
+        _statTypeRepository.Setup(r => r.CountAsync()).ReturnsAsync(PlayerTestConstants.STAT_TYPES_COUNT);
+        _statTypeRepository.Setup(r => r.ListAllAsync()).ReturnsAsync(PlayerTestConstants.STAT_TYPES);
+        _footballPositionRepository.Setup(r => r.AnyAsync(It.IsAny<int>())).ReturnsAsync(true);
+        _gameStyleRepository.Setup(r => r.AnyAsync(It.IsAny<int>())).ReturnsAsync(true);
+        _workingFootRepository.Setup(r => r.AnyAsync(It.IsAny<int>())).ReturnsAsync(true);
     }
 
     #region General profile
@@ -49,13 +59,11 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_FirstName_ShouldFailValidationWhenEmptyOrNullOrTooLong(string firstName, string errorMessage)
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.General.FirstName = firstName;
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.False(result.IsValid);
@@ -76,13 +84,11 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_LastName_ShouldFailValidationWhenEmptyOrNullOrTooLong(string lastName, string errorMessage)
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.General.LastName = lastName;
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.False(result.IsValid);
@@ -124,13 +130,11 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_Biography_ShouldFailValidationWhenTooLong(string biography, string errorMessage)
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.General.Biography = biography;
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.False(result.IsValid);
@@ -147,13 +151,11 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_Birthday_ShouldPassValidationWhenNull()
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.General.Birthday = null;
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.True(result.IsValid);
@@ -172,13 +174,11 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_Birthday_ShouldFailValidationWhenNotFitLimits(DateTime birthday, string errorMessage)
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.General.Birthday = birthday;
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.False(result.IsValid);
@@ -195,13 +195,11 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_Photo_ShouldPassValidationWhenNull()
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.General.Photo = null;
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.True(result.IsValid);
@@ -220,17 +218,15 @@ public class PlayerValidatorTests
         string propName)
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.General.Photo = new PlayerPhotoDto
         {
             Size = size,
             Extension = extension
         };
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.False(result.IsValid);
@@ -254,13 +250,11 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_Tags_ShouldPassValidationWhenNullOrEmptyArray(IEnumerable<string> tags)
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.General.Tags = tags;
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.True(result.IsValid);
@@ -287,13 +281,11 @@ public class PlayerValidatorTests
         string? propName = null)
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.General.Tags = tags;
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.False(result.IsValid);
@@ -317,16 +309,14 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_Availability_ShouldPassValidationWhenAvailabilityDaysIsNullOrEmptyArray(IEnumerable<DayOfWeek> days)
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.General.Availability = new PlayerAvailabilityDto
         {
             Days = days
         };
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.True(result.IsValid);
@@ -347,16 +337,14 @@ public class PlayerValidatorTests
         string? propName = null)
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.General.Availability = new PlayerAvailabilityDto
         {
             Days = days
         };
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.False(result.IsValid);
@@ -381,17 +369,15 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_Availability_ShouldPassValidationWhenFromIsNullOrToIsNullOrBothIsNull(TimeSpan? from, TimeSpan? to)
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.General.Availability = new PlayerAvailabilityDto
         {
             From = from,
             To = to
         };
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.True(result.IsValid);
@@ -403,17 +389,15 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_Availability_ShouldFailValidationWhenFromIsMoreThanToAndViceVersa()
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.General.Availability = new PlayerAvailabilityDto
         {
             From = TimeSpan.FromHours(2),
             To = TimeSpan.FromHours(1)
         };
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.False(result.IsValid);
@@ -437,13 +421,11 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_Height_ShouldPassValidationWhenNull()
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.Football.Height = null;
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.True(result.IsValid);
@@ -457,13 +439,11 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_Height_ShouldFailValidationWhenNotFitLimits(int height)
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.Football.Height = height;
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.False(result.IsValid);
@@ -480,13 +460,11 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_Weight_ShouldPassValidationWhenNull()
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.Football.Weight = null;
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.True(result.IsValid);
@@ -500,13 +478,11 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_Weight_ShouldFailValidationWhenNotFitLimits(int weight)
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.Football.Weight = weight;
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.False(result.IsValid);
@@ -523,13 +499,11 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_Position_ShouldPassValidationWhenNull()
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.Football.Position = null;
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.True(result.IsValid);
@@ -541,13 +515,12 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_Position_ShouldFailValidationWhenHasInvalidValue()
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
-        player.Profile.Football.Position = (FootballPosition)22;
-
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
+        _footballPositionRepository.Setup(r => r.AnyAsync(It.IsAny<int>())).ReturnsAsync(false);
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
+        player.Profile.Football.Position = 22;
 
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.False(result.IsValid);
@@ -564,14 +537,12 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_Position_ShouldFailValidationWhenEqualToAdditionalPosition()
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
-        player.Profile.Football.Position = FootballPosition.Forward;
-        player.Profile.Football.AdditionalPosition = FootballPosition.Forward;
-
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
+        player.Profile.Football.Position = 3;
+        player.Profile.Football.AdditionalPosition = 3;
 
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.False(result.IsValid);
@@ -588,13 +559,12 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_AdditionalPosition_ShouldPassValidationWhenNull()
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        _footballPositionRepository.Setup(r => r.AnyAsync(It.IsAny<int>())).ReturnsAsync(false);
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.Football.AdditionalPosition = null;
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.True(result.IsValid);
@@ -606,13 +576,12 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_AdditionalPosition_ShouldFailValidationWhenHasInvalidValue()
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
-        player.Profile.Football.AdditionalPosition = (FootballPosition)22;
-
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
+        _footballPositionRepository.Setup(r => r.AnyAsync(It.IsAny<int>())).ReturnsAsync(false);
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
+        player.Profile.Football.AdditionalPosition = 22;
 
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.False(result.IsValid);
@@ -629,14 +598,12 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_AdditionalPosition_ShouldFailValidationWhenEqualToPosition()
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
-        player.Profile.Football.AdditionalPosition = FootballPosition.Forward;
-        player.Profile.Football.Position = FootballPosition.Forward;
-
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
+        player.Profile.Football.AdditionalPosition = 3;
+        player.Profile.Football.Position = 3;
 
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.False(result.IsValid);
@@ -653,13 +620,12 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_WorkingFoot_ShouldPassValidationWhenNull()
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        _workingFootRepository.Setup(r => r.AnyAsync(It.IsAny<int>())).ReturnsAsync(false);
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.Football.WorkingFoot = null;
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.True(result.IsValid);
@@ -671,13 +637,12 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_WorkingFoot_ShouldFailValidationWhenHasInvalidValue()
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
-        player.Profile.Football.WorkingFoot = (WorkingFoot)22;
-
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
+        _workingFootRepository.Setup(r => r.AnyAsync(It.IsAny<int>())).ReturnsAsync(false);
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
+        player.Profile.Football.WorkingFoot = 22;
 
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.False(result.IsValid);
@@ -694,13 +659,11 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_Number_ShouldPassValidationWhenNull()
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.Football.Number = null;
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.True(result.IsValid);
@@ -714,13 +677,11 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_Number_ShouldFailValidationWhenNotFitLimits(int number)
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.Football.Number = number;
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.False(result.IsValid);
@@ -737,13 +698,12 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_GameStyle_ShouldPassValidationWhenNull()
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        _gameStyleRepository.Setup(r => r.AnyAsync(It.IsAny<int>())).ReturnsAsync(false);
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.Football.GameStyle = null;
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.True(result.IsValid);
@@ -755,13 +715,12 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_GameStyle_ShouldFailValidationWhenHasInvalidValue()
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
-        player.Profile.Football.GameStyle = (GameStyle)22;
-
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
+        _gameStyleRepository.Setup(r => r.AnyAsync(It.IsAny<int>())).ReturnsAsync(false);
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
+        player.Profile.Football.GameStyle = 22;
 
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.False(result.IsValid);
@@ -778,13 +737,11 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_Skill_ShouldPassValidationWhenNull()
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.Football.Skill = null;
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.True(result.IsValid);
@@ -798,13 +755,11 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_Skill_ShouldFailValidationWhenNotFitLimits(int skill)
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.Football.Skill = skill;
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.False(result.IsValid);
@@ -821,13 +776,11 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_WeakFoot_ShouldPassValidationWhenNull()
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.Football.WeakFoot = null;
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.True(result.IsValid);
@@ -841,13 +794,11 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_WeakFoot_ShouldFailValidationWhenNotFitLimits(int skill)
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.Football.WeakFoot = skill;
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.False(result.IsValid);
@@ -864,13 +815,11 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_PhysicalCondition_ShouldPassValidationWhenNull()
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.Football.PhysicalCondition = null;
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.True(result.IsValid);
@@ -884,13 +833,11 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_PhysicalCondition_ShouldFailValidationWhenNotFitLimits(int skill)
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Profile.Football.PhysicalCondition = skill;
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.False(result.IsValid);
@@ -911,16 +858,14 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_Points_Available_ShouldFailValidationWhenLessThanZero()
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Stats.Points = new PlayerStatPointsDto
         {
             Available = -1
         };
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.False(result.IsValid);
@@ -937,16 +882,14 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_Points_Used_ShouldFailValidationWhenLessThanZero()
     {
         // Arrange
-        BasePlayerDto player = VALID_PLAYER;
+        BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
         player.Stats.Points = new PlayerStatPointsDto
         {
             Used = -1
         };
 
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.False(result.IsValid);
@@ -956,97 +899,7 @@ public class PlayerValidatorTests
 
         Assert.Equal("'Used' must be greater than or equal to '0'.", failure.ErrorMessage);
         Assert.Equal($"Stats.Points.Used", failure.PropertyName);
-    }
-
-    [Fact]
-    [Trait("Feature", "Validators")]
-    public async Task Feature_Validator_Stat_Values_ShouldFailValidationWhenCountIsNotEqualToConstant()
-    {
-        // Arrange
-        BasePlayerDto player = VALID_PLAYER;
-        player.Stats.Values = new List<PlayerStatValueDto>();
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
-        // Act
-        ValidationResult result = await validator.ValidateAsync(player);
-
-        // Assert
-        Assert.False(result.IsValid);
-        Assert.Single(result.Errors);
-
-        ValidationFailure failure = result.Errors.First();
-
-        Assert.Equal($"The length of 'Stats' must be equal to {ValidationConstants.STATS_COUNT}.", failure.ErrorMessage);
-        Assert.Equal($"Stats.Values", failure.PropertyName);
-    }
-
-
-
-    [Fact]
-    [Trait("Feature", "Validators")]
-    public async Task Feature_Validator_Stat_Values_ShouldFailValidationWhenCategoryIsInvalid()
-    {
-        // Arrange
-        BasePlayerDto player = JsonSerializer.Deserialize<BasePlayerDto>(JsonSerializer.Serialize(VALID_PLAYER))!;
-        player.Stats.Values.ToList()[0].Category = (StatCategory)22;
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
-        // Act
-        ValidationResult result = await validator.ValidateAsync(player);
-
-        // Assert
-        Assert.False(result.IsValid);
-        Assert.Equal(2, result.Errors.Count);
-
-        ValidationFailure failure = result.Errors.First();
-
-        Assert.Equal("Each value from 'Stats' must have Category in Stat Category range.", failure.ErrorMessage);
-        Assert.Equal($"Stats.Values[0]", failure.PropertyName);
-    }
-
-    [Fact]
-    [Trait("Feature", "Validators")]
-    public async Task Feature_Validator_Stat_Values_ShouldFailValidationWhenTypeIsInvalid()
-    {
-        // Arrange
-        BasePlayerDto player = JsonSerializer.Deserialize<BasePlayerDto>(JsonSerializer.Serialize(VALID_PLAYER))!;
-        player.Stats.Values.ToList()[0].Type = (StatType)29;
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
-        // Act
-        ValidationResult result = await validator.ValidateAsync(player);
-
-        // Assert
-        Assert.False(result.IsValid);
-        Assert.Equal(2, result.Errors.Count);
-
-        ValidationFailure failure = result.Errors.First();
-
-        Assert.Equal("Each value from 'Stats' must have Type in Stat Type range.", failure.ErrorMessage);
-        Assert.Equal($"Stats.Values[0]", failure.PropertyName);
-    }
-
-    [Fact]
-    [Trait("Feature", "Validators")]
-    public async Task Feature_Validator_Stat_Values_ShouldFailValidationWhenTypeNotInSpecificCategory()
-    {
-        // Arrange
-        BasePlayerDto player = JsonSerializer.Deserialize<BasePlayerDto>(JsonSerializer.Serialize(VALID_PLAYER))!;
-        player.Stats.Values.ToList()[0].Type = (StatType)28;
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
-
-        // Act
-        ValidationResult result = await validator.ValidateAsync(player);
-
-        // Assert
-        Assert.False(result.IsValid);
-        Assert.Single(result.Errors);
-
-        ValidationFailure failure = result.Errors.First();
-
-        Assert.Equal("Each value from 'Stats' must have Type for specific Category.", failure.ErrorMessage);
-        Assert.Equal($"Stats.Values[0]", failure.PropertyName);
-    }
+    }    
 
     [Theory]
     [Trait("Feature", "Validators")]
@@ -1055,12 +908,11 @@ public class PlayerValidatorTests
     public async Task Feature_Validator_Stat_Values_ShouldFailValidationWhenValueIsNotFitLimits(byte value)
     {
         // Arrange
-        BasePlayerDto player = JsonSerializer.Deserialize<BasePlayerDto>(JsonSerializer.Serialize(VALID_PLAYER))!;
+        BasePlayerDto player = JsonSerializer.Deserialize<BasePlayerDto>(JsonSerializer.Serialize(PlayerTestConstants.GetValidPlayer()))!;
         player.Stats.Values.ToList()[0].Value = value;
-        PlayerValidator<BasePlayerDto> validator = new(_mockDateTimeService.Object);
 
         // Act
-        ValidationResult result = await validator.ValidateAsync(player);
+        ValidationResult result = await Validator.ValidateAsync(player);
 
         // Assert
         Assert.False(result.IsValid);
