@@ -15,7 +15,7 @@ public class GetPlayerByUserQueryTests
 {
     private readonly Guid MOCK_USER_ID = Guid.Parse("db69fc8c-cd50-4c99-96b3-9ddb6c49d08b");
     private readonly IMapper _mapper;
-    private readonly Mock<IPlayerRepository> _mockPlayerRepository = new();
+    private readonly Mock<IPlayerRepository> _playerRepositoryMock = new();
 
     public GetPlayerByUserQueryTests()
     {
@@ -33,15 +33,15 @@ public class GetPlayerByUserQueryTests
             UserId = MOCK_USER_ID
         };
 
-        _mockPlayerRepository.Setup(r => r.GetByUserIdAsync(query.UserId)).ReturnsAsync(new Player());
+        _playerRepositoryMock.Setup(r => r.GetByUserIdAsync(query.UserId)).ReturnsAsync(new Player());
 
-        GetPlayerByUserQueryHandler handler = new(_mapper, _mockPlayerRepository.Object);
+        GetPlayerByUserQueryHandler handler = new(_mapper, _playerRepositoryMock.Object);
 
         // Act
         GetPlayerByUserViewModel? result = await handler.Handle(query, new CancellationToken());
 
         // Assert
-        _mockPlayerRepository.Verify(mock => mock.GetByUserIdAsync(query.UserId), Times.Once());
+        _playerRepositoryMock.Verify(mock => mock.GetByUserIdAsync(query.UserId), Times.Once());
     }
 
     [Fact]
@@ -54,9 +54,9 @@ public class GetPlayerByUserQueryTests
             UserId = MOCK_USER_ID
         };
 
-        _mockPlayerRepository.Setup(r => r.GetByUserIdAsync(query.UserId)).ReturnsAsync(new Player());
+        _playerRepositoryMock.Setup(r => r.GetByUserIdAsync(query.UserId)).ReturnsAsync(new Player());
 
-        GetPlayerByUserQueryHandler handler = new(_mapper, _mockPlayerRepository.Object);
+        GetPlayerByUserQueryHandler handler = new(_mapper, _playerRepositoryMock.Object);
 
         // Act
         GetPlayerByUserViewModel? result = await handler.Handle(query, new CancellationToken());
@@ -78,9 +78,9 @@ public class GetPlayerByUserQueryTests
             UserId = MOCK_USER_ID
         };
 
-        _mockPlayerRepository.Setup(r => r.GetByUserIdAsync(query.UserId)).ReturnsAsync((Player)null!);
+        _playerRepositoryMock.Setup(r => r.GetByUserIdAsync(query.UserId)).ReturnsAsync((Player)null!);
 
-        GetPlayerByUserQueryHandler handler = new(_mapper, _mockPlayerRepository.Object);
+        GetPlayerByUserQueryHandler handler = new(_mapper, _playerRepositoryMock.Object);
 
         // Act
         GetPlayerByUserViewModel? result = await handler.Handle(query, new CancellationToken());

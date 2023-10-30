@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using SFC.Players.Application.Common.Constants;
 using SFC.Players.Application.Interfaces.Persistence;
 using SFC.Players.Domain.Entities;
+using SFC.Players.Domain.Entities.Data;
 using SFC.Players.Infrastructure.Persistence.Extensions;
 using SFC.Players.Infrastructure.Persistence.Interceptors;
 
@@ -45,9 +46,21 @@ public class PlayersDbContext : DbContext, IPlayersDbContext
 
     public DbSet<PlayerPhoto> Photos => Set<PlayerPhoto>();
 
-    public virtual DbSet<User> Users => Set<User>();
+    public DbSet<User> Users => Set<User>();
 
     public DbSet<IdentityUser> IdentityUsers => Set<IdentityUser>();
+
+    public DbSet<GameStyle> GameStyles => Set<GameStyle>();
+
+    public DbSet<FootballPosition> FootballPositions => Set<FootballPosition>();
+
+    public DbSet<StatCategory> StatCategories => Set<StatCategory>();
+
+    public DbSet<StatSkill> StatSkills => Set<StatSkill>();
+
+    public DbSet<StatType> StatTypes => Set<StatType>();
+
+    public DbSet<WorkingFoot> WorkingFoots => Set<WorkingFoot>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -1,13 +1,10 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 using SFC.Players.Application.Interfaces.Persistence;
 using SFC.Players.Infrastructure.Persistence.Interceptors;
 using SFC.Players.Infrastructure.Persistence.Repositories;
-using SFC.Players.Infrastructure.Persistence.Seeds.Players;
 
 namespace SFC.Players.Infrastructure.Persistence;
 
@@ -18,32 +15,12 @@ public static class PersistenceRegistration
         services.AddDbContext<PlayersDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("PlayersConnectionString"),
             b => b.MigrationsAssembly(typeof(PlayersDbContext).Assembly.FullName)));
         services.AddScoped<AuditableEntitySaveChangesInterceptor>();
-        services.AddScoped<IPlayersDbContext>(provider => provider.GetRequiredService<PlayersDbContext>());
-        services.AddScoped(typeof(IAsyncRepository<>), typeof(BaseRepository<>));
+        services.AddScoped<IPlayersDbContext, PlayersDbContext>();
+        services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+        services.AddScoped(typeof(IDataRepository<>), typeof(DataRepository<>));
         services.AddScoped<IPlayerRepository, PlayerRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
-    }
-
-    public static async Task ResetDatabaseAsync(this WebApplication app)
-    {
-        using IServiceScope scope = app.Services.CreateScope();
-
-        try
-        {
-            PlayersDbContext? context = scope.ServiceProvider.GetService<PlayersDbContext>();
-
-            if (context != null)
-            {
-                await context.Database.EnsureDeletedAsync();
-                await context.Database.MigrateAsync();
-                await context.SeedUsers();
-            }
-        }
-        catch (Exception ex)
-        {
-            ILogger logger = scope.ServiceProvider.GetRequiredService<ILogger>();
-
-            logger.LogError(ex, "An error occurred while migrating the database.");
-        }
+        services.AddScoped<IStatCategoryRepository, StatCategoryRepository>();
+        services.AddScoped<IStatTypeRepository, StatTypeRepository>();
     }
 }

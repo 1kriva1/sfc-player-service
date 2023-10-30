@@ -6,6 +6,7 @@ using Moq;
 using SFC.Players.Infrastructure.Persistence.Interceptors;
 using SFC.Players.Application.Interfaces.Identity;
 using SFC.Players.Application.Interfaces.Common;
+using SFC.Players.Domain.Entities.Data;
 
 namespace SFC.Players.Infrastructure.Persistence.UnitTests.Interceptors;
 public class AuditableEntitySaveChangesInterceptorTests
@@ -54,7 +55,7 @@ public class AuditableEntitySaveChangesInterceptorTests
     }
 
     [Fact]
-    [Trait("Persistence", "DbContext")]
+    [Trait("Persistence", "Interceptor")]
     public async Task Persistence_DbContext_ShouldFillAuditableFieldsForEntityModification()
     {
         // Arrange
@@ -92,6 +93,25 @@ public class AuditableEntitySaveChangesInterceptorTests
         Assert.Equal(userIdUpdated, player?.LastModifiedBy);
         Assert.Equal(now, player?.CreatedDate);
         Assert.Equal(nowUpdated, player?.LastModifiedDate);
+    }
+
+    [Fact]
+    [Trait("Persistence", "Interceptor")]
+    public async Task Persistence_Interceptor_ShouldFillBaseDataEntity()
+    {
+        // Arrange
+        DateTime now = DateTime.UtcNow;
+        dateTimeServiceMock.Setup(m => m.Now).Returns(now);
+        FootballPosition entity = new() { Id = 0, Title = "Goalkeeper" };
+        PlayersDbContext context = CreateDbContext();
+
+        // Act
+        EntityEntry<FootballPosition> addResult = await context.FootballPositions.AddAsync(entity);
+        await context.SaveChangesAsync();
+        FootballPosition? player = await context.FootballPositions.FindAsync(addResult.Entity.Id);
+
+        // Assert
+        Assert.Equal(now, player?.CreatedDate);
     }
 
     private PlayersDbContext CreateDbContext()

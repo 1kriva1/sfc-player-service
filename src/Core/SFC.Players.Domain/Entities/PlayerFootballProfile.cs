@@ -5,15 +5,15 @@ public class PlayerFootballProfile : BasePlayerEntity
 
     public short? Weight { get; set; }
 
-    public FootballPosition? Position { get; set; }
+    public int? PositionId { get; set; }
 
-    public FootballPosition? AdditionalPosition { get; set; }
+    public int? AdditionalPositionId { get; set; }
 
-    public WorkingFoot? WorkingFoot { get; set; }
+    public int? WorkingFootId { get; set; }
 
     public short? Number { get; set; }
 
-    public GameStyle? GameStyle { get; set; }
+    public int? GameStyleId { get; set; }
 
     public byte? Skill { get; set; }
 

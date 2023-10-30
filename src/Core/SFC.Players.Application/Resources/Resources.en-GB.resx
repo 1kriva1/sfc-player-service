@@ -123,6 +123,9 @@
   <data name="AvailableDaysSize" xml:space="preserve">
     <value>The length of '{0}' must be less or equal to {1}.</value>
   </data>
+  <data name="DataValidator" xml:space="preserve">
+    <value>'{PropertyName}' has a range of values which does not include '{PropertyValue}'.</value>
+  </data>
   <data name="EachStatTypeMustBeInSpecificCategory" xml:space="preserve">
     <value>Each value from '{0}' must have {1} for specific {2}.</value>
   </data>
@@ -143,9 +146,6 @@
   </data>
   <data name="InvalidTagsSize" xml:space="preserve">
     <value>The length of '{0}' must be less or equal to {1}.</value>
-  </data>
-  <data name="LengthMustBeEqual" xml:space="preserve">
-    <value>The length of '{0}' must be equal to {1}.</value>
   </data>
   <data name="MustBeGreaterThan" xml:space="preserve">
     <value>'{0}' value must be greater than {1} value.</value>
@@ -173,6 +173,9 @@
   </data>
   <data name="RequestBodyRequired" xml:space="preserve">
     <value>Request body is required.</value>
+  </data>
+  <data name="StatLength" xml:space="preserve">
+    <value>Stat count is invalid.</value>
   </data>
   <data name="StatValueMustBeInRange" xml:space="preserve">
     <value>Each value from '{0}' must have {1} between {2} and {3}.</value>

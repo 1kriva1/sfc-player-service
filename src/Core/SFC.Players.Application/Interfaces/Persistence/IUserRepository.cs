@@ -2,7 +2,7 @@
 
 namespace SFC.Players.Application.Interfaces.Persistence;
 
-public interface IUserRepository : IAsyncRepository<User>
+public interface IUserRepository : IRepository<User>
 {
     Task<bool> AnyAsync(Guid userId);
 

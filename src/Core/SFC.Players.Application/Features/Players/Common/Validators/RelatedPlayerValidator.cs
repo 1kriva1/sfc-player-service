@@ -10,7 +10,7 @@ public class RelatedPlayerValidator : AbstractValidator<IPlayerRelatedRequest>
     public RelatedPlayerValidator(IUserRepository userRepository)
     {
         RuleFor(p => p)
-           .MustAsync(async (command, cancellation) => await userRepository.AnyAsync(command.PlayerId, command.UserId))
+           .MustAsync((command, cancellation) => userRepository.AnyAsync(command.PlayerId, command.UserId))
            .WithName(nameof(IPlayerRelatedRequest.PlayerId))
            .WithMessage(Messages.PlayerNotRelatedToThisUser);
     }

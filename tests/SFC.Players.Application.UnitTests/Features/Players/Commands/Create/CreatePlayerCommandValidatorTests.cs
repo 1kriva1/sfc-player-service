@@ -8,6 +8,7 @@ using SFC.Players.Application.Interfaces.Common;
 using SFC.Players.Application.Interfaces.Persistence;
 using SFC.Players.Application.Models.Players.Common;
 using SFC.Players.Application.Models.Players.Create;
+using SFC.Players.Domain.Entities.Data;
 
 namespace SFC.Players.Application.UnitTests.Features.Players.Commands.Create;
 public class CreatePlayerCommandValidatorTests
@@ -33,6 +34,37 @@ public class CreatePlayerCommandValidatorTests
     };
     private readonly Mock<IDateTimeService> _mockDateTimeService = new();
     private readonly Mock<IUserRepository> _mockUserRepository = new();
+    private readonly Mock<IStatCategoryRepository> _statCategoryRepository = new();
+    private readonly Mock<IStatTypeRepository> _statTypeRepository = new();
+    private readonly Mock<IDataRepository<FootballPosition>> _footballPositionRepository = new();
+    private readonly Mock<IDataRepository<GameStyle>> _gameStyleRepository = new();
+    private readonly Mock<IDataRepository<WorkingFoot>> _workingFootRepository = new();
+
+    private CreatePlayerCommandValidator Validator
+    {
+        get
+        {
+            return new(
+                _mockDateTimeService.Object, 
+                _mockUserRepository.Object, 
+                _statCategoryRepository.Object, 
+                _statTypeRepository.Object, 
+                _footballPositionRepository.Object, 
+                _workingFootRepository.Object, 
+                _gameStyleRepository.Object);
+        }
+    }
+
+    public CreatePlayerCommandValidatorTests()
+    {
+        _statCategoryRepository.Setup(r => r.CountAsync(It.IsAny<IEnumerable<int>>())).ReturnsAsync(PlayerTestConstants.STAT_CATEGORIES_COUNT);
+        _statTypeRepository.Setup(r => r.CountAsync(It.IsAny<IEnumerable<int>>())).ReturnsAsync(PlayerTestConstants.STAT_TYPES_COUNT);
+        _statTypeRepository.Setup(r => r.CountAsync()).ReturnsAsync(PlayerTestConstants.STAT_TYPES_COUNT);
+        _statTypeRepository.Setup(r => r.ListAllAsync()).ReturnsAsync(PlayerTestConstants.STAT_TYPES);
+        _footballPositionRepository.Setup(r => r.AnyAsync(It.IsAny<int>())).ReturnsAsync(true);
+        _gameStyleRepository.Setup(r => r.AnyAsync(It.IsAny<int>())).ReturnsAsync(true);
+        _workingFootRepository.Setup(r => r.AnyAsync(It.IsAny<int>())).ReturnsAsync(true);
+    }
 
     [Fact]
     [Trait("Feature", "CreatePlayer")]
@@ -47,10 +79,8 @@ public class CreatePlayerCommandValidatorTests
 
         _mockUserRepository.Setup(r => r.AnyAsync(MOCK_USER_ID)).ReturnsAsync(true);
 
-        CreatePlayerCommandValidator validator = new(_mockDateTimeService.Object, _mockUserRepository.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(command);
+        ValidationResult result = await Validator.ValidateAsync(command);
 
         // Assert
         Assert.False(result.IsValid);
@@ -79,10 +109,8 @@ public class CreatePlayerCommandValidatorTests
 
         _mockUserRepository.Setup(r => r.AnyAsync(MOCK_USER_ID)).ReturnsAsync(false);
 
-        CreatePlayerCommandValidator validator = new(_mockDateTimeService.Object, _mockUserRepository.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(command);
+        ValidationResult result = await Validator.ValidateAsync(command);
 
         // Assert
         Assert.False(result.IsValid);
@@ -110,10 +138,8 @@ public class CreatePlayerCommandValidatorTests
 
         _mockUserRepository.Setup(r => r.AnyAsync(MOCK_USER_ID)).ReturnsAsync(false);
 
-        CreatePlayerCommandValidator validator = new(_mockDateTimeService.Object, _mockUserRepository.Object);
-
         // Act
-        ValidationResult result = await validator.ValidateAsync(command);
+        ValidationResult result = await Validator.ValidateAsync(command);
 
         // Assert
         Assert.True(result.IsValid);

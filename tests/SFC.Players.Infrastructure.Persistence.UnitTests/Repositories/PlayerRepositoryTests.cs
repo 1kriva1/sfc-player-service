@@ -39,7 +39,7 @@ public class PlayerRepositoryTests
         // Assert
         Assert.NotNull(player);
         Assert.Equal(entity.GeneralProfile.FirstName, player.GeneralProfile.FirstName);
-        Assert.Equal(entity.FootballProfile.Position, player.FootballProfile.Position);
+        Assert.Equal(entity.FootballProfile.PositionId, player.FootballProfile.PositionId);
         Assert.Equal(entity.Availability.From, player.Availability.From);
         Assert.Equal(entity.Availability.To, player.Availability.To);
         Assert.Equal(entity.Photo.Extension, player.Photo.Extension);
@@ -55,8 +55,8 @@ public class PlayerRepositoryTests
         PlayerStat stat = player.Stats.First();
         PlayerStat entityStat = entity.Stats.First();
         Assert.Equal(entityStat.Value, stat.Value);
-        Assert.Equal(entityStat.Category, stat.Category);
-        Assert.Equal(entityStat.Type, stat.Type);
+        Assert.Equal(entityStat.CategoryId, stat.CategoryId);
+        Assert.Equal(entityStat.TypeId, stat.TypeId);
         Assert.Single(player.Availability.Days);
         Assert.Equal(entity.Availability.Days.First().Day, player.Availability.Days.First().Day);
     }
@@ -93,7 +93,7 @@ public class PlayerRepositoryTests
         // Assert
         Assert.NotNull(player);
         Assert.Equal(entity.GeneralProfile.FirstName, player.GeneralProfile.FirstName);
-        Assert.Equal(entity.FootballProfile.Position, player.FootballProfile.Position);
+        Assert.Equal(entity.FootballProfile.PositionId, player.FootballProfile.PositionId);
         Assert.Equal(entity.Photo.Extension, player.Photo.Extension);
         Assert.Equal(entity.Photo.Name, player.Photo.Name);
         Assert.Equal(entity.Photo.Size, player.Photo.Size);
@@ -145,7 +145,7 @@ public class PlayerRepositoryTests
             },
             FootballProfile = new PlayerFootballProfile
             {
-                Position = FootballPosition.Forward
+                PositionId = 2
             },
             Availability = new PlayerAvailability
             {
@@ -170,7 +170,12 @@ public class PlayerRepositoryTests
             }
         };
         entity.Tags.Add(new PlayerTag { Value = "Tag 1" });
-        PlayerStat entityStat = new() { Category = StatCategory.Pace, Type = StatType.Acceleration, Value = 99 };
+        PlayerStat entityStat = new()
+        {
+            CategoryId = 0,
+            TypeId = 0,
+            Value = 99
+        };
         entity.Stats.Add(entityStat);
         entity.Availability.Days.Add(new PlayerAvailableDay { Day = DayOfWeek.Friday });
 

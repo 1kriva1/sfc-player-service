@@ -23,6 +23,136 @@ namespace SFC.Players.Infrastructure.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("SFC.Players.Domain.Entities.Data.FootballPosition", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnOrder(1);
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FootballPosition", "Data");
+                });
+
+            modelBuilder.Entity("SFC.Players.Domain.Entities.Data.GameStyle", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnOrder(1);
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GameStyle", "Data");
+                });
+
+            modelBuilder.Entity("SFC.Players.Domain.Entities.Data.StatCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnOrder(1);
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StatCategory", "Data");
+                });
+
+            modelBuilder.Entity("SFC.Players.Domain.Entities.Data.StatSkill", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnOrder(1);
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StatSkill", "Data");
+                });
+
+            modelBuilder.Entity("SFC.Players.Domain.Entities.Data.StatType", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnOrder(1);
+
+                    b.Property<int>("SkillId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("SkillId");
+
+                    b.ToTable("StatType", "Data");
+                });
+
+            modelBuilder.Entity("SFC.Players.Domain.Entities.Data.WorkingFoot", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnOrder(1);
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WorkingFoot", "Data");
+                });
+
             modelBuilder.Entity("SFC.Players.Domain.Entities.IdentityUser", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -115,11 +245,11 @@ namespace SFC.Players.Infrastructure.Persistence.Migrations
                     b.Property<long>("Id")
                         .HasColumnType("bigint");
 
-                    b.Property<byte?>("AdditionalPosition")
-                        .HasColumnType("tinyint");
+                    b.Property<int?>("AdditionalPositionId")
+                        .HasColumnType("int");
 
-                    b.Property<byte?>("GameStyle")
-                        .HasColumnType("tinyint");
+                    b.Property<int?>("GameStyleId")
+                        .HasColumnType("int");
 
                     b.Property<short?>("Height")
                         .HasColumnType("smallint");
@@ -130,8 +260,8 @@ namespace SFC.Players.Infrastructure.Persistence.Migrations
                     b.Property<byte?>("PhysicalCondition")
                         .HasColumnType("tinyint");
 
-                    b.Property<byte?>("Position")
-                        .HasColumnType("tinyint");
+                    b.Property<int?>("PositionId")
+                        .HasColumnType("int");
 
                     b.Property<byte?>("Skill")
                         .HasColumnType("tinyint");
@@ -142,10 +272,18 @@ namespace SFC.Players.Infrastructure.Persistence.Migrations
                     b.Property<short?>("Weight")
                         .HasColumnType("smallint");
 
-                    b.Property<byte?>("WorkingFoot")
-                        .HasColumnType("tinyint");
+                    b.Property<int?>("WorkingFootId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AdditionalPositionId");
+
+                    b.HasIndex("GameStyleId");
+
+                    b.HasIndex("PositionId");
+
+                    b.HasIndex("WorkingFootId");
 
                     b.ToTable("FootballProfiles", "Players");
                 });
@@ -194,11 +332,13 @@ namespace SFC.Players.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("Extension")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<int>("Size")
                         .HasColumnType("int");
@@ -220,21 +360,25 @@ namespace SFC.Players.Infrastructure.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<byte>("Category")
-                        .HasColumnType("tinyint");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
                     b.Property<long>("PlayerId")
                         .HasColumnType("bigint");
 
-                    b.Property<byte>("Type")
-                        .HasColumnType("tinyint");
+                    b.Property<int>("TypeId")
+                        .HasColumnType("int");
 
                     b.Property<byte>("Value")
                         .HasColumnType("tinyint");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.HasIndex("PlayerId");
+
+                    b.HasIndex("TypeId");
 
                     b.ToTable("Stats", "Players");
                 });
@@ -299,6 +443,21 @@ namespace SFC.Players.Infrastructure.Persistence.Migrations
                     b.ToTable("Users", "Players");
                 });
 
+            modelBuilder.Entity("SFC.Players.Domain.Entities.Data.StatType", b =>
+                {
+                    b.HasOne("SFC.Players.Domain.Entities.Data.StatCategory", null)
+                        .WithMany("Types")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SFC.Players.Domain.Entities.Data.StatSkill", null)
+                        .WithMany("Types")
+                        .HasForeignKey("SkillId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("SFC.Players.Domain.Entities.IdentityUser", b =>
                 {
                     b.HasOne("SFC.Players.Domain.Entities.User", "User")
@@ -332,11 +491,27 @@ namespace SFC.Players.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("SFC.Players.Domain.Entities.PlayerFootballProfile", b =>
                 {
+                    b.HasOne("SFC.Players.Domain.Entities.Data.FootballPosition", null)
+                        .WithMany()
+                        .HasForeignKey("AdditionalPositionId");
+
+                    b.HasOne("SFC.Players.Domain.Entities.Data.GameStyle", null)
+                        .WithMany()
+                        .HasForeignKey("GameStyleId");
+
                     b.HasOne("SFC.Players.Domain.Entities.Player", "Player")
                         .WithOne("FootballProfile")
                         .HasForeignKey("SFC.Players.Domain.Entities.PlayerFootballProfile", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("SFC.Players.Domain.Entities.Data.FootballPosition", null)
+                        .WithMany()
+                        .HasForeignKey("PositionId");
+
+                    b.HasOne("SFC.Players.Domain.Entities.Data.WorkingFoot", null)
+                        .WithMany()
+                        .HasForeignKey("WorkingFootId");
 
                     b.Navigation("Player");
                 });
@@ -365,10 +540,22 @@ namespace SFC.Players.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("SFC.Players.Domain.Entities.PlayerStat", b =>
                 {
+                    b.HasOne("SFC.Players.Domain.Entities.Data.StatCategory", null)
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("SFC.Players.Domain.Entities.Player", "Player")
                         .WithMany("Stats")
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SFC.Players.Domain.Entities.Data.StatType", null)
+                        .WithMany()
+                        .HasForeignKey("TypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Player");
@@ -405,6 +592,16 @@ namespace SFC.Players.Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Player");
+                });
+
+            modelBuilder.Entity("SFC.Players.Domain.Entities.Data.StatCategory", b =>
+                {
+                    b.Navigation("Types");
+                });
+
+            modelBuilder.Entity("SFC.Players.Domain.Entities.Data.StatSkill", b =>
+                {
+                    b.Navigation("Types");
                 });
 
             modelBuilder.Entity("SFC.Players.Domain.Entities.Player", b =>
