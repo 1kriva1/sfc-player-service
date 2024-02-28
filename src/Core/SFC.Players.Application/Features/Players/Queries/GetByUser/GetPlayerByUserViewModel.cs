@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 
 using SFC.Players.Application.Common.Mappings;
-using SFC.Players.Application.Models.Players.GetByUser;
+using SFC.Players.Application.Features.Players.Queries.GetByUser.Dto;
 using SFC.Players.Domain.Entities;
 
 namespace SFC.Players.Application.Features.Players.Queries.Get;

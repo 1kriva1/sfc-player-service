@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
-using SFC.Players.Application.Common.Models;
 using SFC.Players.Application.Common.Constants;
+using SFC.Players.Application.Models.Base;
 
 namespace SFC.Players.Api.Filters;
 

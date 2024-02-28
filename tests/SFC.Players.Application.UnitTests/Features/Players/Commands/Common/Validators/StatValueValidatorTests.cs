@@ -5,9 +5,9 @@ using FluentValidation.Results;
 using Moq;
 
 using SFC.Players.Application.Features.Players.Commands.Common.Validators;
+using SFC.Players.Application.Features.Players.Common.Dto;
 using SFC.Players.Application.Interfaces.Common;
 using SFC.Players.Application.Interfaces.Persistence;
-using SFC.Players.Application.Models.Players.Common;
 using SFC.Players.Domain.Entities.Data;
 
 namespace SFC.Players.Application.UnitTests.Features.Players.Commands.Common.Validators;
@@ -59,33 +59,11 @@ public class StatValueValidatorTests
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Equal(3, result.Errors.Count);
-
-        ValidationFailure failure = result.Errors.First();
-
-        Assert.Equal("Stat count is invalid.", failure.ErrorMessage);
-        Assert.Equal($"Stats.Values.Type", failure.PropertyName);
-    }
-
-    [Fact]
-    [Trait("Feature", "Validators")]
-    public async Task Feature_Validator_Stat_Values_ShouldFailValidationWhenCategoryIsInvalid()
-    {
-        // Arrange
-        _statCategoryRepository.Setup(r => r.CountAsync(It.IsAny<IEnumerable<int>>())).ReturnsAsync(1);
-        BasePlayerDto player = JsonSerializer.Deserialize<BasePlayerDto>(JsonSerializer.Serialize(PlayerTestConstants.GetValidPlayer()))!;
-        player.Stats.Values.ToList()[0].Category = 22;
-
-        // Act
-        ValidationResult result = await Validator.ValidateAsync(player);
-
-        // Assert
-        Assert.False(result.IsValid);
         Assert.Equal(2, result.Errors.Count);
 
         ValidationFailure failure = result.Errors.First();
 
-        Assert.Equal("Each value from 'Stats' must have Category in Stat Category range.", failure.ErrorMessage);
+        Assert.Equal("Stat count is invalid.", failure.ErrorMessage);
         Assert.Equal($"Stats.Values.Type", failure.PropertyName);
     }
 
@@ -103,32 +81,11 @@ public class StatValueValidatorTests
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Equal(2, result.Errors.Count);
-
-        ValidationFailure failure = result.Errors.First();
-
-        Assert.Equal("Each value from 'Stats' must have Type in Stat Type range.", failure.ErrorMessage);
-        Assert.Equal($"Stats.Values.Type", failure.PropertyName);
-    }
-
-    [Fact]
-    [Trait("Feature", "Validators")]
-    public async Task Feature_Validator_Stat_Values_ShouldFailValidationWhenTypeNotInSpecificCategory()
-    {
-        // Arrange
-        BasePlayerDto player = JsonSerializer.Deserialize<BasePlayerDto>(JsonSerializer.Serialize(PlayerTestConstants.GetValidPlayer()))!;
-        player.Stats.Values.ToList()[0].Type = 28;
-
-        // Act
-        ValidationResult result = await Validator.ValidateAsync(player);
-
-        // Assert
-        Assert.False(result.IsValid);
         Assert.Single(result.Errors);
 
         ValidationFailure failure = result.Errors.First();
 
-        Assert.Equal("Each value from 'Stats' must have Type for specific Category.", failure.ErrorMessage);
+        Assert.Equal("Each value from 'Stats' must have Type in Stat Type range.", failure.ErrorMessage);
         Assert.Equal($"Stats.Values.Type", failure.PropertyName);
     }
 }

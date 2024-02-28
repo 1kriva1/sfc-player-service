@@ -17,4 +17,18 @@ public class DateTimeServiceTests
         // Assert
         Assert.Equal(DateTime.UtcNow.Date, result.Date);
     }
+
+    [Fact]
+    [Trait("Service", "DateTime")]
+    public void Service_DateTime_ShouldReturnCurrentUtcDateValue()
+    {
+        // Arrange
+        IDateTimeService service = new DateTimeService();
+
+        // Act
+        DateTime result = service.DateNow;
+
+        // Assert
+        Assert.Equal(DateTime.UtcNow.Date, result.Date);
+    }
 }

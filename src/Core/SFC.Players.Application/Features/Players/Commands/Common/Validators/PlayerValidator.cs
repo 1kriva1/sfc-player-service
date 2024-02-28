@@ -2,9 +2,9 @@
 
 using SFC.Players.Application.Common.Constants;
 using SFC.Players.Application.Common.Extensions;
+using SFC.Players.Application.Features.Players.Common.Dto;
 using SFC.Players.Application.Interfaces.Common;
 using SFC.Players.Application.Interfaces.Persistence;
-using SFC.Players.Application.Models.Players.Common;
 using SFC.Players.Domain.Entities.Data;
 
 namespace SFC.Players.Application.Features.Players.Commands.Common.Validators;
@@ -12,7 +12,6 @@ namespace SFC.Players.Application.Features.Players.Commands.Common.Validators;
 public class PlayerValidator<T> : AbstractValidator<T> where T : BasePlayerDto
 {
     private readonly IDateTimeService _dateTimeService;
-    private readonly IStatCategoryRepository _statCategoryRepository;
     private readonly IStatTypeRepository _statTypeRepository;
     private readonly IDataRepository<FootballPosition> _footballPositionRepository;
     private readonly IDataRepository<WorkingFoot> _workingFootRepository;
@@ -27,7 +26,6 @@ public class PlayerValidator<T> : AbstractValidator<T> where T : BasePlayerDto
         IDataRepository<GameStyle> gameStyleRepository)
     {
         _dateTimeService = dateTimeService;
-        _statCategoryRepository = statCategoryRepository;
         _statTypeRepository = statTypeRepository;
         _footballPositionRepository = footballPositionRepository;
         _workingFootRepository = workingFootRepository;
@@ -218,7 +216,7 @@ public class PlayerValidator<T> : AbstractValidator<T> where T : BasePlayerDto
             .WithName(nameof(PlayerStatPointsDto.Used));
 
         RuleFor(p => p.Stats.Values)
-            .SetValidator(new StatValueValidator(_statTypeRepository, _statCategoryRepository));
+            .SetValidator(new StatValueValidator(_statTypeRepository));
 
         RuleForEach(p => p.Stats.Values)
             .Must(stat => ValidationConstants.STAT_VALUE_RANGE.Item1 <= stat.Value && stat.Value <= ValidationConstants.STAT_VALUE_RANGE.Item2)

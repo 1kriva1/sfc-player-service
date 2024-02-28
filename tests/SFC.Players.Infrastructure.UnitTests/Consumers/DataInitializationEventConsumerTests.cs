@@ -49,7 +49,7 @@ public class DataInitializationEventConsumerTests
 
     [Fact]
     [Trait("Consumer", "DataInitializationEvent")]
-    public async Task Consumer_DataInitializationEvent_ShouldAddTestPlayer()
+    public async Task Consumer_DataInitializationEvent_ShouldAddTestPlayers()
     {
         // Arrange
         IServiceCollection services = new ServiceCollection();
@@ -60,7 +60,7 @@ public class DataInitializationEventConsumerTests
         List<Mock> mocks = SetUpRepositories(services);
 
         Mock<IPlayerRepository> playerRepositoryMock = new();
-        playerRepositoryMock.Setup(m => m.AddAsync(It.IsAny<Player>())).Verifiable();
+        playerRepositoryMock.Setup(m => m.AddRangeAsync(It.IsAny<Player[]>())).Verifiable();
         services.AddSingleton(playerRepositoryMock.Object);
         mocks.Add(playerRepositoryMock);
 

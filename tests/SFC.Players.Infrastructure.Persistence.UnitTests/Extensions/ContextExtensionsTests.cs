@@ -6,6 +6,7 @@ using Moq;
 
 using SFC.Players.Application.Interfaces.Common;
 using SFC.Players.Application.Interfaces.Identity;
+using SFC.Players.Domain.Entities;
 using SFC.Players.Domain.Entities.Data;
 using SFC.Players.Infrastructure.Persistence.Extensions;
 using SFC.Players.Infrastructure.Persistence.Interceptors;
@@ -59,6 +60,57 @@ public class ContextExtensionsTests
         // Assert
         Assert.False(await playerDbContext.FootballPositions.AnyAsync());
     }
+
+    [Fact]
+    [Trait("Persistence", "Extensions")]
+    public void Persistence_Extensions_Context_ShouldSetStateForPlayerStatType()
+    {
+        // Arrange
+        DbContext context = CreateDbContext();
+        PlayersDbContext playerDbContext = (PlayersDbContext)context;
+        ICollection<PlayerStat> stats = new List<PlayerStat> {
+            new() {
+                Id = 1,
+                Value = 50,
+                Type = new StatType()
+            }
+        };
+
+        // Act
+        context.SetPlayerStats(stats);
+
+        // Assert
+        foreach (PlayerStat stat in stats)
+        {
+            Assert.Equal(EntityState.Unchanged, context.Entry(stat.Type).State);
+        }
+    }
+
+    [Fact]
+    [Trait("Persistence", "Extensions")]
+    public void Persistence_Extensions_Context_ShouldSetDefinedStateForPlayerStatType()
+    {
+        // Arrange
+        DbContext context = CreateDbContext();
+        PlayersDbContext playerDbContext = (PlayersDbContext)context;
+        ICollection<PlayerStat> stats = new List<PlayerStat> {
+            new() {
+                Id = 1,
+                Value = 50,
+                Type = new StatType()
+            }
+        };
+
+        // Act
+        context.SetPlayerStats(stats, EntityState.Modified);
+
+        // Assert
+        foreach (PlayerStat stat in stats)
+        {
+            Assert.Equal(EntityState.Modified, context.Entry(stat.Type).State);
+        }
+    }
+
     private PlayersDbContext CreateDbContext()
     {
         Mock<IUserService> userServiceMock = new();

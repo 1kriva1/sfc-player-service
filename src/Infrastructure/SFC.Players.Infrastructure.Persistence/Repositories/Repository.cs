@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
+using SFC.Players.Application.Features.Common.Models.Paging;
 using SFC.Players.Application.Interfaces.Persistence;
+using SFC.Players.Infrastructure.Persistence.Extensions;
 
 namespace SFC.Players.Infrastructure.Persistence.Repositories;
 
@@ -16,12 +18,19 @@ public class Repository<T> : IRepository<T> where T : class
         return t;
     }
 
+    public virtual async Task<PagedList<T>> GetPageAsync(PageParameters<T> parameters)
+    {
+        return await _context.Set<T>()
+                             .AsQueryable<T>()
+                             .PaginateAsync(parameters);
+    }
+
     public async Task<IReadOnlyList<T>> ListAllAsync()
     {
         return await _context.Set<T>().ToListAsync();
     }
 
-    public async Task<T> AddAsync(T entity)
+    public virtual async Task<T> AddAsync(T entity)
     {
         await _context.Set<T>().AddAsync(entity);
         await _context.SaveChangesAsync();
@@ -37,7 +46,7 @@ public class Repository<T> : IRepository<T> where T : class
         return entities;
     }
 
-    public async Task UpdateAsync(T entity)
+    public virtual async Task UpdateAsync(T entity)
     {
         _context.Entry(entity).State = EntityState.Modified;
         await _context.SaveChangesAsync();
@@ -47,5 +56,5 @@ public class Repository<T> : IRepository<T> where T : class
     {
         _context.Set<T>().Remove(entity);
         await _context.SaveChangesAsync();
-    }
+    }    
 }

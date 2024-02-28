@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 
 using SFC.Players.Api.Middlewares;
 using SFC.Players.Application.Common.Exceptions;
-using SFC.Players.Application.Common.Models;
+using SFC.Players.Application.Models.Base;
 
 namespace SFC.Players.Api.UnitTests.Middlewares;
 public class ExceptionHandlerMiddlewareTests

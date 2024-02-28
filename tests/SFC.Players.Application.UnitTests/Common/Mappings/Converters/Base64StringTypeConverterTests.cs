@@ -1,4 +1,5 @@
 ﻿using SFC.Players.Application.Common.Mappings.Converters;
+using SFC.Players.Application.Features.Players.Common.Dto;
 using SFC.Players.Domain.Entities;
 using SFC.Players.Domain.Enums;
 
@@ -10,7 +11,7 @@ public class Base64StringTypeConverterTests
     public void Mapping_Base64StringTypeConverter_ShouldConvert()
     {
         // Arrange
-        PlayerPhoto photo = new()
+        PlayerPhotoDto photo = new()
         {
             Extension = PhotoExtension.Jpg,
             Source = new byte[10]
@@ -29,7 +30,7 @@ public class Base64StringTypeConverterTests
     public void Mapping_Base64StringTypeConverter_ShouldReturnNullIfPhotoNotExist()
     {
         // Arrange
-        PlayerPhoto? photo = null;
+        PlayerPhotoDto? photo = null;
         Base64StringTypeConverter converter = new();
 
         // Act

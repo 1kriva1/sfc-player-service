@@ -2,9 +2,9 @@
 
 using SFC.Players.Application.Common.Extensions;
 using SFC.Players.Application.Common.Mappings;
-using SFC.Players.Application.Common.Models;
 using SFC.Players.Application.Features.Players.Queries.Get;
-using SFC.Players.Application.Models.Players.Common.Models;
+using SFC.Players.Application.Models.Base;
+using SFC.Players.Application.Models.Players.Common;
 
 namespace SFC.Players.Application.Models.Players.Get;
 

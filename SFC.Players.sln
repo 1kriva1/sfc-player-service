@@ -30,15 +30,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		global.json = global.json
+		nuget.config = nuget.config
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFC.Players.Infrastructure.UnitTests", "tests\SFC.Players.Infrastructure.UnitTests\SFC.Players.Infrastructure.UnitTests.csproj", "{DCADCF73-198E-4E0D-87CA-03FFDE978C36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFC.Players.Infrastructure.UnitTests", "tests\SFC.Players.Infrastructure.UnitTests\SFC.Players.Infrastructure.UnitTests.csproj", "{DCADCF73-198E-4E0D-87CA-03FFDE978C36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFC.Players.Infrastructure.Persistence.UnitTests", "tests\SFC.Players.Infrastructure.Persistence.UnitTests\SFC.Players.Infrastructure.Persistence.UnitTests.csproj", "{998EE687-43EC-4FBE-BD7D-114B55CD831D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFC.Players.Infrastructure.Persistence.UnitTests", "tests\SFC.Players.Infrastructure.Persistence.UnitTests\SFC.Players.Infrastructure.Persistence.UnitTests.csproj", "{998EE687-43EC-4FBE-BD7D-114B55CD831D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFC.Players.Api.UnitTests", "tests\SFC.Players.Api.UnitTests\SFC.Players.Api.UnitTests.csproj", "{BC40DAF0-2086-4812-9A65-31396CEE7127}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFC.Players.Api.UnitTests", "tests\SFC.Players.Api.UnitTests\SFC.Players.Api.UnitTests.csproj", "{BC40DAF0-2086-4812-9A65-31396CEE7127}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFC.Players.Api.IntegrationTests", "tests\SFC.Players.Api.IntegrationTests\SFC.Players.Api.IntegrationTests.csproj", "{C28D1393-7B1D-479B-B459-7F672EFADE43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFC.Players.Api.IntegrationTests", "tests\SFC.Players.Api.IntegrationTests\SFC.Players.Api.IntegrationTests.csproj", "{C28D1393-7B1D-479B-B459-7F672EFADE43}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -4,6 +4,7 @@ using Moq;
 
 using SFC.Players.Application.Common.Constants;
 using SFC.Players.Application.Features.Players.Commands.Update;
+using SFC.Players.Application.Features.Players.Common.Dto;
 using SFC.Players.Application.Features.Players.Common.Models;
 using SFC.Players.Application.Interfaces.Common;
 using SFC.Players.Application.Interfaces.Persistence;

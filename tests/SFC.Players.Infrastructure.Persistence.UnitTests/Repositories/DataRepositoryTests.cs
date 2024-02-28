@@ -85,9 +85,11 @@ public class DataRepositoryTests
         Assert.True(await repository.AnyAsync(entity.Id));
 
         // Act
-        await repository.ResetAsync(new FootballPosition[] { resetEntity });
+        FootballPosition[] result = await repository.ResetAsync(new FootballPosition[] { resetEntity });
 
         // Assert
+        Assert.Single(result);
+        Assert.Equal(resetEntity.Id, result.FirstOrDefault()!.Id);
         Assert.False(await repository.AnyAsync(entity.Id));
         Assert.True(await repository.AnyAsync(resetEntity.Id));
     }

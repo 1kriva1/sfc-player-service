@@ -25,6 +25,8 @@ public class StatTypeRepository : IStatTypeRepository
 
     public async Task<IReadOnlyList<StatType>> ListAllAsync()
     {
-        return await _context.Set<StatType>().ToListAsync();
+        return await _context.Set<StatType>()
+                             .AsNoTracking()
+                             .ToListAsync();
     }
 }

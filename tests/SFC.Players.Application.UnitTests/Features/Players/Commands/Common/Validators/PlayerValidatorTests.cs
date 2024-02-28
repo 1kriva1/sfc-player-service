@@ -6,6 +6,7 @@ using Moq;
 
 using SFC.Players.Application.Common.Constants;
 using SFC.Players.Application.Features.Players.Commands.Common.Validators;
+using SFC.Players.Application.Features.Players.Common.Dto;
 using SFC.Players.Application.Interfaces.Common;
 using SFC.Players.Application.Interfaces.Persistence;
 using SFC.Players.Application.Models.Players.Common;

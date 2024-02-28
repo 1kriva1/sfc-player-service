@@ -3,8 +3,8 @@
 using SFC.Players.Application.Common.Behaviours;
 using SFC.Players.Application.Common.Constants;
 using SFC.Players.Application.Common.Exceptions;
-using SFC.Players.Application.Common.Models;
 using SFC.Players.Application.Features.Players.Queries.Get;
+using SFC.Players.Application.Models.Base;
 
 namespace SFC.Players.Application.UnitTests.Common.Behaviours;
 public class ValidationBehaviourTests

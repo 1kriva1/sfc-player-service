@@ -2,6 +2,7 @@
 using SFC.Players.Application;
 using SFC.Players.Infrastructure.Persistence;
 using SFC.Players.Infrastructure;
+using SFC.Players.Application.Common.Constants;
 
 namespace SFC.Players.Api.Extensions;
 
@@ -38,8 +39,9 @@ public static class StartupExtensions
         app.UseCors(x => x
             .AllowAnyMethod()
             .AllowAnyHeader()
+            .WithExposedHeaders(CommonConstants.PAGINATION_HEADER_KEY)
             .SetIsOriginAllowed(origin => true) // allow any origin
-            .AllowCredentials()); // allow credentials
+            .AllowCredentials());// allow credentials 
 
         app.UseHttpsRedirection();
 

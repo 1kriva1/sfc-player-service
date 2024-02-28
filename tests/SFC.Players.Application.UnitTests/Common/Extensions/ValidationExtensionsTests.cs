@@ -3,6 +3,7 @@ using FluentValidation.Results;
 
 using SFC.Players.Application.Common.Extensions;
 using SFC.Players.Application.Features.Players.Commands.Create;
+using SFC.Players.Application.Features.Players.Common.Dto;
 using SFC.Players.Application.Models.Players.Common;
 using SFC.Players.Application.Models.Players.Create;
 

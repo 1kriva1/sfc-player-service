@@ -48,25 +48,27 @@ public class DataInitializationEventConsumer : IConsumer<DataInitializationEvent
 
     public async Task Consume(ConsumeContext<DataInitializationEvent> context)
     {
-        _logger.LogInformation("Content Received:", context.Message);
-
         DataInitializationEvent @event = context.Message;
 
-        await _positionsRepository.ResetAsync(@event.FootballPositions.Select(v => v.MapToDataEntity<FootballPosition>()));
+        FootballPosition[] footballPositions = await _positionsRepository.ResetAsync(@event.FootballPositions.Select(v => v.MapToDataEntity<FootballPosition>()));
 
-        await _gameStylesRepository.ResetAsync(@event.GameStyles.Select(v => v.MapToDataEntity<GameStyle>()));
+        GameStyle[] gameStyles = await _gameStylesRepository.ResetAsync(@event.GameStyles.Select(v => v.MapToDataEntity<GameStyle>()));
 
-        await _statCategoriesRepository.ResetAsync(@event.StatCategories.Select(v => v.MapToDataEntity<StatCategory>()));
+        WorkingFoot[] workingFoots = await _workingFootsRepository.ResetAsync(@event.WorkingFoots.Select(v => v.MapToDataEntity<WorkingFoot>()));
 
-        await _statSkillsRepository.ResetAsync(@event.StatSkills.Select(v => v.MapToDataEntity<StatSkill>()));
+        StatCategory[] categories = await _statCategoriesRepository.ResetAsync(@event.StatCategories.Select(v => v.MapToDataEntity<StatCategory>()));
 
-        await _statTypesRepository.ResetAsync(@event.StatTypes.Select(v => v.MapToDataEntity()));
+        StatSkill[] skills = await _statSkillsRepository.ResetAsync(@event.StatSkills.Select(v => v.MapToDataEntity<StatSkill>()));
 
-        await _workingFootsRepository.ResetAsync(@event.WorkingFoots.Select(v => v.MapToDataEntity<WorkingFoot>()));
+        StatType[] statTypes = await _statTypesRepository.ResetAsync(@event.StatTypes.Select(v => v.MapToDataEntity(categories, skills)));        
 
         if (_hostEnvironment.IsDevelopment())
         {
-            await _playerRepository.AddSeedPlayersAsync();
+            await _playerRepository.AddSeedPlayersAsync(
+                footballPositions,
+                gameStyles,
+                workingFoots,
+                statTypes);
         }
     }
 }

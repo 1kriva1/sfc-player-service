@@ -14,7 +14,7 @@ public class DataRepository<T> : Repository<T>, IDataRepository<T> where T : Bas
         return _context.Set<T>().AnyAsync(u => u.Id == id);
     }
 
-    public Task ResetAsync(IEnumerable<T> entities)
+    public Task<T[]> ResetAsync(IEnumerable<T> entities)
     {
         _context.Clear<T>();
 
