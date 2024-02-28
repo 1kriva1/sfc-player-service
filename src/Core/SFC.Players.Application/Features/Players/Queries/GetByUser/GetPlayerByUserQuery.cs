@@ -1,5 +1,5 @@
 ﻿using SFC.Players.Application.Common.Enums;
-using SFC.Players.Application.Features.Players.Common.Models;
+using SFC.Players.Application.Features.Common.Base;
 
 namespace SFC.Players.Application.Features.Players.Queries.Get;
 

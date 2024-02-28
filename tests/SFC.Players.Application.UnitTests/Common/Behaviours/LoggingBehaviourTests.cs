@@ -4,9 +4,10 @@ using Moq;
 
 using SFC.Players.Application.Common.Behaviours;
 using SFC.Players.Application.Common.Enums;
-using SFC.Players.Application.Common.Models;
 using SFC.Players.Application.Features.Players.Commands.Create;
+using SFC.Players.Application.Features.Players.Common.Dto;
 using SFC.Players.Application.Interfaces.Identity;
+using SFC.Players.Application.Models.Base;
 using SFC.Players.Application.Models.Players.Common;
 using SFC.Players.Application.Models.Players.Create;
 

@@ -10,7 +10,6 @@ using SFC.Players.Application.Common.Exceptions;
 using SFC.Players.Application.Common.Mappings;
 using SFC.Players.Application.Features.Players.Commands.Update;
 using SFC.Players.Application.Interfaces.Persistence;
-using SFC.Players.Application.Models.Players.Update;
 using SFC.Players.Domain.Entities;
 
 namespace SFC.Players.Application.UnitTests.Features.Players.Commands.Update;

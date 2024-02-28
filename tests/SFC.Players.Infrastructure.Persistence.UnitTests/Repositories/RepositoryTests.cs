@@ -4,6 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 using Moq;
 
+using SFC.Players.Application.Common.Enums;
+using SFC.Players.Application.Features.Common.Models.Filters;
+using SFC.Players.Application.Features.Common.Models.Paging;
+using SFC.Players.Application.Features.Common.Models.Sorting;
 using SFC.Players.Application.Interfaces.Common;
 using SFC.Players.Application.Interfaces.Identity;
 using SFC.Players.Domain.Entities;
@@ -233,6 +237,67 @@ public class RepositoryTests
 
         // Assert
         Assert.Empty(generalProfiles);
+    }
+
+    [Fact]
+    [Trait("Persistence", "Repository")]
+    public async Task Persistence_Repository_ShouldGetPage()
+    {
+        // Arrange
+        Repository<PlayerGeneralProfile> repository = CreateRepository();
+        PlayerGeneralProfile entityFirst = new()
+        {
+            FirstName = "First name 1",
+            LastName = "Last Name 1",
+            City = "City 1",
+            Player = new Player { Id = 1 }
+        };
+        PlayerGeneralProfile entitySecond = new()
+        {
+            FirstName = "First name 2",
+            LastName = "Last Name 2",
+            City = "City 2",
+            Player = new Player { Id = 2 }
+        };
+        PlayerGeneralProfile entityThird = new()
+        {
+            FirstName = "First name 3",
+            LastName = "Last Name 3",
+            City = "City 1",
+            Player = new Player { Id = 3 }
+        };
+        PageParameters<PlayerGeneralProfile> parameters = new()
+        {
+            Filters = new Filters<PlayerGeneralProfile>(new Filter<PlayerGeneralProfile>[1] {
+                new() {
+                    Condition = true,
+                    Expression = player =>player.City.Contains("1")
+                }
+            }),
+            Pagination = new Pagination { Page = 1, Size = 2 },
+            Sorting = new Sortings<PlayerGeneralProfile>(new Sorting<PlayerGeneralProfile, dynamic>[1] {
+                new() {
+                    Condition = true,
+                    Direction = SortingDirection.Descending,
+                    Expression = player=>player.City
+                }
+            })
+        };
+
+        // Act
+        await repository.AddAsync(entityFirst);
+        await repository.AddAsync(entitySecond);
+        await repository.AddAsync(entityThird);
+        PagedList<PlayerGeneralProfile> result = await repository.GetPageAsync(parameters);
+
+        // Assert
+        Assert.Equal(2, result.Count);
+        Assert.Equal(entityFirst.City, result[0].City!);
+        Assert.Equal(entityThird.City, result[1].City!);
+        Assert.Equal(1, result.CurrentPage);
+        Assert.Equal(1, result.TotalPages);
+        Assert.Equal(2, result.PageSize);
+        Assert.Equal(2, result.TotalCount);
     }
 
     private Repository<PlayerGeneralProfile> CreateRepository()

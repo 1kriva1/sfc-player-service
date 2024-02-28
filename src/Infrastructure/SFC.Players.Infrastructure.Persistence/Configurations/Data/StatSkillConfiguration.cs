@@ -11,7 +11,6 @@ public class StatSkillConfiguration : BaseDataEntityConfiguration<StatSkill>
     {
         builder.HasMany(e => e.Types)
                .WithOne()
-               .HasForeignKey(t => t.SkillId)
                .IsRequired();
 
         builder.ToTable(nameof(StatSkill), DbConstants.DATA_SCHEMA_NAME);

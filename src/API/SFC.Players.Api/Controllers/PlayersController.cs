@@ -1,11 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using SFC.Players.Api.Extensions;
+using SFC.Players.Application.Features.Common.Base;
 using SFC.Players.Application.Features.Players.Commands.Create;
 using SFC.Players.Application.Features.Players.Commands.Update;
 using SFC.Players.Application.Features.Players.Queries.Get;
+using SFC.Players.Application.Features.Players.Queries.GetByFilters;
+using SFC.Players.Application.Features.Players.Queries.GetByFilters.Dto.Filters;
+using SFC.Players.Application.Models.Common.Pagination;
 using SFC.Players.Application.Models.Players.Create;
 using SFC.Players.Application.Models.Players.Get;
+using SFC.Players.Application.Models.Players.GetByFilters;
 using SFC.Players.Application.Models.Players.Update;
 
 namespace SFC.Players.Api.Controllers;
@@ -61,5 +67,21 @@ public class PlayersController : ApiControllerBase
         GetPlayerByUserViewModel? player = await Mediator.Send(query);
 
         return Ok(Mapper.Map<GetPlayerByUserResponse>(player) ?? GetPlayerByUserResponse.SuccessResult);
+    }
+
+    [HttpGet("byfilters")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<GetPlayersByFiltersResponse>> GetPlayersByFiltersAsync([FromQuery] GetPlayersByFiltersRequest request)
+    {
+        BasePaginationRequest<GetPlayersByFiltersViewModel, GetPlayersByFiltersFilterDto> query = Mapper.Map<GetPlayersByFiltersQuery>(request)
+                                               .SetUserId<GetPlayersByFiltersQuery>(UserService.UserId)
+                                               .SetRoute(Request.Path.Value!)
+                                               .SetQueryString(Request.QueryString.Value!);
+
+        GetPlayersByFiltersViewModel result = await Mediator.Send(query);
+
+        Response.AddPaginationHeader(Mapper.Map<PageMetadataModel>(result.Metadata));
+
+        return Ok(Mapper.Map<GetPlayersByFiltersResponse>(result));
     }
 }

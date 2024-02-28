@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 using SFC.Players.Api.Filters;
 using SFC.Players.Application.Common.Constants;
-using SFC.Players.Application.Common.Models;
+using SFC.Players.Application.Models.Base;
 
 namespace SFC.Players.Api.UnitTests.Filters;
 public class ModelStateValidationFilterTests

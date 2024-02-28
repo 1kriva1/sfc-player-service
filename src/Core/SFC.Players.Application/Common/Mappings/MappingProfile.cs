@@ -3,13 +3,18 @@
 using AutoMapper;
 
 using SFC.Players.Application.Common.Extensions;
-using SFC.Players.Application.Common.Mappings.Converters;
-using SFC.Players.Application.Models.Players.Common;
-using SFC.Players.Application.Models.Players.Create;
-using SFC.Players.Application.Models.Players.Update;
+using SFC.Players.Application.Features.Common.Dto;
+using SFC.Players.Application.Features.Common.Dto.Pagination;
+using SFC.Players.Application.Features.Common.Models.Paging;
+using SFC.Players.Application.Features.Players.Commands.Create;
+using SFC.Players.Application.Features.Players.Commands.Update;
+using SFC.Players.Application.Features.Players.Common.Dto;
+using SFC.Players.Application.Models.Common;
 using SFC.Players.Domain.Entities;
+using SFC.Players.Domain.Entities.Data;
 
 namespace SFC.Players.Application.Common.Mappings;
+
 public class MappingProfile : Profile
 {
     public MappingProfile()
@@ -42,17 +47,20 @@ public class MappingProfile : Profile
         CreateMap<PlayerTag, string>()
             .ConvertUsing(tag => tag.Value);
 
-        CreateMap<string?, PlayerPhotoDto?>()
-            .ConvertUsing<PlayerFileTypeConverter>();
+        CreateMap<StatType, int>()
+            .ConvertUsing(statType => statType.Id);
 
-        CreateMap<PlayerPhoto?, string?>()
-            .ConvertUsing<Base64StringTypeConverter>();
+        CreateMap<int, StatType>()
+            .ConvertUsing(statType => new StatType { Id = statType });
 
         #endregion Simple types
 
         #region Complex types
 
         CreateMap<PlayerGeneralProfileDto, PlayerGeneralProfile>()
+            .IgnoreAllNonExisting();
+
+        CreateMap<PlayerAvailabilityDto, PlayerAvailability>()
             .IgnoreAllNonExisting();
 
         CreateMap<PlayerFootballProfileDto, PlayerFootballProfile>()
@@ -62,8 +70,7 @@ public class MappingProfile : Profile
             .ForMember(p => p.GameStyleId, d => d.MapFrom(z => z.GameStyle))
             .ForMember(p => p.DomainEvents, d => d.Ignore())
             .ForMember(p => p.Id, d => d.Ignore())
-            .ForMember(p => p.Player, d => d.Ignore())
-            .ReverseMap();
+            .ForMember(p => p.Player, d => d.Ignore());
 
         CreateMap<PlayerPhotoDto, PlayerPhoto>()
             .IgnoreAllNonExisting();
@@ -84,6 +91,9 @@ public class MappingProfile : Profile
             .ForMember(p => p.Id, d => d.Ignore())
             .ForMember(p => p.DomainEvents, d => d.Ignore());
 
+        CreateMap<PlayerStatPointsDto, PlayerStatPoints>()
+            .IgnoreAllNonExisting();
+
         CreateMap<CreatePlayerDto, Player>()
             .IncludeBase<BasePlayerDto, Player>();
 
@@ -91,14 +101,24 @@ public class MappingProfile : Profile
             .IncludeBase<BasePlayerDto, Player>();
 
         CreateMap<PlayerStatValueDto, PlayerStat>()
-            .ForMember(p => p.TypeId, d => d.MapFrom(z => z.Type))
-            .ForMember(p => p.CategoryId, d => d.MapFrom(z => z.Category))
             .ForMember(p => p.DomainEvents, d => d.Ignore())
             .ForMember(p => p.Id, d => d.Ignore())
-            .ForMember(p => p.Player, d => d.Ignore())
-            .ReverseMap();
+            .ForMember(p => p.Player, d => d.Ignore());
 
         #endregion Complex types
+
+        #region Generic types
+
+        CreateMap(typeof(RangeLimitModel<>), typeof(RangeLimitDto<>));
+
+        CreateMap(typeof(PagedList<>), typeof(PageDto<>))
+            .ForMember(nameof(PageDto<object>.Items), d => d.Ignore())
+            .ForMember(nameof(PageDto<object>.Metadata), d => d.Ignore());
+
+        CreateMap(typeof(PagedList<>), typeof(PageMetadataDto))
+            .ForMember(nameof(PageMetadataDto.Links), d => d.Ignore());
+
+        #endregion Generic types
     }
 
     private void ApplyMappingsFromAssembly(Assembly assembly)

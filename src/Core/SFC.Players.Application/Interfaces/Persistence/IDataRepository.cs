@@ -1,9 +1,9 @@
 ﻿using SFC.Players.Domain.Common;
 
 namespace SFC.Players.Application.Interfaces.Persistence;
-public interface IDataRepository<T> where T : BaseDataEntity
+public interface IDataRepository<T> : IRepository<T> where T : BaseDataEntity
 {
     Task<bool> AnyAsync(int id);
 
-    Task ResetAsync(IEnumerable<T> entities);    
+    Task<T[]> ResetAsync(IEnumerable<T> entities);    
 }

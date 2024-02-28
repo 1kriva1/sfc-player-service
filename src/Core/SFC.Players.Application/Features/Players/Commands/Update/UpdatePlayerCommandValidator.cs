@@ -4,7 +4,6 @@ using SFC.Players.Application.Features.Players.Commands.Common.Validators;
 using SFC.Players.Application.Features.Players.Common.Validators;
 using SFC.Players.Application.Interfaces.Common;
 using SFC.Players.Application.Interfaces.Persistence;
-using SFC.Players.Application.Models.Players.Update;
 using SFC.Players.Domain.Entities.Data;
 
 namespace SFC.Players.Application.Features.Players.Commands.Update;

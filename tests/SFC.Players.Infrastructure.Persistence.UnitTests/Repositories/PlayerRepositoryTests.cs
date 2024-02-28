@@ -4,9 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 using Moq;
 
+using SFC.Players.Application.Common.Enums;
+using SFC.Players.Application.Features.Common.Models.Filters;
+using SFC.Players.Application.Features.Common.Models.Paging;
+using SFC.Players.Application.Features.Common.Models.Sorting;
 using SFC.Players.Application.Interfaces.Common;
 using SFC.Players.Application.Interfaces.Identity;
 using SFC.Players.Domain.Entities;
+using SFC.Players.Domain.Entities.Data;
 using SFC.Players.Domain.Enums;
 using SFC.Players.Infrastructure.Persistence.Interceptors;
 
@@ -16,12 +21,30 @@ namespace SFC.Players.Infrastructure.Persistence.UnitTests.Repositories;
 public class PlayerRepositoryTests
 {
     private readonly DbContextOptions<PlayersDbContext> dbContextOptions;
+    private static readonly StatType statType = new StatType { Id = 1 };
 
     public PlayerRepositoryTests()
     {
         dbContextOptions = new DbContextOptionsBuilder<PlayersDbContext>()
             .UseInMemoryDatabase($"PlayerRepositoryTestsDb_{DateTime.Now.ToFileTimeUtc()}")
         .Options;
+    }
+
+    [Fact]
+    [Trait("Persistence", "Repository")]
+    public async Task Persistence_Repository_Player_ShouldAddEntity()
+    {
+        // Arrange
+        PlayerRepository repository = CreateRepository();
+        Guid userId = Guid.NewGuid();
+        Player entity = GetNewPlayer(userId);
+
+        // Act
+        await repository.AddAsync(entity);
+        Player? player = await repository.GetByUserIdAsync(userId);
+
+        // Assert
+        Assert.NotNull(player);
     }
 
     [Fact]
@@ -52,11 +75,12 @@ public class PlayerRepositoryTests
         Assert.Single(player.Tags);
         Assert.Equal(entity.Tags.First().Value, player.Tags.First().Value);
         Assert.Single(player.Stats);
+
         PlayerStat stat = player.Stats.First();
         PlayerStat entityStat = entity.Stats.First();
+
         Assert.Equal(entityStat.Value, stat.Value);
-        Assert.Equal(entityStat.CategoryId, stat.CategoryId);
-        Assert.Equal(entityStat.TypeId, stat.TypeId);
+        Assert.Equal(entityStat.Type, stat.Type);
         Assert.Single(player.Availability.Days);
         Assert.Equal(entity.Availability.Days.First().Day, player.Availability.Days.First().Day);
     }
@@ -118,6 +142,50 @@ public class PlayerRepositoryTests
         Assert.Null(player);
     }
 
+    [Fact]
+    [Trait("Persistence", "Repository")]
+    public async Task Persistence_Repository_Player_ShouldGetPage()
+    {
+        // Arrange
+        PlayerRepository repository = CreateRepository();
+        PageParameters<Player> parameters = new()
+        {
+            Filters = new Filters<Player>(new Filter<Player>[1] {
+                new() {
+                    Condition = true,
+                    Expression = player =>player.FootballProfile.PositionId == 3 || player.FootballProfile.PositionId == 0
+                }
+            }),
+            Pagination = new Pagination { Page = 2, Size = 2 },
+            Sorting = new Sortings<Player>(new Sorting<Player, dynamic>[1] {
+                new() {
+                    Condition = true,
+                    Direction = SortingDirection.Descending,
+                    Expression = player=>player.FootballProfile.PositionId!
+                }
+            })
+        };
+
+        // Act
+        await repository.AddAsync(GetNewPlayer(Guid.NewGuid(), 1));
+        await repository.AddAsync(GetNewPlayer(Guid.NewGuid(), 2));
+        await repository.AddAsync(GetNewPlayer(Guid.NewGuid(), 3));
+        await repository.AddAsync(GetNewPlayer(Guid.NewGuid(), 0));
+        await repository.AddAsync(GetNewPlayer(Guid.NewGuid(), 3));
+        await repository.AddAsync(GetNewPlayer(Guid.NewGuid(), 3));
+
+        PagedList<Player> result = await repository.GetPageAsync(parameters);
+
+        // Assert
+        Assert.Equal(2, result.Count);
+        Assert.Equal(3, result[0].FootballProfile.PositionId);
+        Assert.Equal(0, result[1].FootballProfile.PositionId);
+        Assert.Equal(2, result.CurrentPage);
+        Assert.Equal(2, result.TotalPages);
+        Assert.Equal(2, result.PageSize);
+        Assert.Equal(4, result.TotalCount);
+    }
+
     private PlayerRepository CreateRepository()
     {
         Mock<IMediator> mediatorMock = new();
@@ -133,7 +201,7 @@ public class PlayerRepositoryTests
         return new PlayerRepository(context);
     }
 
-    private static Player GetNewPlayer(Guid userId)
+    private static Player GetNewPlayer(Guid userId, int? position = 2)
     {
         Player entity = new()
         {
@@ -145,7 +213,7 @@ public class PlayerRepositoryTests
             },
             FootballProfile = new PlayerFootballProfile
             {
-                PositionId = 2
+                PositionId = position
             },
             Availability = new PlayerAvailability
             {
@@ -172,8 +240,7 @@ public class PlayerRepositoryTests
         entity.Tags.Add(new PlayerTag { Value = "Tag 1" });
         PlayerStat entityStat = new()
         {
-            CategoryId = 0,
-            TypeId = 0,
+            Type = statType,
             Value = 99
         };
         entity.Stats.Add(entityStat);

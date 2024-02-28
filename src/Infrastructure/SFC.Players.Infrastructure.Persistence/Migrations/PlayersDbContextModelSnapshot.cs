@@ -360,9 +360,6 @@ namespace SFC.Players.Infrastructure.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
                     b.Property<long>("PlayerId")
                         .HasColumnType("bigint");
 
@@ -373,8 +370,6 @@ namespace SFC.Players.Infrastructure.Persistence.Migrations
                         .HasColumnType("tinyint");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
 
                     b.HasIndex("PlayerId");
 
@@ -445,17 +440,21 @@ namespace SFC.Players.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("SFC.Players.Domain.Entities.Data.StatType", b =>
                 {
-                    b.HasOne("SFC.Players.Domain.Entities.Data.StatCategory", null)
+                    b.HasOne("SFC.Players.Domain.Entities.Data.StatCategory", "Category")
                         .WithMany("Types")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SFC.Players.Domain.Entities.Data.StatSkill", null)
+                    b.HasOne("SFC.Players.Domain.Entities.Data.StatSkill", "Skill")
                         .WithMany("Types")
                         .HasForeignKey("SkillId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Skill");
                 });
 
             modelBuilder.Entity("SFC.Players.Domain.Entities.IdentityUser", b =>
@@ -540,25 +539,21 @@ namespace SFC.Players.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("SFC.Players.Domain.Entities.PlayerStat", b =>
                 {
-                    b.HasOne("SFC.Players.Domain.Entities.Data.StatCategory", null)
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("SFC.Players.Domain.Entities.Player", "Player")
                         .WithMany("Stats")
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SFC.Players.Domain.Entities.Data.StatType", null)
+                    b.HasOne("SFC.Players.Domain.Entities.Data.StatType", "Type")
                         .WithMany()
                         .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Player");
+
+                    b.Navigation("Type");
                 });
 
             modelBuilder.Entity("SFC.Players.Domain.Entities.PlayerStatPoints", b =>

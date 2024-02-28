@@ -58,6 +58,6 @@ public static class Extensions
 
         context.StatTypes.AddRange(Constants.STAT_TYPES);
 
-        context.SaveChanges();
+        context.SaveChanges();        
     }
 }

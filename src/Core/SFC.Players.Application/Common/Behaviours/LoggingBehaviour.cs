@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using SFC.Players.Application.Interfaces.Identity;
-using SFC.Players.Application.Features.Players.Common.Models;
 using System.Text.Json;
+using SFC.Players.Application.Features.Common.Base;
 
 namespace SFC.Players.Application.Common.Behaviours;
 

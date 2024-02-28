@@ -27,14 +27,16 @@ public class EventsExtensionsTests
     {
         // Arrange
         StatTypeDataValue value = new() { Id = 0, Title = "Title", CategoryId = 1, SkillId = 2 };
+        StatCategory[] categories = new StatCategory[1] { new() { Id = 1 } };
+        StatSkill[] skills = new StatSkill[1] { new() { Id = 2 } };
 
         // Act
-        StatType entity = value.MapToDataEntity();
+        StatType entity = value.MapToDataEntity(categories, skills);
 
         // Assert
         Assert.Equal(value.Id, entity.Id);
         Assert.Equal(value.Title, entity.Title);
-        Assert.Equal(value.CategoryId, entity.CategoryId);
-        Assert.Equal(value.SkillId, entity.SkillId);
+        Assert.Equal(value.CategoryId, entity.Category.Id);
+        Assert.Equal(value.SkillId, entity.Skill.Id);
     }
 }

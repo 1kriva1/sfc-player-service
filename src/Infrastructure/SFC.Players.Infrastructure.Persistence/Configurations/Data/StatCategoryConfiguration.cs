@@ -11,7 +11,6 @@ public class StatCategoryConfiguration : BaseDataEntityConfiguration<StatCategor
     {
         builder.HasMany(e => e.Types)
                .WithOne()
-               .HasForeignKey(t => t.CategoryId)
                .IsRequired(true);
 
         builder.ToTable(nameof(StatCategory), DbConstants.DATA_SCHEMA_NAME);

@@ -2,7 +2,7 @@
 
 using Microsoft.Extensions.Logging;
 
-using SFC.Players.Application.Features.Players.Common.Models;
+using SFC.Players.Application.Features.Common.Base;
 
 namespace SFC.Players.Application.Common.Behaviours;
 

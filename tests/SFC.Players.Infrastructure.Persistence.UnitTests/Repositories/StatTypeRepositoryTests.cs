@@ -26,7 +26,7 @@ public class StatTypeRepositoryTests
 
     [Fact]
     [Trait("Persistence", "Repository")]
-    public async Task Persistence_Repository_StatCategory_ShouldReturnCount()
+    public async Task Persistence_Repository_StatType_ShouldReturnCount()
     {
         // Arrange
         IStatTypeRepository repository = CreateRepository();
@@ -46,7 +46,7 @@ public class StatTypeRepositoryTests
 
     [Fact]
     [Trait("Persistence", "Repository")]
-    public async Task Persistence_Repository_StatCategory_ShouldReturnCountByIds()
+    public async Task Persistence_Repository_StatType_ShouldReturnCountByIds()
     {
         // Arrange
         IStatTypeRepository repository = CreateRepository();
@@ -66,7 +66,7 @@ public class StatTypeRepositoryTests
 
     [Fact]
     [Trait("Persistence", "Repository")]
-    public async Task Persistence_Repository_StatCategory_ShouldReturnAllEntities()
+    public async Task Persistence_Repository_StatType_ShouldReturnAllEntities()
     {
         // Arrange
         IStatTypeRepository repository = CreateRepository();
@@ -82,6 +82,33 @@ public class StatTypeRepositoryTests
 
         // Assert
         Assert.Single(result);
+    }
+
+    [Fact]
+    [Trait("Persistence", "Repository")]
+    public async Task Persistence_Repository_StatType_ShouldReturnAllAsNoTracking()
+    {
+        // Arrange
+        PlayersDbContext context = CreateContext();
+        IStatTypeRepository repository = new StatTypeRepository(context);
+        StatType entity = new()
+        {
+            Id = 2,
+            Title = "Title"
+        };
+
+        // Act
+        await CreateDataRepository().AddRangeAsync(
+            new StatType() { Id = 1, Title = "Title1" },
+            new StatType() { Id = 2, Title = "Title2" }
+        );
+        IReadOnlyList<StatType> result = await repository.ListAllAsync();
+
+        // Assert
+        foreach (StatType statType in result)
+        {
+            Assert.Equal(EntityState.Detached, context.Entry(statType).State);
+        }        
     }
 
     private PlayersDbContext CreateContext()

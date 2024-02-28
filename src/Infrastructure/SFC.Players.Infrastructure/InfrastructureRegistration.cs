@@ -1,6 +1,7 @@
 ﻿using MassTransit;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 using SFC.Players.Application.Interfaces.Common;
@@ -16,6 +17,13 @@ public static class InfrastructureRegistration
         builder.Services.AddMassTransit(builder.Configuration);
 
         builder.Services.AddTransient<IDateTimeService, DateTimeService>();
+
+        builder.Services.AddSingleton<IUriService>(o =>
+        {
+            IHttpContextAccessor accessor = o.GetRequiredService<IHttpContextAccessor>();
+            HttpRequest request = accessor.HttpContext!.Request;
+            return new UriService(string.Concat(request.Scheme, "://", request.Host.ToUriComponent()));
+        });
 
         builder.Services.AddHostedService<DatabaseResetHostedService>();
 

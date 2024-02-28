@@ -4,5 +4,6 @@ public enum RequestId
     CreatePlayer,
     UpdatePlayer,
     GetPlayer,
-    GetPlayerByUser
+    GetPlayerByUser,
+    GetPlayersByFilters
 }

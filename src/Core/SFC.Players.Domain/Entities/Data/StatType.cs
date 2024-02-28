@@ -1,7 +1,7 @@
 ﻿namespace SFC.Players.Domain.Entities.Data;
 public class StatType : BaseDataEntity
 {
-    public int CategoryId { get; set; }
+    public StatCategory Category { get; set; } = default!;
 
-    public int SkillId { get; set; }
+    public StatSkill Skill { get; set; } = default!;
 }

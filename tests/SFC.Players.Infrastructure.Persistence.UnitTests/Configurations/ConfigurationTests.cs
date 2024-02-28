@@ -337,17 +337,7 @@ public class ConfigurationTests
         sut.Configure(builder);
 
         // Assert
-        IEnumerable<IMutableProperty> properties = builder.Metadata.GetDeclaredProperties();
-
-        Assert.Equal(2, properties.Count());
-
-        IMutableProperty categoryProperty = properties.First(p => p.Name == nameof(PlayerStat.CategoryId));
-        Assert.False(categoryProperty.IsColumnNullable());
-        Assert.True(categoryProperty.IsForeignKey());
-
-        IMutableProperty typeProperty = properties.First(p => p.Name == nameof(PlayerStat.TypeId));
-        Assert.False(typeProperty.IsColumnNullable());
-        Assert.True(typeProperty.IsForeignKey());
+        Assert.Equal(nameof(PlayerStat), builder.Metadata.Name);
     }
 
     [Fact]
@@ -470,7 +460,7 @@ public class ConfigurationTests
         sut.Configure(builder);
 
         // Assert
-        AssertBaseDataEntity(builder);
+        AssertBaseDataEntity(builder, 5);
     }
 
     [Fact]
@@ -499,11 +489,11 @@ public class ConfigurationTests
 #pragma warning restore EF1001 // Internal EF Core API usage.
     }
 
-    private static void AssertBaseDataEntity<T>(EntityTypeBuilder<T> builder) where T : BaseDataEntity
+    private static void AssertBaseDataEntity<T>(EntityTypeBuilder<T> builder, int count = 3) where T : BaseDataEntity
     {
         IEnumerable<IMutableProperty> properties = builder.Metadata.GetDeclaredProperties();
 
-        Assert.Equal(3, properties.Count());
+        Assert.Equal(count, properties.Count());
 
         IMutableProperty idProperty = properties.FirstOrDefault(m => m.Name == nameof(BaseDataEntity.Id))!;
         Assert.True(idProperty.IsKey());

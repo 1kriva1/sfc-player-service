@@ -4,8 +4,8 @@ using Moq;
 
 using SFC.Players.Application.Common.Behaviours;
 using SFC.Players.Application.Common.Enums;
-using SFC.Players.Application.Common.Models;
 using SFC.Players.Application.Features.Players.Commands.Update;
+using SFC.Players.Application.Models.Base;
 
 namespace SFC.Players.Application.UnitTests.Common.Behaviours;
 public class PerformanceBehaviourTests

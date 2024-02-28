@@ -126,9 +126,6 @@
   <data name="DataValidator" xml:space="preserve">
     <value>'{PropertyName}' has a range of values which does not include '{PropertyValue}'.</value>
   </data>
-  <data name="EachStatTypeMustBeInSpecificCategory" xml:space="preserve">
-    <value>Each value from '{0}' must have {1} for specific {2}.</value>
-  </data>
   <data name="FailedResult" xml:space="preserve">
     <value>Failed result.</value>
   </data>
@@ -149,9 +146,6 @@
   </data>
   <data name="MustBeGreaterThan" xml:space="preserve">
     <value>'{0}' value must be greater than {1} value.</value>
-  </data>
-  <data name="MustBeInCategoryRange" xml:space="preserve">
-    <value>Each value from '{0}' must have {1} in Stat Category range.</value>
   </data>
   <data name="MustBeInStatTypeRange" xml:space="preserve">
     <value>Each value from '{0}' must have {1} in Stat Type range.</value>

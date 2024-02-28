@@ -90,17 +90,9 @@ public class Messages
                      GetValue(_localizer?.GetString("MustBeNotEqual"),
                          "'{{PropertyName}}' must not to be equal to '{0}'.")!;
 
-    public static string MustBeInCategoryRange =>
-                     GetValue(_localizer?.GetString("MustBeInCategoryRange"),
-                         "Each value from '{0}' must have {1} in Stat Category range.")!;
-
     public static string MustBeInStatTypeRange =>
                      GetValue(_localizer?.GetString("MustBeInStatTypeRange"),
                          "Each value from '{0}' must have {1} in Stat Type range.")!;
-
-    public static string EachStatTypeMustBeInSpecificCategory =>
-                     GetValue(_localizer?.GetString("EachStatTypeMustBeInSpecificCategory"),
-                         "Each value from '{0}' must have {1} for specific {2}.")!;
 
     public static string StatValueMustBeInRange =>
                      GetValue(_localizer?.GetString("StatValueMustBeInRange"),

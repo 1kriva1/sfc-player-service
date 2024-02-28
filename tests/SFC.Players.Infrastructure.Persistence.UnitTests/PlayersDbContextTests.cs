@@ -182,8 +182,7 @@ public class PlayersDbContextTests
         PlayerStat entity = new()
         {
             Value = 99,
-            CategoryId = 0,
-            TypeId = 1,
+            Type = new StatType { Id = 1},
             Player = new Player { Id = 1 }
         };
         PlayersDbContext context = CreateDbContext();

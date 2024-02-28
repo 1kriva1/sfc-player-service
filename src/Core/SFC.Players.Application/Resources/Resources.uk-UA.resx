@@ -126,9 +126,6 @@
   <data name="DataValidator" xml:space="preserve">
     <value>'{PropertyName}' має діапазон значень, який не включає '{PropertyValue}'.</value>
   </data>
-  <data name="EachStatTypeMustBeInSpecificCategory" xml:space="preserve">
-    <value>Кожне значення з '{0}' має мати {1} для певного {2}.</value>
-  </data>
   <data name="FailedResult" xml:space="preserve">
     <value>Невдалий результат.</value>
   </data>
@@ -149,9 +146,6 @@
   </data>
   <data name="MustBeGreaterThan" xml:space="preserve">
     <value>Значення '{0}' має бути більшим за значення {1}.</value>
-  </data>
-  <data name="MustBeInCategoryRange" xml:space="preserve">
-    <value>Кожне значення з '{0}' має мати {1} у діапазоні категорій.</value>
   </data>
   <data name="MustBeInStatTypeRange" xml:space="preserve">
     <value>Кожне значення з '{0}' має мати {1} у діапазоні типів.</value>
