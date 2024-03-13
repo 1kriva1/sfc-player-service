@@ -1,0 +1,10 @@
+﻿using SFC.Player.Application.Common.Mappings;
+using SFC.Player.Application.Features.Player.Common.Dto;
+
+namespace SFC.Player.Application.Features.Player.Common;
+public class PlayerStatPointsModel : IMapFrom<PlayerStatPointsDto>
+{
+    public int Available { get; set; }
+
+    public int Used { get; set; }
+}
