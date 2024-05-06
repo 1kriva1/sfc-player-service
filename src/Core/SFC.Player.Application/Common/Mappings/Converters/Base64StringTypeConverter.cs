@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 
-using SFC.Player.Application.Features.Player.Common.Dto;
-using SFC.Player.Domain.Entities;
+using SFC.Player.Application.Features.Players.Common.Dto;
 using SFC.Player.Domain.Enums;
 
 using SystemConvert = System.Convert;

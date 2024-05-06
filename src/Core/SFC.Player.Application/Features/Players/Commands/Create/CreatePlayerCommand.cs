@@ -4,9 +4,9 @@ using SFC.Player.Application.Common.Enums;
 using SFC.Player.Application.Common.Extensions;
 using SFC.Player.Application.Common.Mappings;
 using SFC.Player.Application.Features.Common.Base;
-using SFC.Player.Application.Features.Player.Create;
+using SFC.Player.Application.Models.Players.Create;
 
-namespace SFC.Player.Application.Features.Player.Commands.Create;
+namespace SFC.Player.Application.Features.Players.Commands.Create;
 public class CreatePlayerCommand :
     Request<CreatePlayerViewModel>, IMapFrom<CreatePlayerRequest>
 {

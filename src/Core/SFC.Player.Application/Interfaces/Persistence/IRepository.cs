@@ -1,4 +1,5 @@
-﻿using SFC.Player.Application.Features.Common.Models.Paging;
+﻿using SFC.Player.Application.Features.Common.Models;
+using SFC.Player.Application.Features.Common.Models.Paging;
 
 namespace SFC.Player.Application.Interfaces.Persistence;
 
@@ -8,7 +9,7 @@ public interface IRepository<T, I> where T : class
 
     Task<IReadOnlyList<T>> ListAllAsync();
 
-    Task<PagedList<T>> GetPageAsync(PageParameters<T> parameters);
+    Task<PagedList<T>> FindAsync(FindParameters<T> parameters);
 
     Task<T> AddAsync(T entity);
 

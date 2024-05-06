@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 
 using SFC.Player.Application.Common.Enums;
+using SFC.Player.Application.Features.Common.Models;
 using SFC.Player.Application.Features.Common.Models.Filters;
 using SFC.Player.Application.Features.Common.Models.Paging;
 using SFC.Player.Application.Features.Common.Models.Sorting;
@@ -120,7 +121,7 @@ public class PaginationExtensionsTests
             }
         };
         Filters<FootballPosition> filters = new(filter);
-        PageParameters<FootballPosition> parameters = new() {
+        FindParameters<FootballPosition> parameters = new() {
             Filters = filters,
             Pagination = pagination,
             Sorting = sorts

@@ -4,7 +4,7 @@ using Moq;
 
 using SFC.Player.Application.Common.Behaviours;
 using SFC.Player.Application.Common.Enums;
-using SFC.Player.Application.Features.Player.Queries.Get;
+using SFC.Player.Application.Features.Players.Queries.Get;
 using SFC.Player.Application.Models.Base;
 
 namespace SFC.Player.Application.UnitTests.Common.Behaviours;

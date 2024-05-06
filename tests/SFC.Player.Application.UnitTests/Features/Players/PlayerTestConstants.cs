@@ -1,5 +1,5 @@
-﻿using SFC.Player.Application.Features.Player.Common.Dto;
-using SFC.Player.Application.Features.Player.Common;
+﻿using SFC.Player.Application.Features.Players.Common.Dto;
+using SFC.Player.Application.Features.Players.Common;
 using SFC.Player.Domain.Entities.Data;
 
 namespace SFC.Player.Application.UnitTests.Features.Player;

@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Newtonsoft.Json;
 
+using SFC.Data.Messages.Enums;
 using SFC.Player.Infrastructure.Consumers;
 using SFC.Player.Infrastructure.Extensions;
 
@@ -26,13 +27,20 @@ public class MassTransitExtensionsTests
             {"RabbitMq:Password", "guest"},
             {"RabbitMq:Name", "SFC.Player"},
             {"RabbitMq:Retry:Limit", "5"},
-            {"RabbitMq:Retry:Intervals:0", "15"}
+            {"RabbitMq:Retry:Intervals:0", "15"},
+            {"RabbitMq:Exchanges:Data:Key", "data"},
+            {"RabbitMq:Exchanges:Data:Value:Init:Name", "sfc.data.init"},
+            {"RabbitMq:Exchanges:Data:Value:Init:Type", "direct"},
+            {"RabbitMq:Exchanges:Data:Value:Require:Name", "sfc.data.require"},
+            {"RabbitMq:Exchanges:Data:Value:Require:Type", "direct"},
+            {"RabbitMq:Exchanges:Data:Value:Require:RoutingKey", "DATA_REQUIRE"}
         };
 
         IConfigurationRoot configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(initialData!)
             .Build();
         IServiceCollection services = new ServiceCollection();
+        services.AddTransient<IConfiguration>(sp => configuration);
 
         // Act
         IServiceCollection assertedServices = services.AddMassTransit(configuration);
@@ -65,8 +73,23 @@ public class MassTransitExtensionsTests
         IServiceCollection assertedServices = services.AddMassTransit(configuration);
 
         // Assert
-        Assert.NotNull(assertedServices.FirstOrDefault(s => s.ImplementationType == typeof(DataInitializationEventDefinition)));
-        Assert.NotNull(assertedServices.FirstOrDefault(s => s.ImplementationType == typeof(DataInitializationEventConsumer)));
+        Assert.NotNull(assertedServices.FirstOrDefault(s => s.ImplementationType == typeof(DataInitializationMessageDefinition)));
+        Assert.NotNull(assertedServices.FirstOrDefault(s => s.ImplementationType == typeof(DataInitializationMessageConsumer)));
+    }
+
+    [Fact]
+    [Trait("Extension", "MassTransit")]
+    public void Extension_MassTransit_ShouldBuildExchangeRoutingKey()
+    {
+        // Arrange
+        DataInitiator initiator = DataInitiator.Player;
+        string key = "data";
+
+        // Act
+        string result = initiator.BuildExchangeRoutingKey(key);
+
+        // Assert
+        Assert.Equal($"{key}.player", result);
     }
 
     public static string ToJsonString(ProbeResult result)

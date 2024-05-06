@@ -4,10 +4,10 @@ using SFC.Player.Application.Common.Enums;
 using SFC.Player.Application.Common.Extensions;
 using SFC.Player.Application.Common.Mappings;
 using SFC.Player.Application.Features.Common.Base;
-using SFC.Player.Application.Features.Player.Common.Models;
-using SFC.Player.Application.Features.Player.Update;
+using SFC.Player.Application.Features.Players.Common.Models;
+using SFC.Player.Application.Models.Players.Update;
 
-namespace SFC.Player.Application.Features.Player.Commands.Update;
+namespace SFC.Player.Application.Features.Players.Commands.Update;
 
 public class UpdatePlayerCommand : Request,
     IPlayerRelatedRequest,

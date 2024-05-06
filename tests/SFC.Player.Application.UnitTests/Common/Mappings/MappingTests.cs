@@ -7,28 +7,50 @@ using SFC.Player.Application.Common.Mappings;
 using SFC.Player.Application.Features.Common.Dto;
 using SFC.Player.Application.Features.Common.Dto.Pagination;
 using SFC.Player.Application.Features.Common.Models.Paging;
-using SFC.Player.Application.Features.Player.Commands.Create;
-using SFC.Player.Application.Features.Player.Commands.Update;
-using SFC.Player.Application.Features.Player.Common.Dto;
-using SFC.Player.Application.Features.Player.Queries.Get;
-using SFC.Player.Application.Features.Player.Queries.GetByFilters;
-using SFC.Player.Application.Features.Player.Queries.GetByFilters.Dto.Filters;
-using SFC.Player.Application.Features.Player.Queries.GetByFilters.Dto.Result;
-using SFC.Player.Application.Features.Player.Queries.GetByUser.Dto;
+using SFC.Player.Application.Features.Players.Commands.Create;
+using SFC.Player.Application.Features.Players.Commands.Update;
+using SFC.Player.Application.Features.Players.Common.Dto;
+using SFC.Player.Application.Features.Players.Queries.Get;
+using SFC.Player.Application.Features.Players.Queries.Find;
+using SFC.Player.Application.Features.Players.Queries.Find.Dto.Filters;
 using SFC.Player.Application.Models.Common;
 using SFC.Player.Application.Models.Common.Pagination;
-using SFC.Player.Application.Features.Player.Common;
-using SFC.Player.Application.Features.Player.Create;
-using SFC.Player.Application.Features.Player.Get;
-using SFC.Player.Application.Features.Player.GetByFilters;
-using SFC.Player.Application.Features.Player.GetByFilters.Filters;
-using SFC.Player.Application.Features.Player.GetByFilters.Result;
-using SFC.Player.Application.Features.Player.GetByUser.Result;
-using SFC.Player.Application.Features.Player.Update;
 using SFC.Player.Domain.Entities;
 using SFC.Player.Domain.Entities.Data;
+using SFC.Player.Application.Models.Players.Update;
+using SFC.Player.Application.Models.Players.Create;
+using SFC.Player.Application.Models.Players.Get;
+using SFC.Player.Application.Models.Players.Find.Filters;
+using SFC.Player.Application.Models.Players.Find;
+using SFC.Player.Application.Models.Players.Common;
+using SFC.Player.Application.Models.Players.GetByUser;
 
+#region Usings
+
+using PlayerByUserModel = SFC.Player.Application.Models.Players.GetByUser.Result.PlayerModel;
+using PlayerFootballProfileByUserModel = SFC.Player.Application.Models.Players.GetByUser.Result.PlayerFootballProfileModel;
+using PlayerGeneralProfileByUserModel = SFC.Player.Application.Models.Players.GetByUser.Result.PlayerGeneralProfileModel;
+using PlayerProfileByUserModel = SFC.Player.Application.Models.Players.GetByUser.Result.PlayerProfileModel;
 using PlayerEntity = SFC.Player.Domain.Entities.Player;
+using GetPlayersDto = SFC.Player.Application.Features.Players.Queries.Find.Dto.Result.PlayerDto;
+using GetPlayersFootballProfileDto = SFC.Player.Application.Features.Players.Queries.Find.Dto.Result.PlayerFootballProfileDto;
+using GetPlayersGeneralProfileDto = SFC.Player.Application.Features.Players.Queries.Find.Dto.Result.PlayerGeneralProfileDto;
+using GetPlayersProfileDto = SFC.Player.Application.Features.Players.Queries.Find.Dto.Result.PlayerProfileDto;
+using GetPlayersStatsDto = SFC.Player.Application.Features.Players.Queries.Find.Dto.Result.PlayerStatsDto;
+using GetPlayersFootballProfileModel = SFC.Player.Application.Models.Players.Find.Result.PlayerFootballProfileModel;
+using GetPlayersGeneralProfileModel = SFC.Player.Application.Models.Players.Find.Result.PlayerGeneralProfileModel;
+using GetPlayersModel = SFC.Player.Application.Models.Players.Find.Result.PlayerModel;
+using GetPlayersProfileModel = SFC.Player.Application.Models.Players.Find.Result.PlayerProfileModel;
+using GetPlayersStatsModel = SFC.Player.Application.Models.Players.Find.Result.PlayerStatsModel;
+using PlayerGeneralProfileDto = SFC.Player.Application.Features.Players.Common.Dto.PlayerGeneralProfileDto;
+using PlayerDto = SFC.Player.Application.Features.Players.Common.Dto.PlayerDto;
+using PlayerModel = SFC.Player.Application.Models.Players.Common.PlayerModel;
+using PlayerByUserDto = SFC.Player.Application.Features.Players.Queries.GetByUser.Dto.PlayerDto;
+using PlayerFootballProfileByUserDto = SFC.Player.Application.Features.Players.Queries.GetByUser.Dto.PlayerFootballProfileDto;
+using PlayerGeneralProfileByUserDto = SFC.Player.Application.Features.Players.Queries.GetByUser.Dto.PlayerGeneralProfileDto;
+using PlayerProfileByUserDto = SFC.Player.Application.Features.Players.Queries.GetByUser.Dto.PlayerProfileDto;
+
+#endregion Usings
 
 namespace SFC.Player.Application.UnitTests.Common.Mappings;
 public class MappingTests
@@ -120,27 +142,27 @@ public class MappingTests
     }
 
     [Theory]
-    [Trait("Mapping", "GetPlayersByFilters")]
-    [InlineData(typeof(GetPlayersByFiltersAvailabilityLimitModel), typeof(GetPlayersByFiltersAvailabilityLimitDto))]
-    [InlineData(typeof(GetPlayersByFiltersFilterModel), typeof(GetPlayersByFiltersFilterDto))]
-    [InlineData(typeof(GetPlayersByFiltersFootballProfileFilterModel), typeof(GetPlayersByFiltersFootballProfileFilterDto))]
-    [InlineData(typeof(GetPlayersByFiltersGeneralProfileFilterModel), typeof(GetPlayersByFiltersGeneralProfileFilterDto))]
-    [InlineData(typeof(GetPlayersByFiltersProfileFilterModel), typeof(GetPlayersByFiltersProfileFilterDto))]
-    [InlineData(typeof(GetPlayersByFiltersStatsBySkillRangeLimitModel), typeof(GetPlayersByFiltersStatsBySkillRangeLimitDto))]
-    [InlineData(typeof(GetPlayersByFiltersStatsFilterModel), typeof(GetPlayersByFiltersStatsFilterDto))]
-    [InlineData(typeof(PlayerEntity), typeof(PlayerByFiltersDto))]
-    [InlineData(typeof(PlayerFootballProfile), typeof(PlayerByFiltersFootballProfileDto))]
-    [InlineData(typeof(PlayerEntity), typeof(PlayerByFiltersGeneralProfileDto))]
-    [InlineData(typeof(PlayerEntity), typeof(PlayerByFiltersProfileDto))]
-    [InlineData(typeof(PlayerEntity), typeof(PlayerByFiltersStatsDto))]
-    [InlineData(typeof(GetPlayersByFiltersRequest), typeof(GetPlayersByFiltersQuery))]
-    [InlineData(typeof(PlayerByFiltersFootballProfileDto), typeof(PlayerByFiltersFootballProfileModel))]
-    [InlineData(typeof(PlayerByFiltersGeneralProfileDto), typeof(PlayerByFiltersGeneralProfileModel))]
-    [InlineData(typeof(PlayerByFiltersDto), typeof(PlayerByFiltersModel))]
-    [InlineData(typeof(PlayerByFiltersProfileDto), typeof(PlayerByFiltersProfileModel))]
-    [InlineData(typeof(PlayerByFiltersStatsDto), typeof(PlayerByFiltersStatsModel))]
-    [InlineData(typeof(GetPlayersByFiltersViewModel), typeof(GetPlayersByFiltersResponse))]
-    public void Mapping_GetPlayersByFilters_ShouldHaveValidConfiguration(Type source, Type destination)
+    [Trait("Mapping", "GetPlayers")]
+    [InlineData(typeof(GetPlayersAvailabilityLimitModel), typeof(GetPlayersAvailabilityLimitDto))]
+    [InlineData(typeof(GetPlayersFilterModel), typeof(GetPlayersFilterDto))]
+    [InlineData(typeof(GetPlayersFootballProfileFilterModel), typeof(GetPlayersFootballProfileFilterDto))]
+    [InlineData(typeof(GetPlayersGeneralProfileFilterModel), typeof(GetPlayersGeneralProfileFilterDto))]
+    [InlineData(typeof(GetPlayersProfileFilterModel), typeof(GetPlayersProfileFilterDto))]
+    [InlineData(typeof(GetPlayersStatsBySkillRangeLimitModel), typeof(GetPlayersStatsBySkillRangeLimitDto))]
+    [InlineData(typeof(GetPlayersStatsFilterModel), typeof(GetPlayersStatsFilterDto))]
+    [InlineData(typeof(PlayerEntity), typeof(GetPlayersDto))]
+    [InlineData(typeof(PlayerFootballProfile), typeof(GetPlayersFootballProfileDto))]
+    [InlineData(typeof(PlayerEntity), typeof(GetPlayersGeneralProfileDto))]
+    [InlineData(typeof(PlayerEntity), typeof(GetPlayersProfileDto))]
+    [InlineData(typeof(PlayerEntity), typeof(GetPlayersStatsDto))]
+    [InlineData(typeof(GetPlayersRequest), typeof(GetPlayersQuery))]
+    [InlineData(typeof(GetPlayersFootballProfileDto), typeof(GetPlayersFootballProfileModel))]
+    [InlineData(typeof(GetPlayersGeneralProfileDto), typeof(GetPlayersGeneralProfileModel))]
+    [InlineData(typeof(GetPlayersDto), typeof(GetPlayersModel))]
+    [InlineData(typeof(GetPlayersProfileDto), typeof(GetPlayersProfileModel))]
+    [InlineData(typeof(GetPlayersStatsDto), typeof(GetPlayersStatsModel))]
+    [InlineData(typeof(GetPlayersViewModel), typeof(GetPlayersResponse))]
+    public void Mapping_GetPlayers_ShouldHaveValidConfiguration(Type source, Type destination)
     {
         // Arrange
         object instance = GetInstanceOf(source);
@@ -177,17 +199,14 @@ public class MappingTests
     [InlineData(typeof(PlayerAvailability), typeof(PlayerAvailabilityDto))]
     [InlineData(typeof(PlayerAvailabilityDto), typeof(PlayerAvailability))]
     [InlineData(typeof(PlayerAvailabilityDto), typeof(PlayerAvailabilityModel))]
-    [InlineData(typeof(PlayerFootballProfile), typeof(PlayerFootballProfileDto))]
-    [InlineData(typeof(PlayerFootballProfileDto), typeof(PlayerFootballProfileModel))]
+    [InlineData(typeof(PlayerFootballProfile), typeof(GetPlayersFootballProfileDto))]
+    [InlineData(typeof(GetPlayersFootballProfileDto), typeof(GetPlayersFootballProfileModel))]
     [InlineData(typeof(PlayerFootballProfileDto), typeof(PlayerFootballProfile))]
-    [InlineData(typeof(PlayerGeneralProfileModel), typeof(PlayerGeneralProfileDto))]
     [InlineData(typeof(PlayerStatPoints), typeof(PlayerStatPointsDto))]
     [InlineData(typeof(PlayerStatPointsDto), typeof(PlayerStatPoints))]
     [InlineData(typeof(PlayerStatPointsDto), typeof(PlayerStatPointsModel))]
-    [InlineData(typeof(PlayerProfileModel), typeof(PlayerProfileDto))]
-    [InlineData(typeof(PlayerEntity), typeof(PlayerProfileDto))]
-    [InlineData(typeof(PlayerEntity), typeof(PlayerStatsDto))]
-    [InlineData(typeof(PlayerStatsModel), typeof(PlayerStatsDto))]
+    [InlineData(typeof(PlayerEntity), typeof(GetPlayersProfileDto))]
+    [InlineData(typeof(PlayerEntity), typeof(GetPlayersStatsDto))]
     [InlineData(typeof(PlayerStatValueDto), typeof(PlayerStat))]
     [InlineData(typeof(PlayerStatValueDto), typeof(PlayerStatValueModel))]
     [InlineData(typeof(PaginationModel), typeof(PaginationDto))]
@@ -209,7 +228,7 @@ public class MappingTests
     [Theory]
     [Trait("Mapping", "GenericTypes")]
     [InlineData(typeof(RangeLimitModel<int>), typeof(RangeLimitDto<int>))]
-    [InlineData(typeof(PagedList<PlayerEntity>), typeof(PageDto<PlayerByFiltersDto>))]
+    [InlineData(typeof(PagedList<PlayerEntity>), typeof(PageDto<GetPlayersDto>))]
     [InlineData(typeof(PagedList<PlayerEntity>), typeof(PageMetadataDto))]
     public void Mapping_GenericTypes_ShouldHaveValidConfiguration(Type source, Type destination)
     {

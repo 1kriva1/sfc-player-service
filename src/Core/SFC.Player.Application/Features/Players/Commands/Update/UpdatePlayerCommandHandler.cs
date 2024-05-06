@@ -11,7 +11,7 @@ using SFC.Player.Domain.Entities.Data;
 
 using PlayerEntity = SFC.Player.Domain.Entities.Player;
 
-namespace SFC.Player.Application.Features.Player.Commands.Update;
+namespace SFC.Player.Application.Features.Players.Commands.Update;
 public record UpdatePlayerCommandHandler(IMapper Mapper, IPlayerRepository PlayerRepository)
     : IRequestHandler<UpdatePlayerCommand>
 {

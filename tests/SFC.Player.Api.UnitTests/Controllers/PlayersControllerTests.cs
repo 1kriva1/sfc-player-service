@@ -11,22 +11,20 @@ using SFC.Player.Api.Controllers;
 using SFC.Player.Application.Common.Constants;
 using SFC.Player.Application.Common.Mappings;
 using SFC.Player.Application.Features.Common.Dto.Pagination;
-using SFC.Player.Application.Features.Player.Commands.Create;
-using SFC.Player.Application.Features.Player.Commands.Update;
-using SFC.Player.Application.Features.Player.Common.Dto;
-using SFC.Player.Application.Features.Player.Queries.Get;
-using SFC.Player.Application.Features.Player.Queries.GetByFilters;
-using SFC.Player.Application.Features.Player.Queries.GetByFilters.Dto.Result;
-using SFC.Player.Application.Features.Player.Queries.GetByUser.Dto;
+using SFC.Player.Application.Features.Players.Commands.Create;
+using SFC.Player.Application.Features.Players.Commands.Update;
+using SFC.Player.Application.Features.Players.Queries.Get;
+using SFC.Player.Application.Features.Players.Queries.Find;
 using SFC.Player.Application.Interfaces.Identity;
 using SFC.Player.Application.Models.Base;
 using SFC.Player.Application.Models.Common;
 using SFC.Player.Application.Models.Common.Pagination;
-using SFC.Player.Application.Features.Player.Create;
-using SFC.Player.Application.Features.Player.Get;
-using SFC.Player.Application.Features.Player.GetByFilters;
-using SFC.Player.Application.Features.Player.GetByFilters.Filters;
-using SFC.Player.Application.Features.Player.Update;
+using SFC.Player.Application.Models.Players.Create;
+using SFC.Player.Application.Models.Players.Update;
+using SFC.Player.Application.Models.Players.Get;
+using SFC.Player.Application.Models.Players.Find;
+using SFC.Player.Application.Models.Players.Find.Filters;
+using SFC.Player.Application.Models.Players.GetByUser;
 
 namespace SFC.Player.Api.UnitTests.Controllers;
 public class PlayersControllerTests
@@ -62,7 +60,7 @@ public class PlayersControllerTests
     {
         // Arrange
         CreatePlayerRequest request = new();
-        CreatePlayerViewModel model = new() { Player = new PlayerDto() };
+        CreatePlayerViewModel model = new() { Player = new Application.Features.Players.Common.Dto.PlayerDto() };
         _userServiceMock.Setup(m => m.UserId).Returns(Guid.NewGuid());
         _mediatorMock.Setup(m => m.Send(It.IsAny<CreatePlayerCommand>(), It.IsAny<CancellationToken>())).ReturnsAsync(model);
 
@@ -96,7 +94,7 @@ public class PlayersControllerTests
     public async Task API_Controller_Player_ShouldReturnSuccessResponseForGetPlayer()
     {
         // Arrange
-        GetPlayerViewModel model = new() { Player = new PlayerDto() };
+        GetPlayerViewModel model = new() { Player = new Application.Features.Players.Common.Dto.PlayerDto() };
         _userServiceMock.Setup(m => m.UserId).Returns(Guid.NewGuid());
         _mediatorMock.Setup(m => m.Send(It.IsAny<GetPlayerQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(model);
 
@@ -113,7 +111,7 @@ public class PlayersControllerTests
     public async Task API_Controller_Player_ShouldReturnSuccessResponseForGetPlayerByUser()
     {
         // Arrange
-        GetPlayerByUserViewModel model = new() { Player = new PlayerByUserDto() };
+        GetPlayerByUserViewModel model = new() { Player = new Application.Features.Players.Queries.GetByUser.Dto.PlayerDto() };
         _userServiceMock.Setup(m => m.UserId).Returns(Guid.NewGuid());
         _mediatorMock.Setup(m => m.Send(It.IsAny<GetPlayerByUserQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(model);
 
@@ -127,26 +125,26 @@ public class PlayersControllerTests
 
     [Fact]
     [Trait("API", "Controller")]
-    public async Task API_Controller_Player_ShouldReturnSuccessResponseForGetPlayersByFilters()
+    public async Task API_Controller_Player_ShouldReturnSuccessResponseForGetPlayers()
     {
         // Arrange
         httpContext.Setup(x => x.Request.QueryString).Returns(new QueryString("?Pagination.Page=1&Pagination.Size=10"));
-        GetPlayersByFiltersRequest request = new()
+        GetPlayersRequest request = new()
         {
-            Filter = new GetPlayersByFiltersFilterModel(),
+            Filter = new GetPlayersFilterModel(),
             Pagination = new PaginationModel(),
             Sorting = new List<SortingModel>()
         };
-        GetPlayersByFiltersViewModel model = new() { Items = new List<PlayerByFiltersDto>(), Metadata = new PageMetadataDto() };
+        GetPlayersViewModel model = new() { Items = new List<Application.Features.Players.Queries.Find.Dto.Result.PlayerDto>(), Metadata = new PageMetadataDto() };
         _userServiceMock.Setup(m => m.UserId).Returns(Guid.NewGuid());
-        _mediatorMock.Setup(m => m.Send(It.IsAny<GetPlayersByFiltersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(model);
+        _mediatorMock.Setup(m => m.Send(It.IsAny<GetPlayersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(model);
 
         // Act
-        ActionResult<GetPlayersByFiltersResponse> result = await _controller.GetPlayersByFiltersAsync(request);
+        ActionResult<GetPlayersResponse> result = await _controller.GetPlayersAsync(request);
 
         // Assert
-        AssertResponse<GetPlayersByFiltersResponse, OkObjectResult>(result);
-        _mediatorMock.Verify(m => m.Send(It.IsAny<GetPlayersByFiltersQuery>(), It.IsAny<CancellationToken>()), Times.Once);
+        AssertResponse<GetPlayersResponse, OkObjectResult>(result);
+        _mediatorMock.Verify(m => m.Send(It.IsAny<GetPlayersQuery>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     private static void AssertResponse<T, R>(ActionResult<T> result) where T : BaseErrorResponse where R : ObjectResult

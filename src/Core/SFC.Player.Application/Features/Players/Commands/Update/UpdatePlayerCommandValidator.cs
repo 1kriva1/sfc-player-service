@@ -1,12 +1,12 @@
 ﻿using FluentValidation;
 
-using SFC.Player.Application.Features.Player.Commands.Common.Validators;
-using SFC.Player.Application.Features.Player.Common.Validators;
+using SFC.Player.Application.Features.Players.Commands.Common.Validators;
+using SFC.Player.Application.Features.Players.Common.Validators;
 using SFC.Player.Application.Interfaces.Common;
 using SFC.Player.Application.Interfaces.Persistence;
 using SFC.Player.Domain.Entities.Data;
 
-namespace SFC.Player.Application.Features.Player.Commands.Update;
+namespace SFC.Player.Application.Features.Players.Commands.Update;
 public class UpdatePlayerCommandValidator : AbstractValidator<UpdatePlayerCommand>
 {
     public UpdatePlayerCommandValidator(

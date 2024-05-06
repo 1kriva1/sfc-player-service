@@ -3,13 +3,11 @@
 using Moq;
 
 using SFC.Player.Application.Common.Constants;
-using SFC.Player.Application.Features.Player.Commands.Update;
-using SFC.Player.Application.Features.Player.Common.Dto;
-using SFC.Player.Application.Features.Player.Common.Models;
+using SFC.Player.Application.Features.Players.Commands.Update;
+using SFC.Player.Application.Features.Players.Common.Dto;
+using SFC.Player.Application.Features.Players.Common.Models;
 using SFC.Player.Application.Interfaces.Common;
 using SFC.Player.Application.Interfaces.Persistence;
-using SFC.Player.Application.Features.Player.Common;
-using SFC.Player.Application.Features.Player.Update;
 using SFC.Player.Domain.Entities.Data;
 
 namespace SFC.Player.Application.UnitTests.Features.Player.Commands.Update;

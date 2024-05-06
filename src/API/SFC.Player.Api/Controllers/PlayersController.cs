@@ -3,25 +3,36 @@ using Microsoft.AspNetCore.Mvc;
 
 using SFC.Player.Api.Extensions;
 using SFC.Player.Application.Features.Common.Base;
-using SFC.Player.Application.Features.Player.Commands.Create;
-using SFC.Player.Application.Features.Player.Commands.Update;
-using SFC.Player.Application.Features.Player.Queries.Get;
-using SFC.Player.Application.Features.Player.Queries.GetByFilters;
-using SFC.Player.Application.Features.Player.Queries.GetByFilters.Dto.Filters;
+using SFC.Player.Application.Features.Players.Commands.Create;
+using SFC.Player.Application.Features.Players.Commands.Update;
+using SFC.Player.Application.Features.Players.Queries.Get;
+using SFC.Player.Application.Features.Players.Queries.Find;
+using SFC.Player.Application.Features.Players.Queries.Find.Dto.Filters;
 using SFC.Player.Application.Models.Common.Pagination;
-using SFC.Player.Application.Features.Player.Create;
-using SFC.Player.Application.Features.Player.Get;
-using SFC.Player.Application.Features.Player.GetByFilters;
-using SFC.Player.Application.Features.Player.Update;
+using SFC.Player.Application.Models.Players.Update;
+using SFC.Player.Application.Models.Players.Create;
+using SFC.Player.Application.Models.Players.Get;
+using SFC.Player.Application.Models.Players.Find;
+using SFC.Player.Application.Models.Players.GetByUser;
+using SFC.Player.Application.Models.Base;
 
 namespace SFC.Player.Api.Controllers;
 
 [Authorize]
+[ProducesResponseType(typeof(BaseResponse), StatusCodes.Status401Unauthorized)]
 public class PlayersController : ApiControllerBase
 {
+    /// <summary>
+    /// Create new player.
+    /// </summary>
+    /// <param name="request">Create player request.</param>
+    /// <returns>An ActionResult of type CreatePlayerResponse</returns>
+    /// <response code="201">Returns **new** created player.</response>
+    /// <response code="400">Returns **validation** errors.</response>
+    /// <response code="401">Returns when **failed** authentication.</response>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<CreatePlayerResponse>> CreatePlayerAsync([FromBody] CreatePlayerRequest request)
     {
         CreatePlayerCommand command = Mapper.Map<CreatePlayerCommand>(request)
@@ -32,9 +43,18 @@ public class PlayersController : ApiControllerBase
         return CreatedAtRoute("GetPlayer", new { id = player.Player.Id }, Mapper.Map<CreatePlayerResponse>(player));
     }
 
+    /// <summary>
+    /// Update existing player.
+    /// </summary>
+    /// <param name="id">Player unique identifier.</param>
+    /// <param name="request">Update player request.</param>
+    /// <returns>No content</returns>
+    /// <response code="204">Returns no content if player updated **successfully**.</response>
+    /// <response code="400">Returns **validation** errors.</response>
+    /// <response code="401">Returns when **failed** authentication.</response>
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> UpdatePlayerAsync([FromRoute] long id, [FromBody] UpdatePlayerRequest request)
     {
         UpdatePlayerCommand command = Mapper.Map<UpdatePlayerCommand>(request)
@@ -46,6 +66,14 @@ public class PlayersController : ApiControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Return player model by unique identifier.
+    /// </summary>
+    /// <param name="id">Player unique identifier.</param>
+    /// <returns>An ActionResult of type GetPlayerResponse</returns>
+    /// <response code="200">Returns player model.</response>
+    /// <response code="401">Returns when **failed** authentication.</response>
+    /// <response code="404">Returns when player **not found** by unique identifier.</response>
     [HttpGet("{id}", Name = "GetPlayer")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -58,6 +86,12 @@ public class PlayersController : ApiControllerBase
         return Ok(Mapper.Map<GetPlayerResponse>(player));
     }
 
+    /// <summary>
+    /// Return player model by authentication JWT token (player's unique identifier saved as claim in token payload).
+    /// </summary>
+    /// <returns>An ActionResult of type GetPlayerByUserResponse</returns>
+    /// <response code="200">Returns thin player model.</response>
+    /// <response code="401">Returns when JWT token **doesn't** contain player's unique identifier.</response>
     [HttpGet("byuser")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<GetPlayerByUserResponse>> GetPlayerByUserAsync()
@@ -69,19 +103,28 @@ public class PlayersController : ApiControllerBase
         return Ok(Mapper.Map<GetPlayerByUserResponse>(player) ?? GetPlayerByUserResponse.SuccessResult);
     }
 
-    [HttpGet("byfilters")]
+    /// <summary>
+    /// Return list of players
+    /// </summary>
+    /// <param name="request">Get players request.</param>
+    /// <returns>An ActionResult of type GetPlayersResponse</returns>
+    /// <response code="200">Returns list of players with pagination header.</response>
+    /// <response code="400">Returns **validation** errors.</response>
+    /// <response code="401">Returns when **failed** authentication.</response>
+    [HttpGet("find")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<GetPlayersByFiltersResponse>> GetPlayersByFiltersAsync([FromQuery] GetPlayersByFiltersRequest request)
+    [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<GetPlayersResponse>> GetPlayersAsync([FromQuery] GetPlayersRequest request)
     {
-        BasePaginationRequest<GetPlayersByFiltersViewModel, GetPlayersByFiltersFilterDto> query = Mapper.Map<GetPlayersByFiltersQuery>(request)
-                                               .SetUserId<GetPlayersByFiltersQuery>(UserService.UserId)
+        BasePaginationRequest<GetPlayersViewModel, GetPlayersFilterDto> query = Mapper.Map<GetPlayersQuery>(request)
+                                               .SetUserId<GetPlayersQuery>(UserService.UserId)
                                                .SetRoute(Request.Path.Value!)
                                                .SetQueryString(Request.QueryString.Value!);
 
-        GetPlayersByFiltersViewModel result = await Mediator.Send(query);
+        GetPlayersViewModel result = await Mediator.Send(query);
 
         Response.AddPaginationHeader(Mapper.Map<PageMetadataModel>(result.Metadata));
 
-        return Ok(Mapper.Map<GetPlayersByFiltersResponse>(result));
+        return Ok(Mapper.Map<GetPlayersResponse>(result));
     }
 }

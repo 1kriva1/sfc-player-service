@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SFC.Player.Api</name>
+    </assembly>
+    <members>
+        <member name="M:SFC.Player.Api.Controllers.PlayersController.CreatePlayerAsync(SFC.Player.Application.Models.Players.Create.CreatePlayerRequest)">
+            <summary>
+            Create new player.
+            </summary>
+            <param name="request">Create player request.</param>
+            <returns>An ActionResult of type CreatePlayerResponse</returns>
+            <response code="201">Returns **new** created player.</response>
+            <response code="400">Returns **validation** errors.</response>
+            <response code="401">Returns when **failed** authentication.</response>
+        </member>
+        <member name="M:SFC.Player.Api.Controllers.PlayersController.UpdatePlayerAsync(System.Int64,SFC.Player.Application.Models.Players.Update.UpdatePlayerRequest)">
+            <summary>
+            Update existing player.
+            </summary>
+            <param name="id">Player unique identifier.</param>
+            <param name="request">Update player request.</param>
+            <returns>No content</returns>
+            <response code="204">Returns no content if player updated **successfully**.</response>
+            <response code="400">Returns **validation** errors.</response>
+            <response code="401">Returns when **failed** authentication.</response>
+        </member>
+        <member name="M:SFC.Player.Api.Controllers.PlayersController.GetPlayerAsync(System.Int64)">
+            <summary>
+            Return player model by unique identifier.
+            </summary>
+            <param name="id">Player unique identifier.</param>
+            <returns>An ActionResult of type GetPlayerResponse</returns>
+            <response code="200">Returns player model.</response>
+            <response code="401">Returns when **failed** authentication.</response>
+            <response code="404">Returns when player **not found** by unique identifier.</response>
+        </member>
+        <member name="M:SFC.Player.Api.Controllers.PlayersController.GetPlayerByUserAsync">
+            <summary>
+            Return player model by authentication JWT token (player's unique identifier saved as claim in token payload).
+            </summary>
+            <returns>An ActionResult of type GetPlayerByUserResponse</returns>
+            <response code="200">Returns thin player model.</response>
+            <response code="401">Returns when JWT token **doesn't** contain player's unique identifier.</response>
+        </member>
+        <member name="M:SFC.Player.Api.Controllers.PlayersController.GetPlayersAsync(SFC.Player.Application.Models.Players.Find.GetPlayersRequest)">
+            <summary>
+            Return list of players
+            </summary>
+            <param name="request">Get players request.</param>
+            <returns>An ActionResult of type GetPlayersResponse</returns>
+            <response code="200">Returns list of players with pagination header.</response>
+            <response code="400">Returns **validation** errors.</response>
+            <response code="401">Returns when **failed** authentication.</response>
+        </member>
+    </members>
+</doc>

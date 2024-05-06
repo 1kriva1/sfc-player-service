@@ -6,7 +6,7 @@ public class BaseRequestTests
 {
     public class TestBaseRequest : BaseRequest
     {
-        public override RequestId RequestId => RequestId.GetPlayersByFilters;
+        public override RequestId RequestId => RequestId.GetPlayers;
     }
 
     [Fact]
@@ -33,6 +33,6 @@ public class BaseRequestTests
         TestBaseRequest request = new();
 
         // Assert
-        Assert.Equal(new(4, "GetPlayersByFilters"), request.EventId);
+        Assert.Equal(new(4, "GetPlayers"), request.EventId);
     }
 }

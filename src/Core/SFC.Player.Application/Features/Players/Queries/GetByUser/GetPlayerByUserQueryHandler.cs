@@ -7,7 +7,7 @@ using SFC.Player.Domain.Entities;
 
 using PlayerEntity = SFC.Player.Domain.Entities.Player;
 
-namespace SFC.Player.Application.Features.Player.Queries.Get;
+namespace SFC.Player.Application.Features.Players.Queries.Get;
 public record GetPlayerByUserQueryHandler(IMapper Mapper, IPlayerRepository PlayerRepository)
     : IRequestHandler<GetPlayerByUserQuery, GetPlayerByUserViewModel?>
 {

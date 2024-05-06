@@ -2,7 +2,7 @@
 
 using SFC.Player.Application.Common.Constants;
 using SFC.Player.Application.Common.Exceptions;
-using SFC.Player.Application.Features.Player.Common.Dto;
+using SFC.Player.Application.Features.Players.Common.Dto;
 using SFC.Player.Domain.Enums;
 
 using SystemConvert = System.Convert;

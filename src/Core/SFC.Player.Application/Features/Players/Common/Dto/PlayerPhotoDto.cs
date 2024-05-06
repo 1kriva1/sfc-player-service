@@ -5,7 +5,7 @@ using SFC.Player.Application.Common.Mappings.Converters;
 using SFC.Player.Domain.Entities;
 using SFC.Player.Domain.Enums;
 
-namespace SFC.Player.Application.Features.Player.Common.Dto;
+namespace SFC.Player.Application.Features.Players.Common.Dto;
 public class PlayerPhotoDto : IMapFrom<PlayerPhoto>
 {
     public byte[] Source { get; set; } = Array.Empty<byte>();

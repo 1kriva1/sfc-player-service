@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 
 using SFC.Player.Application.Common.Enums;
+using SFC.Player.Application.Features.Common.Models;
 using SFC.Player.Application.Features.Common.Models.Filters;
 using SFC.Player.Application.Features.Common.Models.Paging;
 using SFC.Player.Application.Features.Common.Models.Sorting;
@@ -146,11 +147,11 @@ public class PlayerRepositoryTests
 
     [Fact]
     [Trait("Persistence", "Repository")]
-    public async Task Persistence_Repository_Player_ShouldGetPage()
+    public async Task Persistence_Repository_Player_ShouldFind()
     {
         // Arrange
         PlayerRepository repository = CreateRepository();
-        PageParameters<PlayerEntity> parameters = new()
+        FindParameters<PlayerEntity> parameters = new()
         {
             Filters = new Filters<PlayerEntity>(new Filter<PlayerEntity>[1] {
                 new() {
@@ -176,7 +177,7 @@ public class PlayerRepositoryTests
         await repository.AddAsync(GetNewPlayer(Guid.NewGuid(), 3));
         await repository.AddAsync(GetNewPlayer(Guid.NewGuid(), 3));
 
-        PagedList<PlayerEntity> result = await repository.GetPageAsync(parameters);
+        PagedList<PlayerEntity> result = await repository.FindAsync(parameters);
 
         // Assert
         Assert.Equal(2, result.Count);

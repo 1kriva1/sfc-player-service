@@ -4,8 +4,8 @@ using FluentValidation.Results;
 
 using Moq;
 
-using SFC.Player.Application.Features.Player.Commands.Common.Validators;
-using SFC.Player.Application.Features.Player.Common.Dto;
+using SFC.Player.Application.Features.Players.Commands.Common.Validators;
+using SFC.Player.Application.Features.Players.Common.Dto;
 using SFC.Player.Application.Interfaces.Common;
 using SFC.Player.Application.Interfaces.Persistence;
 using SFC.Player.Domain.Entities.Data;

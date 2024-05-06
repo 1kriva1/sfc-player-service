@@ -1,7 +1,7 @@
 ﻿using SFC.Player.Application.Common.Enums;
 using SFC.Player.Application.Features.Common.Base;
 
-namespace SFC.Player.Application.Features.Player.Queries.Get;
+namespace SFC.Player.Application.Features.Players.Queries.Get;
 
 public class GetPlayerByUserQuery : Request<GetPlayerByUserViewModel>
 {

@@ -1,8 +1,8 @@
 ﻿using SFC.Player.Application.Common.Constants;
 using SFC.Player.Application.Common.Exceptions;
 using SFC.Player.Application.Common.Mappings.Converters;
-using SFC.Player.Application.Features.Player.Common.Dto;
-using SFC.Player.Application.Features.Player.Common;
+using SFC.Player.Application.Features.Players.Common.Dto;
+using SFC.Player.Application.Features.Players.Common;
 using SFC.Player.Domain.Enums;
 
 namespace SFC.Player.Application.UnitTests.Common.Mappings.Converters;

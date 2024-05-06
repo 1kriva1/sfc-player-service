@@ -1,4 +1,5 @@
-﻿using SFC.Player.Application.Features.Common.Models.Paging;
+﻿using SFC.Player.Application.Features.Common.Models;
+using SFC.Player.Application.Features.Common.Models.Paging;
 using SFC.Player.Application.Interfaces.Cache;
 using SFC.Player.Application.Interfaces.Persistence;
 
@@ -34,7 +35,7 @@ public class CacheRepository<T, I> : IRepository<T, I> where T : class
 
     public Task UpdateAsync(T entity) => _repository.UpdateAsync(entity);
 
-    public Task<PagedList<T>> GetPageAsync(PageParameters<T> parameters) => _repository.GetPageAsync(parameters);
+    public Task<PagedList<T>> FindAsync(FindParameters<T> parameters) => _repository.FindAsync(parameters);
 
     public Task<T[]> AddRangeAsync(params T[] entities) => _repository.AddRangeAsync(entities);
 }

@@ -5,13 +5,15 @@ using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-using SFC.Data.Contracts.Configuration;
-using SFC.Data.Contracts.Events;
+using SFC.Data.Messages.Enums;
+using SFC.Data.Messages.Messages;
 using SFC.Player.Infrastructure.Settings;
 
 namespace SFC.Player.Infrastructure.Extensions;
 public static class MassTransitExtensions
 {
+    #region Public
+
     public static IServiceCollection AddMassTransit(this IServiceCollection services, IConfiguration configuration)
     {
         return services.AddMassTransit(masTransitConfigure =>
@@ -20,9 +22,7 @@ public static class MassTransitExtensions
 
             masTransitConfigure.UsingRabbitMq((context, rabbitMqConfigure) =>
             {
-                RabbitMqSettings settings = configuration
-                    .GetSection(RabbitMqSettings.SECTION_KEY)
-                    .Get<RabbitMqSettings>()!;
+                RabbitMqSettings settings = configuration.GetRabbitMqSettings();
 
                 string rabbitMqConnectionString = configuration.GetConnectionString("RabbitMq")!;
 
@@ -34,17 +34,25 @@ public static class MassTransitExtensions
 
                 rabbitMqConfigure.UseRetries(settings.Retry);
 
-                rabbitMqConfigure.AddExchange<DataRequireEvent>();                
+                rabbitMqConfigure.AddExchanges(settings.Exchanges);
 
                 rabbitMqConfigure.ConfigureEndpoints(context);
             });
         });
     }
+    public static string BuildExchangeRoutingKey(this DataInitiator initiator, string key) => $"{key.ToLower()}.{initiator.ToString().ToLower()}";
 
-    private static void AddExchange<T>(this IRabbitMqBusFactoryConfigurator configure) where T : class
+    #endregion Public
+
+    #region Private
+
+    private static void AddExchanges(this IRabbitMqBusFactoryConfigurator configure, RabbitMqExchangesSettings exchangesSettings)
     {
-        Exchange exchange = Exchange.List.First(exch => exch.Key == typeof(T)).Value;
+        configure.AddExchange<DataRequireMessage>(exchangesSettings.Data.Value.Require);
+    }
 
+    private static void AddExchange<T>(this IRabbitMqBusFactoryConfigurator configure, Exchange exchange) where T : DataRequireMessage
+    {
         configure.Message<T>(x => x.SetEntityName(exchange.Name));
         configure.Send<T>(x => x.UseRoutingKeyFormatter(context => exchange.RoutingKey));
         configure.Publish<T>(x =>
@@ -60,4 +68,6 @@ public static class MassTransitExtensions
             r.Intervals(settings.Intervals.Select(i => TimeSpan.FromMinutes(i)).ToArray()));
         configure.UseMessageRetry(r => r.Immediate(settings.Limit));
     }
+
+    #endregion Private
 }

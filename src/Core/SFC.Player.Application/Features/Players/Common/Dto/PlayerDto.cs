@@ -5,7 +5,7 @@ using SFC.Player.Domain.Entities;
 
 using PlayerEntity = SFC.Player.Domain.Entities.Player;
 
-namespace SFC.Player.Application.Features.Player.Common.Dto;
+namespace SFC.Player.Application.Features.Players.Common.Dto;
 public class PlayerDto : BasePlayerDto, IMapFrom<PlayerEntity>
 {
     public long Id { get; set; }

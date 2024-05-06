@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
+using SFC.Player.Application.Features.Common.Models;
 using SFC.Player.Application.Features.Common.Models.Paging;
 using SFC.Player.Application.Interfaces.Persistence;
 using SFC.Player.Infrastructure.Persistence.Extensions;
@@ -18,7 +19,7 @@ public class Repository<T, I> : IRepository<T, I> where T : class
         return t;
     }
 
-    public virtual async Task<PagedList<T>> GetPageAsync(PageParameters<T> parameters)
+    public virtual async Task<PagedList<T>> FindAsync(FindParameters<T> parameters)
     {
         return await _context.Set<T>()
                              .AsQueryable<T>()

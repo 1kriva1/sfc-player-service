@@ -1,5 +1,5 @@
 ﻿using SFC.Player.Application.Common.Mappings.Converters;
-using SFC.Player.Application.Features.Player.Common.Dto;
+using SFC.Player.Application.Features.Players.Common.Dto;
 using SFC.Player.Domain.Entities;
 using SFC.Player.Domain.Enums;
 

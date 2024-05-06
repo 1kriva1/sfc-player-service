@@ -6,10 +6,8 @@ using Moq;
 
 using SFC.Player.Application.Common.Enums;
 using SFC.Player.Application.Common.Mappings;
-using SFC.Player.Application.Features.Player.Commands.Create;
+using SFC.Player.Application.Features.Players.Commands.Create;
 using SFC.Player.Application.Interfaces.Persistence;
-using SFC.Player.Application.Features.Player.Create;
-using SFC.Player.Domain.Entities;
 using SFC.Player.Domain.Events;
 
 using PlayerEntity = SFC.Player.Domain.Entities.Player;

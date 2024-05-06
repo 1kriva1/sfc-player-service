@@ -9,7 +9,7 @@ using SFC.Player.Domain.Events;
 
 using PlayerEntity = SFC.Player.Domain.Entities.Player;
 
-namespace SFC.Player.Application.Features.Player.Commands.Create;
+namespace SFC.Player.Application.Features.Players.Commands.Create;
 public record CreatePlayerCommandHandler(IMapper Mapper, IPlayerRepository PlayerRepository)
     : IRequestHandler<CreatePlayerCommand, CreatePlayerViewModel>
 {

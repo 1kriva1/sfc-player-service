@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
+using SFC.Player.Application.Features.Common.Models;
 using SFC.Player.Application.Features.Common.Models.Paging;
 using SFC.Player.Application.Interfaces.Persistence;
 using SFC.Player.Domain.Entities;
@@ -38,7 +39,7 @@ public class PlayerRepository : Repository<PlayerEntity, long>, IPlayerRepositor
                     .FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public override async Task<PagedList<PlayerEntity>> GetPageAsync(PageParameters<PlayerEntity> parameters)
+    public override async Task<PagedList<PlayerEntity>> FindAsync(FindParameters<PlayerEntity> parameters)
     {
         return await _context.Players
                     .Include(p => p.GeneralProfile)

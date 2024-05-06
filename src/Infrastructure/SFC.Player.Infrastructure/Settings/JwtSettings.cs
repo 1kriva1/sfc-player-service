@@ -1,7 +1,7 @@
 ﻿namespace SFC.Player.Infrastructure.Settings;
 public class JwtSettings
 {
-    public const string SECTION_KEY = "JwtSettings";
+    public const string SECTION_KEY = "Jwt";
 
     public string Key { get; set; } = null!;
 

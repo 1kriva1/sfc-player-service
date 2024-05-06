@@ -10,6 +10,8 @@ public class RabbitMqSettings
     public string Name { get; set; } = null!;
 
     public RabbitMqRetrySettings Retry { get; set; } = default!;
+
+    public RabbitMqExchangesSettings Exchanges { get; set; } = default!;
 }
 
 public class RabbitMqRetrySettings
@@ -18,3 +20,35 @@ public class RabbitMqRetrySettings
 
     public IEnumerable<ushort> Intervals { get; set; } = Enumerable.Empty<ushort>();
 }
+
+#region Exchanges
+
+public class RabbitMqExchangesSettings
+{
+    public ExchangeSetting Data { get; set; } = default!;
+}
+
+public class ExchangeSetting
+{
+    public string Key { get; set; } = default!;
+
+    public ExchangeValue Value { get; set; } = default!;
+}
+
+public class ExchangeValue
+{
+    public Exchange Init { get; set; } = default!;
+
+    public Exchange Require { get; set; } = default!;
+}
+
+public class Exchange
+{
+    public string Name { get; set; } = default!;
+
+    public string Type { get; set; } = default!;
+
+    public string? RoutingKey { get; set; }
+}
+
+#endregion Exchanges

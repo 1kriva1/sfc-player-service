@@ -1,8 +1,8 @@
 ﻿using SFC.Player.Application.Common.Enums;
 using SFC.Player.Application.Features.Common.Base;
-using SFC.Player.Application.Features.Player.Common.Models;
+using SFC.Player.Application.Features.Players.Common.Models;
 
-namespace SFC.Player.Application.Features.Player.Queries.Get;
+namespace SFC.Player.Application.Features.Players.Queries.Get;
 
 public class GetPlayerQuery : Request<GetPlayerViewModel>, IPlayerRelatedRequest
 {
