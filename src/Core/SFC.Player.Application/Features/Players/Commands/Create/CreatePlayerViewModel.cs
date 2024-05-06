@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 
 using SFC.Player.Application.Common.Mappings;
-using SFC.Player.Application.Features.Player.Common.Dto;
+using SFC.Player.Application.Features.Players.Common.Dto;
 using SFC.Player.Domain.Entities;
 
 using PlayerEntity = SFC.Player.Domain.Entities.Player;
 
-namespace SFC.Player.Application.Features.Player.Commands.Create;
+namespace SFC.Player.Application.Features.Players.Commands.Create;
 
 public record CreatePlayerViewModel: IMapFrom<PlayerEntity>
 {

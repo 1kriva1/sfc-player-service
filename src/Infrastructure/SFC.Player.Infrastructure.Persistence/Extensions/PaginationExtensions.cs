@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
+using SFC.Player.Application.Features.Common.Models;
 using SFC.Player.Application.Features.Common.Models.Filters;
 using SFC.Player.Application.Features.Common.Models.Paging;
 using SFC.Player.Application.Features.Common.Models.Sorting;
@@ -9,7 +10,7 @@ public static class PaginationExtensions
 {
     #region Public
 
-    public static async Task<PagedList<T>> PaginateAsync<T>(this IQueryable<T> query, PageParameters<T> parameters)
+    public static async Task<PagedList<T>> PaginateAsync<T>(this IQueryable<T> query, FindParameters<T> parameters)
     {
         return await query.PaginateAsync(parameters.Pagination, parameters.Sorting, parameters.Filters);
     }

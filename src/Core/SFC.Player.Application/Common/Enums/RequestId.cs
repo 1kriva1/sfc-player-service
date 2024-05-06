@@ -5,5 +5,5 @@ public enum RequestId
     UpdatePlayer,
     GetPlayer,
     GetPlayerByUser,
-    GetPlayersByFilters
+    GetPlayers
 }

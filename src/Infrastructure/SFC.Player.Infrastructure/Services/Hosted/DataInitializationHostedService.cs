@@ -1,25 +1,23 @@
 ﻿using MassTransit;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-using SFC.Data.Contracts.Enums;
-using SFC.Data.Contracts.Events;
+using SFC.Data.Messages.Enums;
+using SFC.Data.Messages.Messages;
 
 namespace SFC.Player.Infrastructure.Services.Hosted;
-public class DataInitializationHostedService : IHostedService
+public class DataInitializationHostedService : BaseInitializationService
 {
-    private readonly ILogger<DataInitializationHostedService> _logger;
     private readonly IServiceProvider _services;
 
-    public DataInitializationHostedService(ILogger<DataInitializationHostedService> logger, IServiceProvider services)
+    public DataInitializationHostedService(ILogger<DataInitializationHostedService> logger,
+        IServiceProvider services) : base(logger)
     {
-        _logger = logger;
         _services = services;
     }
 
-    public async Task StartAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Data Initialization Hosted Service running.");
 
@@ -28,12 +26,6 @@ public class DataInitializationHostedService : IHostedService
 
         IPublishEndpoint publisher = scope.ServiceProvider.GetRequiredService<IPublishEndpoint>();
 
-        await publisher.Publish(new DataRequireEvent { Initiator = DataInitiator.Player }, cancellationToken);
-    }
-
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Data Initialization Hosted Servic is stopping.");
-        return Task.CompletedTask;
+        await publisher.Publish(new DataRequireMessage { Initiator = DataInitiator.Player }, cancellationToken);
     }
 }

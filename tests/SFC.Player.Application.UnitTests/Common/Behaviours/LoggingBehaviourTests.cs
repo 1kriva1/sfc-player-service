@@ -4,12 +4,10 @@ using Moq;
 
 using SFC.Player.Application.Common.Behaviours;
 using SFC.Player.Application.Common.Enums;
-using SFC.Player.Application.Features.Player.Commands.Create;
-using SFC.Player.Application.Features.Player.Common.Dto;
+using SFC.Player.Application.Features.Players.Commands.Create;
+using SFC.Player.Application.Features.Players.Common.Dto;
 using SFC.Player.Application.Interfaces.Identity;
 using SFC.Player.Application.Models.Base;
-using SFC.Player.Application.Features.Player.Common;
-using SFC.Player.Application.Features.Player.Create;
 
 namespace SFC.Player.Application.UnitTests.Common.Behaviours;
 public class LoggingBehaviourTests

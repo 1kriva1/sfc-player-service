@@ -1,12 +1,12 @@
 ﻿using FluentValidation;
 
 using SFC.Player.Application.Common.Constants;
-using SFC.Player.Application.Features.Player.Commands.Common.Validators;
+using SFC.Player.Application.Features.Players.Commands.Common.Validators;
 using SFC.Player.Application.Interfaces.Common;
 using SFC.Player.Application.Interfaces.Persistence;
 using SFC.Player.Domain.Entities.Data;
 
-namespace SFC.Player.Application.Features.Player.Commands.Create;
+namespace SFC.Player.Application.Features.Players.Commands.Create;
 public class CreatePlayerCommandValidator : AbstractValidator<CreatePlayerCommand>
 {
     public CreatePlayerCommandValidator(

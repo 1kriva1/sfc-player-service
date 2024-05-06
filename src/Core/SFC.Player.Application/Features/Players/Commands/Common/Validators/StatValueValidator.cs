@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
 
 using SFC.Player.Application.Common.Constants;
-using SFC.Player.Application.Features.Player.Common.Dto;
+using SFC.Player.Application.Features.Players.Common.Dto;
 using SFC.Player.Application.Interfaces.Persistence;
 using SFC.Player.Domain.Entities.Data;
 
-namespace SFC.Player.Application.Features.Player.Commands.Common.Validators;
+namespace SFC.Player.Application.Features.Players.Commands.Common.Validators;
 public class StatValueValidator : AbstractValidator<IEnumerable<PlayerStatValueDto>>
 {
     public StatValueValidator(IStatTypeRepository statTypesRepository)

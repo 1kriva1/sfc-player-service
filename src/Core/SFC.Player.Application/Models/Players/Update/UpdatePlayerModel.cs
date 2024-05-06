@@ -1,4 +1,8 @@
-﻿using SFC.Player.Application.Features.Player.Common;
+﻿using SFC.Player.Application.Models.Players.Common;
 
-namespace SFC.Player.Application.Features.Player.Update;
+namespace SFC.Player.Application.Models.Players.Update;
+
+/// <summary>
+/// **Update** player model.
+/// </summary>
 public class UpdatePlayerModel : BasePlayerModel { }

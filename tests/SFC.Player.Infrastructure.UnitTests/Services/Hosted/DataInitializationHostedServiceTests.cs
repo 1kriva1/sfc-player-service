@@ -6,8 +6,8 @@ using Microsoft.Extensions.Logging;
 
 using Moq;
 
-using SFC.Data.Contracts.Enums;
-using SFC.Data.Contracts.Events;
+using SFC.Data.Messages.Enums;
+using SFC.Data.Messages.Messages;
 using SFC.Player.Infrastructure.Services.Hosted;
 
 namespace SFC.Player.Infrastructure.UnitTests.Services.Hosted;
@@ -22,9 +22,9 @@ public class DataInitializationHostedServiceTests
         // Arrange
         IServiceCollection services = new ServiceCollection();
         Mock<IPublishEndpoint> publishMock = new();
-        DataRequireEvent @event = null!;
-        publishMock.Setup(p => p.Publish(It.IsAny<DataRequireEvent>(), It.IsAny<CancellationToken>()))
-            .Callback<DataRequireEvent, CancellationToken>((assertEvent, _) => @event = assertEvent);
+        DataRequireMessage @event = null!;
+        publishMock.Setup(p => p.Publish(It.IsAny<DataRequireMessage>(), It.IsAny<CancellationToken>()))
+            .Callback<DataRequireMessage, CancellationToken>((assertEvent, _) => @event = assertEvent);
         services.AddSingleton(publishMock.Object);
 
         IHostedService service = new DataInitializationHostedService(_loggerMock.Object, services.BuildServiceProvider());
@@ -33,7 +33,7 @@ public class DataInitializationHostedServiceTests
         await service.StartAsync(new CancellationToken());
 
         // Assert
-        publishMock.Verify(mock => mock.Publish(It.IsAny<DataRequireEvent>(), It.IsAny<CancellationToken>()), Times.Once());
+        publishMock.Verify(mock => mock.Publish(It.IsAny<DataRequireMessage>(), It.IsAny<CancellationToken>()), Times.Once());
         Assert.Equal(DataInitiator.Player, @event!.Initiator);
     }
 }

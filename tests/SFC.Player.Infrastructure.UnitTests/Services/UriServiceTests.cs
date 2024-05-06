@@ -15,7 +15,7 @@ public class UriServiceTests
         // Act
         Uri result = service.GetPageUri(
             "?Pagination.Page=1&Pagination.Size=10&Sorting[0].Name=Height&Sorting[0].Direction=Descending",
-            "/api/Players/byfilters", 4
+            "/api/Players/find", 4
         );
 
         // Assert
@@ -32,7 +32,7 @@ public class UriServiceTests
         // Act
         Uri result = service.GetPageUri(
             "?Pagination.Page=1&Pagination.Size=10&Sorting[0].Name=Height&Sorting[0].Direction=Descending",
-            "/api/Players/byfilters", 4
+            "/api/Players/find", 4
         );
 
         // Assert
@@ -50,7 +50,7 @@ public class UriServiceTests
         // Act
         Uri result = service.GetPageUri(
             "?Pagination.Size=10&Sorting[0].Name=Height&Sorting[0].Direction=Descending",
-            "/api/Players/byfilters", 4
+            "/api/Players/find", 4
         );
 
         // Assert

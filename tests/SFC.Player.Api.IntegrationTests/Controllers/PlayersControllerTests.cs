@@ -2,16 +2,15 @@
 using System.Net;
 
 using SFC.Player.Api.IntegrationTests.Fixtures;
-using SFC.Player.Application.Features.Player.Create;
-using SFC.Player.Application.Features.Player.Common;
 using System.Text.Json;
 using SFC.Player.Application.Common.Constants;
-using SFC.Player.Application.Features.Player.Update;
-using SFC.Player.Application.Features.Player.Get;
-using SFC.Player.Application.Features.Player.Common.Models;
 using SFC.Player.Application.Models.Base;
-using SFC.Player.Application.Features.Player.Common.Dto;
-using SFC.Player.Application.Features.Player.GetByFilters;
+using SFC.Player.Application.Models.Players.Create;
+using SFC.Player.Application.Models.Players.Common;
+using SFC.Player.Application.Models.Players.Update;
+using SFC.Player.Application.Models.Players.Get;
+using SFC.Player.Application.Models.Players.Find;
+using SFC.Player.Application.Models.Players.GetByUser;
 
 namespace SFC.Player.Api.IntegrationTests.Controllers;
 public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<Program>>
@@ -440,7 +439,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
 
     [Fact]
     [Trait("API", "Integration")]
-    public async Task API_Integration_Get_ShouldReturnBadRequest()
+    public async Task API_Integration_Get_ShouldReturnNotFound()
     {
         // Arrange
         HttpClient client = _factory.CreateClient()
@@ -450,24 +449,20 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
         HttpResponseMessage response = await client.GetAsync($"/api/players/{1}");
 
         // Assert
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
 
         string responseString = await response.Content.ReadAsStringAsync();
 
-        BaseErrorResponse? responseValue = JsonSerializer.Deserialize<BaseErrorResponse>(responseString);
+        BaseResponse? responseValue = JsonSerializer.Deserialize<BaseResponse>(responseString);
 
-        Assert.IsType<BaseErrorResponse>(responseValue);
+        Assert.IsType<BaseResponse>(responseValue);
         Assert.False(responseValue.Success);
-        Assert.Equal(Messages.ValidationError, responseValue.Message);
-        Assert.NotNull(responseValue.Errors);
-        Assert.True(responseValue.Errors.ContainsKey(nameof(IPlayerRelatedRequest.PlayerId)));
-        Assert.Single(responseValue.Errors[nameof(IPlayerRelatedRequest.PlayerId)]);
-        Assert.Equal(Messages.PlayerNotRelatedToThisUser, responseValue.Errors[nameof(IPlayerRelatedRequest.PlayerId)].FirstOrDefault());
+        Assert.Equal(Messages.PlayerNotFound, responseValue.Message);
     }
 
     [Fact]
     [Trait("API", "Integration")]
-    public async Task API_Integration_Get_ShouldReturnLocalizedBadRequest()
+    public async Task API_Integration_Get_ShouldReturnLocalizedNotFound()
     {
         // Arrange
         HttpClient client = _factory.CreateClient()
@@ -478,14 +473,13 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
         HttpResponseMessage response = await client.GetAsync($"/api/players/{1}");
 
         // Assert
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
 
         string responseString = await response.Content.ReadAsStringAsync();
 
-        BaseErrorResponse? responseValue = JsonSerializer.Deserialize<BaseErrorResponse>(responseString);
+        BaseResponse? responseValue = JsonSerializer.Deserialize<BaseResponse>(responseString);
 
-        Assert.Equal("Валідаційна помилка.", responseValue!.Message);
-        Assert.Equal("Гравець не пов'язаний з цим користувачем.", responseValue!.Errors![nameof(IPlayerRelatedRequest.PlayerId)].FirstOrDefault());
+        Assert.Equal("Гравець не знайдений.", responseValue!.Message);
     }
 
     #endregion Get
@@ -588,11 +582,11 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
 
     #endregion GetByUser
 
-    #region GetPlayersByFilters
+    #region GetPlayers
 
     [Fact]
     [Trait("API", "Integration")]
-    public async Task API_Integration_GetPlayersByFilters_ShouldReturnSuccess()
+    public async Task API_Integration_GetPlayers_ShouldReturnSuccess()
     {
         // Arrange
         Guid userId = Guid.NewGuid();
@@ -603,16 +597,16 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
 
         // Act
         HttpResponseMessage response = await client
-            .GetAsync("/api/players/byfilters?Pagination.Page=1&Pagination.Size=10&Sorting[0].Name=Height&Sorting[0].Direction=Descending&Filter.Profile.General.Name=Andrii");
+            .GetAsync("/api/players/find?Pagination.Page=1&Pagination.Size=10&Sorting[0].Name=Height&Sorting[0].Direction=Descending&Filter.Profile.General.Name=Andrii");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         string responseString = await response.Content.ReadAsStringAsync();
 
-        GetPlayersByFiltersResponse? responseValue = JsonSerializer.Deserialize<GetPlayersByFiltersResponse>(responseString);
+        GetPlayersResponse? responseValue = JsonSerializer.Deserialize<GetPlayersResponse>(responseString);
 
-        Assert.IsType<GetPlayersByFiltersResponse>(responseValue);
+        Assert.IsType<GetPlayersResponse>(responseValue);
         Assert.True(responseValue.Success);
         Assert.Equal(Messages.SuccessResult, responseValue.Message);
         Assert.Null(responseValue.Errors);
@@ -621,7 +615,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
 
     [Fact]
     [Trait("API", "Integration")]
-    public async Task API_Integration_GetPlayersByFilters_ShouldReturnLocalizedSuccess()
+    public async Task API_Integration_GetPlayers_ShouldReturnLocalizedSuccess()
     {
         // Arrange
         Guid userId = Guid.NewGuid();
@@ -633,21 +627,21 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
 
         // Act
         HttpResponseMessage response = await client
-            .GetAsync("/api/players/byfilters?Pagination.Page=1&Pagination.Size=10&Sorting[0].Name=Height&Sorting[0].Direction=Descending&Filter.Profile.General.Name=Andrii");
+            .GetAsync("/api/players/find?Pagination.Page=1&Pagination.Size=10&Sorting[0].Name=Height&Sorting[0].Direction=Descending&Filter.Profile.General.Name=Andrii");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         string responseString = await response.Content.ReadAsStringAsync();
 
-        GetPlayersByFiltersResponse? responseValue = JsonSerializer.Deserialize<GetPlayersByFiltersResponse>(responseString);
+        GetPlayersResponse? responseValue = JsonSerializer.Deserialize<GetPlayersResponse>(responseString);
 
         Assert.Equal(Messages.SuccessResult, responseValue!.Message);
     }
 
     [Fact]
     [Trait("API", "Integration")]
-    public async Task API_Integration_GetPlayersByFilters_ShouldReturnUnauthorize()
+    public async Task API_Integration_GetPlayers_ShouldReturnUnauthorize()
     {
         // Arrange
         await CreateNewPlayer(Guid.NewGuid());
@@ -656,7 +650,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
 
         // Act
         HttpResponseMessage response = await client
-            .GetAsync("/api/players/byfilters?Pagination.Page=1&Pagination.Size=10&Sorting[0].Name=Height&Sorting[0].Direction=Descending&Filter.Profile.General.Name=Andrii");
+            .GetAsync("/api/players/find?Pagination.Page=1&Pagination.Size=10&Sorting[0].Name=Height&Sorting[0].Direction=Descending&Filter.Profile.General.Name=Andrii");
 
         // Assert
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
@@ -664,7 +658,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
 
     [Fact]
     [Trait("API", "Integration")]
-    public async Task API_Integration_GetPlayersByFilters_ShouldNotReturnPlayersWithSuccessResult()
+    public async Task API_Integration_GetPlayers_ShouldNotReturnPlayersWithSuccessResult()
     {
         // Arrange
         HttpClient client = _factory.CreateClient()
@@ -672,16 +666,16 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
 
         // Act
         HttpResponseMessage response = await client
-            .GetAsync("/api/players/byfilters?Pagination.Page=1&Pagination.Size=10&Sorting[0].Name=Height&Sorting[0].Direction=Descending&Filter.Profile.General.Name=Kelly");
+            .GetAsync("/api/players/find?Pagination.Page=1&Pagination.Size=10&Sorting[0].Name=Height&Sorting[0].Direction=Descending&Filter.Profile.General.Name=Kelly");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         string responseString = await response.Content.ReadAsStringAsync();
 
-        GetPlayersByFiltersResponse? responseValue = JsonSerializer.Deserialize<GetPlayersByFiltersResponse>(responseString);
+        GetPlayersResponse? responseValue = JsonSerializer.Deserialize<GetPlayersResponse>(responseString);
 
-        Assert.IsType<GetPlayersByFiltersResponse>(responseValue);
+        Assert.IsType<GetPlayersResponse>(responseValue);
         Assert.True(responseValue.Success);
         Assert.Equal(Messages.SuccessResult, responseValue.Message);
         Assert.Null(responseValue.Errors);
@@ -690,7 +684,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
 
     [Fact]
     [Trait("API", "Integration")]
-    public async Task API_Integration_GetPlayersByFilters_ShouldReturnBadRequest()
+    public async Task API_Integration_GetPlayers_ShouldReturnBadRequest()
     {
         // Arrange
         HttpClient client = _factory.CreateClient()
@@ -698,7 +692,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
 
         // Act
         HttpResponseMessage response = await client
-            .GetAsync("/api/players/byfilters?Pagination.Page=1&Pagination.Size=10" +
+            .GetAsync("/api/players/find?Pagination.Page=1&Pagination.Size=10" +
             "&Sorting[0].Name=Height&Sorting[0].Direction=Descending" +
             "&Filter.Profile.General.Tags[0]=zik&Filter.Profile.General.Tags[1]=zik");
 
@@ -720,7 +714,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
 
     [Fact]
     [Trait("API", "Integration")]
-    public async Task API_Integration_GetPlayersByFilters_ShouldReturnLocalizedBadRequest()
+    public async Task API_Integration_GetPlayers_ShouldReturnLocalizedBadRequest()
     {
         // Arrange
         HttpClient client = _factory.CreateClient()
@@ -730,7 +724,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
 
         // Act
         HttpResponseMessage response = await client
-            .GetAsync("/api/players/byfilters?Pagination.Page=1&Pagination.Size=10" +
+            .GetAsync("/api/players/find?Pagination.Page=1&Pagination.Size=10" +
             "&Sorting[0].Name=Height&Sorting[0].Direction=Descending" +
             "&Filter.Profile.General.Tags[0]=zik&Filter.Profile.General.Tags[1]=zik");
 
@@ -745,7 +739,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
 
     [Fact]
     [Trait("API", "Integration")]
-    public async Task API_Integration_GetPlayersByFilters_ShouldReturnPaginationHeader()
+    public async Task API_Integration_GetPlayers_ShouldReturnPaginationHeader()
     {
         // Arrange
         Guid userId = Guid.NewGuid();
@@ -756,21 +750,21 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
 
         // Act
         HttpResponseMessage response = await client
-            .GetAsync("/api/players/byfilters?Pagination.Page=1&Pagination.Size=10&Sorting[0].Name=Height&Sorting[0].Direction=Descending&Filter.Profile.General.Name=Andrii");
+            .GetAsync("/api/players/find?Pagination.Page=1&Pagination.Size=10&Sorting[0].Name=Height&Sorting[0].Direction=Descending&Filter.Profile.General.Name=Andrii");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         string responseString = await response.Content.ReadAsStringAsync();
 
-        GetPlayersByFiltersResponse? responseValue = JsonSerializer.Deserialize<GetPlayersByFiltersResponse>(responseString);
+        GetPlayersResponse? responseValue = JsonSerializer.Deserialize<GetPlayersResponse>(responseString);
 
         Assert.Single(response.Headers);
         Assert.True(response.Headers.Contains(CommonConstants.PAGINATION_HEADER_KEY));
         Assert.NotEmpty(response.Headers.FirstOrDefault(h => h.Key == CommonConstants.PAGINATION_HEADER_KEY).Value);
     }
 
-    #endregion GetPlayersByFilters
+    #endregion GetPlayers
 
     private async Task<HttpResponseMessage> CreateNewPlayer(Guid userId)
     {

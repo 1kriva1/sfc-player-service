@@ -2,10 +2,8 @@
 using FluentValidation.Results;
 
 using SFC.Player.Application.Common.Extensions;
-using SFC.Player.Application.Features.Player.Commands.Create;
-using SFC.Player.Application.Features.Player.Common.Dto;
-using SFC.Player.Application.Features.Player.Common;
-using SFC.Player.Application.Features.Player.Create;
+using SFC.Player.Application.Features.Players.Commands.Create;
+using SFC.Player.Application.Features.Players.Common.Dto;
 
 namespace SFC.Player.Application.UnitTests.Common.Extensions;
 public class ValidationExtensionsTests

@@ -1,7 +1,6 @@
-﻿using SFC.Player.Application.Features.Player.Common.Dto;
-using SFC.Player.Application.Features.Player.Common;
-using SFC.Player.Domain.Entities.Data;
+﻿using SFC.Player.Domain.Entities.Data;
 using SFC.Player.Infrastructure.Settings;
+using SFC.Player.Application.Models.Players.Common;
 
 namespace SFC.Player.Api.IntegrationTests.Fixtures;
 public static class Constants

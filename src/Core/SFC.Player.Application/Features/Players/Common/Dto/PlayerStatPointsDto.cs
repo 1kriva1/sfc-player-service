@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 
 using SFC.Player.Application.Common.Mappings;
-using SFC.Player.Application.Features.Player.Common;
+using SFC.Player.Application.Models.Players.Common;
 using SFC.Player.Domain.Entities;
 
-namespace SFC.Player.Application.Features.Player.Common.Dto;
+namespace SFC.Player.Application.Features.Players.Common.Dto;
 
 public record PlayerStatPointsDto : IMapFrom<PlayerStatPoints>
 {

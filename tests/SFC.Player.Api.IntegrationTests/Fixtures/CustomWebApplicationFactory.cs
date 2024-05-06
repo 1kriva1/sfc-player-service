@@ -49,7 +49,7 @@ public class CustomWebApplicationFactory<TStartup>
                 options.UseSqlite(connection);
             });
 
-            services.AddMassTransitTestHarness(configure => configure.AddConsumer<DataInitializationEventConsumer>());
+            services.AddMassTransitTestHarness(configure => configure.AddConsumer<DataInitializationMessageConsumer>());
         });
 
         builder.UseEnvironment(TEST_ENVIROMENT);

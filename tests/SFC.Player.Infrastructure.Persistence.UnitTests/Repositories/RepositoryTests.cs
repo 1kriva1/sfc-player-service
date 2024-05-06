@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 
 using SFC.Player.Application.Common.Enums;
+using SFC.Player.Application.Features.Common.Models;
 using SFC.Player.Application.Features.Common.Models.Filters;
 using SFC.Player.Application.Features.Common.Models.Paging;
 using SFC.Player.Application.Features.Common.Models.Sorting;
@@ -243,7 +244,7 @@ public class RepositoryTests
 
     [Fact]
     [Trait("Persistence", "Repository")]
-    public async Task Persistence_Repository_ShouldGetPage()
+    public async Task Persistence_Repository_ShouldFind()
     {
         // Arrange
         Repository<PlayerGeneralProfile, long> repository = CreateRepository();
@@ -268,7 +269,7 @@ public class RepositoryTests
             City = "City 1",
             Player = new PlayerEntity { Id = 3 }
         };
-        PageParameters<PlayerGeneralProfile> parameters = new()
+        FindParameters<PlayerGeneralProfile> parameters = new()
         {
             Filters = new Filters<PlayerGeneralProfile>(new Filter<PlayerGeneralProfile>[1] {
                 new() {
@@ -290,7 +291,7 @@ public class RepositoryTests
         await repository.AddAsync(entityFirst);
         await repository.AddAsync(entitySecond);
         await repository.AddAsync(entityThird);
-        PagedList<PlayerGeneralProfile> result = await repository.GetPageAsync(parameters);
+        PagedList<PlayerGeneralProfile> result = await repository.FindAsync(parameters);
 
         // Assert
         Assert.Equal(2, result.Count);

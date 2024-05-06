@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
 
 using SFC.Player.Application.Common.Mappings;
-using SFC.Player.Application.Features.Player.Common;
-using SFC.Player.Domain.Entities;
+using SFC.Player.Application.Models.Players.Common;
 
 using PlayerEntity = SFC.Player.Domain.Entities.Player;
 
-namespace SFC.Player.Application.Features.Player.Common.Dto;
+namespace SFC.Player.Application.Features.Players.Common.Dto;
 public class PlayerProfileDto : IMapFrom<PlayerEntity>
 {
     public PlayerGeneralProfileDto General { get; set; } = null!;

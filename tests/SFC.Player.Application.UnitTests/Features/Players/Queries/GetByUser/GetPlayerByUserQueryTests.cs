@@ -6,7 +6,7 @@ using Moq;
 
 using SFC.Player.Application.Common.Enums;
 using SFC.Player.Application.Common.Mappings;
-using SFC.Player.Application.Features.Player.Queries.Get;
+using SFC.Player.Application.Features.Players.Queries.Get;
 using SFC.Player.Application.Interfaces.Persistence;
 using SFC.Player.Domain.Entities;
 

@@ -287,7 +287,7 @@ public static class SeedExtensions
 
     #region Public
 
-    public static async Task AddSeedPlayersAsync(this IPlayerRepository repository,
+    public static async Task SeedPlayersAsync(this IPlayerRepository repository,
         FootballPosition[] footballPositions,
         GameStyle[] gameStyles,
         WorkingFoot[] workingFoots,

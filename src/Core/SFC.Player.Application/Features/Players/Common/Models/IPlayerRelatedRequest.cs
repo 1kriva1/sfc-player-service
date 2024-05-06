@@ -1,4 +1,4 @@
-﻿namespace SFC.Player.Application.Features.Player.Common.Models;
+﻿namespace SFC.Player.Application.Features.Players.Common.Models;
 public interface IPlayerRelatedRequest
 {
     public long PlayerId { get; set; }

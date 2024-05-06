@@ -11,4 +11,6 @@ public static class CommonConstants
     public const int PERCENTAGE_MAX_VALUE = 100;
 
     public static readonly Tuple<int, int> RANGE_LIMIT = new(0, 100);
+
+    public const string CONTENT_TYPE = "application/json";
 }
