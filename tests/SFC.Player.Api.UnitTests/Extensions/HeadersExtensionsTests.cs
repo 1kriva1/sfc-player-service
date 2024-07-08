@@ -23,6 +23,6 @@ public class HeadersExtensionsTests
 
         // Assert
         Assert.True(mockResponse.Object.Headers.ContainsKey(CommonConstants.PAGINATION_HEADER_KEY));
-        Assert.NotEmpty(mockResponse.Object.Headers[CommonConstants.PAGINATION_HEADER_KEY]);
+        Assert.NotEqual(0, mockResponse.Object.Headers[CommonConstants.PAGINATION_HEADER_KEY].Count);
     }
 }
