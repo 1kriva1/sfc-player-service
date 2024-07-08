@@ -53,11 +53,11 @@ public class PlayerValidatorTests
     [InlineData(null, "'FirstName' must not be empty.")]
     [InlineData("tucxrlbkhvdrzgzxvtxosapnwhgnhclrbiafabwytkgpikytuzvjsowcbnrzpyrrimbpwklqvijyvlfoybzlfrnmdoklxdlddbhwmgvfczjvunwitbkxohcupnhqppnxrrwzwhaidivbrsliytlftrt",
         "The length of 'FirstName' must be 150 characters or fewer. You entered 151 characters.")]
-    public async Task Feature_Validator_FirstName_ShouldFailValidationWhenEmptyOrNullOrTooLong(string firstName, string errorMessage)
+    public async Task Feature_Validator_FirstName_ShouldFailValidationWhenEmptyOrNullOrTooLong(string? firstName, string errorMessage)
     {
         // Arrange
         BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
-        player.Profile.General.FirstName = firstName;
+        player.Profile.General.FirstName = firstName!;
 
         // Act
         ValidationResult result = await Validator.ValidateAsync(player);
@@ -78,11 +78,11 @@ public class PlayerValidatorTests
     [InlineData(null, "'LastName' must not be empty.")]
     [InlineData("tucxrlbkhvdrzgzxvtxosapnwhgnhclrbiafabwytkgpikytuzvjsowcbnrzpyrrimbpwklqvijyvlfoybzlfrnmdoklxdlddbhwmgvfczjvunwitbkxohcupnhqppnxrrwzwhaidivbrsliytlftrt",
         "The length of 'LastName' must be 150 characters or fewer. You entered 151 characters.")]
-    public async Task Feature_Validator_LastName_ShouldFailValidationWhenEmptyOrNullOrTooLong(string lastName, string errorMessage)
+    public async Task Feature_Validator_LastName_ShouldFailValidationWhenEmptyOrNullOrTooLong(string? lastName, string errorMessage)
     {
         // Arrange
         BasePlayerDto player = PlayerTestConstants.GetValidPlayer();
-        player.Profile.General.LastName = lastName;
+        player.Profile.General.LastName = lastName!;
 
         // Act
         ValidationResult result = await Validator.ValidateAsync(player);
@@ -160,10 +160,10 @@ public class PlayerValidatorTests
     }
 
     public static readonly object[][] BirthdayData =
-    {
-        new object[] {new DateTime(1900, 1, 1), "'Birthday' must be more than 99 years ago." },
-        new object[] {DateTime.UtcNow.AddYears(10), "'Birthday' must be less than today's date." }
-    };
+    [
+        [new DateTime(1900, 1, 1), "'Birthday' must be more than 99 years ago."],
+        [DateTime.UtcNow.AddYears(10), "'Birthday' must be less than today's date."]
+    ];
 
     [Theory]
     [Trait("Feature", "Validators")]
@@ -236,10 +236,10 @@ public class PlayerValidatorTests
     }
 
     public static readonly object[][] TagsValidData =
-    {
-        new object[] { null! },
-        new object[] { Array.Empty<string>() }
-    };
+    [
+        [null!],
+        [Array.Empty<string>()]
+    ];
 
     [Theory]
     [Trait("Feature", "Validators")]
@@ -259,17 +259,17 @@ public class PlayerValidatorTests
     }
 
     public static readonly object[][] TagsInvalidData =
-    {
-        new object[] { new string[2] { "test", "test" }, "Each value from 'Tags' must be unique." },
-        new object[] { new string[51] { "test1", "test2", "test3", "test4", "test5", "test6", "test7", "test8", "test9", "test10",
+    [
+        [new string[2] { "test", "test" }, "Each value from 'Tags' must be unique."],
+        [new string[51] { "test1", "test2", "test3", "test4", "test5", "test6", "test7", "test8", "test9", "test10",
                                         "test11", "test12", "test13", "test14", "test15", "test16", "test17", "test18", "test19", "test20",
                                         "test21", "test22", "test23", "test24", "test25", "test26", "test27", "test28", "test29", "test30",
                                         "test31", "test32", "test33", "test34", "test35", "test36", "test37", "test38", "test39", "test40",
                                         "test41", "test42", "test43", "test44", "test45", "test46", "test47", "test48", "test49", "test50", "test51"},
-            string.Format(Messages.InvalidTagsSize, nameof(PlayerGeneralProfileDto.Tags), ValidationConstants.TAGS_MAX_LENGTH) },
-        new object[] { new string[2] { "test", "" }, "Each value from 'Tags' must not be empty.", "[1]" },
-        new object[] { new string[2] { "test", "123456789012345678901" }, "Each value from 'Tags' must be 20 characters or fewer. You entered 21 characters.", "[1]" }
-    };
+            string.Format(Messages.InvalidTagsSize, nameof(PlayerGeneralProfileDto.Tags), ValidationConstants.TAGS_MAX_LENGTH) ],
+        [new string[2] { "test", "" }, "Each value from 'Tags' must not be empty.", "[1]"],
+        [new string[2] { "test", "123456789012345678901" }, "Each value from 'Tags' must be 20 characters or fewer. You entered 21 characters.", "[1]"]
+    ];
 
     [Theory]
     [Trait("Feature", "Validators")]
@@ -295,10 +295,10 @@ public class PlayerValidatorTests
     }
 
     public static readonly object[][] AvailabilityDaysValidData =
-    {
-        new object[] { null! },
-        new object[] { Array.Empty<DayOfWeek>() }
-    };
+    [
+        [null!],
+        [Array.Empty<DayOfWeek>()]
+    ];
 
     [Theory]
     [Trait("Feature", "Validators")]
@@ -321,11 +321,11 @@ public class PlayerValidatorTests
     }
 
     public static readonly object[][] AvailabilityDaysInvalidData =
-    {
-        new object[] { new DayOfWeek[8] { DayOfWeek.Monday, DayOfWeek.Monday, DayOfWeek.Monday, DayOfWeek.Monday, DayOfWeek.Monday,
-            DayOfWeek.Monday, DayOfWeek.Monday, DayOfWeek.Monday }, "The length of 'Days' must be less or equal to 7." },
-        new object[] { new DayOfWeek[2] { DayOfWeek.Monday, (DayOfWeek)22 }, "Each value from 'Days' must be in Days of Week range.", "[1]" }
-    };
+    [
+        [ new DayOfWeek[8] { DayOfWeek.Monday, DayOfWeek.Monday, DayOfWeek.Monday, DayOfWeek.Monday, DayOfWeek.Monday,
+            DayOfWeek.Monday, DayOfWeek.Monday, DayOfWeek.Monday }, "The length of 'Days' must be less or equal to 7." ],
+        [new DayOfWeek[2] { DayOfWeek.Monday, (DayOfWeek)22 }, "Each value from 'Days' must be in Days of Week range.", "[1]"]
+    ];
 
     [Theory]
     [Trait("Feature", "Validators")]
@@ -354,11 +354,11 @@ public class PlayerValidatorTests
     }
 
     public static readonly object[][] AvailabilityFromToValidData =
-    {
-        new object[] { TimeSpan.FromHours(1), null! },
-        new object[] { null!, TimeSpan.FromHours(1) },
-        new object[] { null!, null! }
-    };
+    [
+        [TimeSpan.FromHours(1), null!],
+        [null!, TimeSpan.FromHours(1)],
+        [null!, null!]
+    ];
 
     [Theory]
     [Trait("Feature", "Validators")]

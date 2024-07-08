@@ -11,6 +11,7 @@ public record UserService(IHttpContextAccessor Context) : IUserService
         ?? throw new AuthorizationException(Messages.AuthorizationError));
 }
 
+// required for seed test players
 public record UserServiceDevelopment(IHttpContextAccessor Context) : IUserService
 {
     public Guid UserId => string.IsNullOrEmpty(Context.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier))

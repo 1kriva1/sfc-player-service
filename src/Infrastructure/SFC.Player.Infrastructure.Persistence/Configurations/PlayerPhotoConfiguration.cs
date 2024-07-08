@@ -15,11 +15,11 @@ public class PlayerPhotoConfiguration : IEntityTypeConfiguration<PlayerPhoto>
 
         builder.Property(e => e.Extension)
                .HasConversion<string>()
-               .HasMaxLength(DbConstants.EXTENSION_VALUE_MAX_LENGTH)
+               .HasMaxLength(DatabaseConstants.EXTENSION_VALUE_MAX_LENGTH)
                .IsRequired(true);
 
         builder.Property(e => e.Name)
-               .HasMaxLength(DbConstants.NAME_VALUE_MAX_LENGTH)
+               .HasMaxLength(DatabaseConstants.NAME_VALUE_MAX_LENGTH)
                .IsRequired(true);
 
         builder.Property(e => e.Size)

@@ -1,7 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-using AutoMapper;
-using AutoMapper.Internal;
+﻿using AutoMapper;
 
 using SFC.Player.Application.Common.Mappings;
 using SFC.Player.Application.Features.Common.Dto;
@@ -24,6 +21,7 @@ using SFC.Player.Application.Models.Players.Find.Filters;
 using SFC.Player.Application.Models.Players.Find;
 using SFC.Player.Application.Models.Players.Common;
 using SFC.Player.Application.Models.Players.GetByUser;
+using Newtonsoft.Json;
 
 #region Usings
 
@@ -55,17 +53,12 @@ using PlayerProfileByUserDto = SFC.Player.Application.Features.Players.Queries.G
 namespace SFC.Player.Application.UnitTests.Common.Mappings;
 public class MappingTests
 {
-    private readonly IConfigurationProvider _configuration;
+    private readonly MapperConfiguration _configuration;
     private readonly IMapper _mapper;
 
     public MappingTests()
     {
-        _configuration = new MapperConfiguration(config =>
-        {
-            config.Internal().AllowAdditiveTypeMapCreation = true;
-            config.AddProfile<MappingProfile>();
-        });
-
+        _configuration = new MapperConfiguration(config => config.AddProfile<MappingProfile>());
         _mapper = _configuration.CreateMapper();
     }
 
@@ -87,7 +80,7 @@ public class MappingTests
     public void Mapping_CreatePlayer_ShouldHaveValidConfiguration(Type source, Type destination)
     {
         // Arrange
-        object instance = GetInstanceOf(source);
+        object? instance = GetInstanceOf(source);
 
         // Assert
         _mapper.Map(instance, source, destination);
@@ -101,7 +94,7 @@ public class MappingTests
     public void Mapping_UpdatePlayer_ShouldHaveValidConfiguration(Type source, Type destination)
     {
         // Arrange
-        object instance = GetInstanceOf(source);
+        object? instance = GetInstanceOf(source);
 
         // Assert
         _mapper.Map(instance, source, destination);
@@ -114,7 +107,7 @@ public class MappingTests
     public void Mapping_GetPlayer_ShouldHaveValidConfiguration(Type source, Type destination)
     {
         // Arrange
-        object instance = GetInstanceOf(source);
+        object? instance = GetInstanceOf(source);
 
         // Assert
         _mapper.Map(instance, source, destination);
@@ -135,7 +128,7 @@ public class MappingTests
     public void Mapping_GetPlayerByUser_ShouldHaveValidConfiguration(Type source, Type destination)
     {
         // Arrange
-        object instance = GetInstanceOf(source);
+        object? instance = GetInstanceOf(source);
 
         // Assert
         _mapper.Map(instance, source, destination);
@@ -165,7 +158,7 @@ public class MappingTests
     public void Mapping_GetPlayers_ShouldHaveValidConfiguration(Type source, Type destination)
     {
         // Arrange
-        object instance = GetInstanceOf(source);
+        object? instance = GetInstanceOf(source);
 
         // Assert
         _mapper.Map(instance, source, destination);
@@ -184,7 +177,7 @@ public class MappingTests
     public void Mapping_SimpleTypes_ShouldHaveValidConfiguration(Type source, Type destination)
     {
         // Arrange
-        object instance = GetInstanceOf(source);
+        object? instance = GetInstanceOf(source);
 
         // Assert
         _mapper.Map(instance, source, destination);
@@ -219,7 +212,7 @@ public class MappingTests
     public void Mapping_ComplexTypes_ShouldHaveValidConfiguration(Type source, Type destination)
     {
         // Arrange
-        object instance = GetInstanceOf(source);
+        object? instance = GetInstanceOf(source);
 
         // Assert
         _mapper.Map(instance, source, destination);
@@ -233,13 +226,13 @@ public class MappingTests
     public void Mapping_GenericTypes_ShouldHaveValidConfiguration(Type source, Type destination)
     {
         // Arrange
-        object instance = GetInstanceOf(source);
+        object? instance = GetInstanceOf(source);
 
         // Assert
         _mapper.Map(instance, source, destination);
     }
 
-    private static object GetInstanceOf(Type type)
+    private static object? GetInstanceOf(Type type)
     {
         if (type.GetConstructor(Type.EmptyTypes) != null)
             return Activator.CreateInstance(type)!;
@@ -247,7 +240,8 @@ public class MappingTests
         if (type == typeof(string))
             return string.Empty;
 
-        // Type without parameterless constructor
-        return FormatterServices.GetUninitializedObject(type);
+        string json = JsonConvert.SerializeObject(new object(), type, null);
+
+        return JsonConvert.DeserializeObject<object>(json);
     }
 }

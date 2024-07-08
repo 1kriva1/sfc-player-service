@@ -19,7 +19,7 @@ public class UserServiceTests
         Guid userId = Guid.NewGuid();
         Claim claim = new(ClaimTypes.NameIdentifier, userId.ToString());
         ClaimsIdentity claimsIdentity = new(new List<Claim> { claim });
-        ClaimsPrincipal contextUser = new(new List<ClaimsIdentity> { claimsIdentity });
+        ClaimsPrincipal contextUser = new([claimsIdentity]);
         DefaultHttpContext httpContext = new() { User = contextUser };
         Mock<IHttpContextAccessor> contextMock = new();
         contextMock.Setup(m => m.HttpContext).Returns(httpContext);

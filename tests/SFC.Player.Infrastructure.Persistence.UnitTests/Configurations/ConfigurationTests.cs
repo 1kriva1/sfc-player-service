@@ -90,7 +90,7 @@ public class ConfigurationTests
 
         Assert.True(userIdProperty.IsKey());
         Assert.Equal(nameof(IdentityUser.Id), userIdProperty.Name);
-        Assert.Equal(DbConstants.IDENTITY_SCHEMA_NAME, builder.Metadata.GetSchema());
+        Assert.Equal(DatabaseConstants.IDENTITY_SCHEMA_NAME, builder.Metadata.GetSchema());
         Assert.Equal("Users", builder.Metadata.GetTableName());
     }
 
@@ -181,14 +181,14 @@ public class ConfigurationTests
 
         IMutableNavigation tagsNavigation = navigations.First(n => n.Name == nameof(PlayerEntity.Tags));
         Assert.False(tagsNavigation.ForeignKey.IsRequired);
-        Assert.Equal(DbConstants.PLAYER_FOREIGN_KEY, tagsNavigation.ForeignKey.Properties[0].Name);
+        Assert.Equal(DatabaseConstants.PLAYER_FOREIGN_KEY, tagsNavigation.ForeignKey.Properties[0].Name);
 
         IMutableNavigation pointsNavigation = navigations.First(n => n.Name == nameof(PlayerEntity.Points));
         Assert.True(pointsNavigation.ForeignKey.IsRequired);
 
         IMutableNavigation statsNavigation = navigations.First(n => n.Name == nameof(PlayerEntity.Stats));
         Assert.False(statsNavigation.ForeignKey.IsRequired);
-        Assert.Equal(DbConstants.PLAYER_FOREIGN_KEY, statsNavigation.ForeignKey.Properties[0].Name);
+        Assert.Equal(DatabaseConstants.PLAYER_FOREIGN_KEY, statsNavigation.ForeignKey.Properties[0].Name);
 
         IMutableNavigation userNavigation = navigations.First(n => n.Name == nameof(PlayerEntity.User));
         Assert.True(userNavigation.ForeignKey.IsRequired);
@@ -515,7 +515,7 @@ public class ConfigurationTests
         Assert.False(createdDateProperty.IsColumnNullable());
         Assert.Equal(1, createdDateProperty.GetColumnOrder());
 
-        Assert.Equal(DbConstants.DATA_SCHEMA_NAME, builder.Metadata.GetSchema());
+        Assert.Equal(DatabaseConstants.DATA_SCHEMA_NAME, builder.Metadata.GetSchema());
         Assert.Equal(tableName ?? typeof(T).Name, builder.Metadata.GetTableName());
     }
 }

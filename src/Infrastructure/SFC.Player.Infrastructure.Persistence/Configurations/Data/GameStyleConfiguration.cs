@@ -9,7 +9,7 @@ public class GameStyleConfiguration : BaseDataEntityConfiguration<GameStyle>
 {
     public override void Configure(EntityTypeBuilder<GameStyle> builder)
     {
-        builder.ToTable("GameStyles", DbConstants.DATA_SCHEMA_NAME);
+        builder.ToTable("GameStyles", DatabaseConstants.DATA_SCHEMA_NAME);
         base.Configure(builder);
     }
 }

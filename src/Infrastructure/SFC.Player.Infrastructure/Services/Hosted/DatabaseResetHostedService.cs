@@ -1,24 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using SFC.Player.Infrastructure.Persistence;
 
 namespace SFC.Player.Infrastructure.Services.Hosted;
-public class DatabaseResetHostedService : BaseInitializationService
+public class DatabaseResetHostedService(
+    ILogger<DatabaseResetHostedService> logger,
+    IServiceProvider services,
+    IHostEnvironment hostEnvironment) : BaseInitializationService(logger)
 {
-    private readonly IServiceProvider _services;
-    private readonly IHostEnvironment _hostEnvironment;
-
-    public DatabaseResetHostedService(
-        ILogger<DatabaseResetHostedService> logger,
-        IServiceProvider services,
-        IHostEnvironment hostEnvironment) : base(logger)
-    {
-        _services = services;
-        _hostEnvironment = hostEnvironment;
-    }
+    private readonly IServiceProvider _services = services;
+    private readonly IHostEnvironment _hostEnvironment = hostEnvironment;
 
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -31,11 +24,6 @@ public class DatabaseResetHostedService : BaseInitializationService
         if (_hostEnvironment.IsDevelopment())
         {
             await context.Database.EnsureDeletedAsync(cancellationToken);
-
-            if (context.Database.IsRelational())
-            {
-                await context.Database.MigrateAsync(cancellationToken);
-            }
         }
 
         await context.Database.EnsureCreatedAsync(cancellationToken);

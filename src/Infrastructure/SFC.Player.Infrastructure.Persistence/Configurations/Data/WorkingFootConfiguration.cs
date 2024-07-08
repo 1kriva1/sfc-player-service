@@ -9,7 +9,7 @@ public class WorkingFootConfiguration : BaseDataEntityConfiguration<WorkingFoot>
 {
     public override void Configure(EntityTypeBuilder<WorkingFoot> builder)
     {
-        builder.ToTable("WorkingFoots", DbConstants.DATA_SCHEMA_NAME);
+        builder.ToTable("WorkingFoots", DatabaseConstants.DATA_SCHEMA_NAME);
         base.Configure(builder);
     }
 }

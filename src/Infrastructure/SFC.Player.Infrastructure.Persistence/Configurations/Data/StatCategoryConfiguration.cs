@@ -13,7 +13,7 @@ public class StatCategoryConfiguration : BaseDataEntityConfiguration<StatCategor
                .WithOne()
                .IsRequired(true);
 
-        builder.ToTable("StatCategories", DbConstants.DATA_SCHEMA_NAME);
+        builder.ToTable("StatCategories", DatabaseConstants.DATA_SCHEMA_NAME);
         base.Configure(builder);
     }
 }

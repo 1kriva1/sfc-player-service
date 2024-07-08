@@ -45,7 +45,7 @@ public class BadRequestExceptionTests
     {
         // Arrange
         string validationMessage = "Test validation message.";
-        List<ValidationFailure> failures = new() { new ValidationFailure("Key", "Test error message.") };
+        List<ValidationFailure> failures = [new ValidationFailure("Key", "Test error message.")];
 
         // Act
         BadRequestException exception = new(validationMessage, failures);
@@ -61,14 +61,14 @@ public class BadRequestExceptionTests
     {
         // Arrange
         string validationMessage = "Test validation message.";
-        List<ValidationFailure> failures = new() {
+        List<ValidationFailure> failures = [
                 new ValidationFailure("Age", "must be 18 or older"),
                 new ValidationFailure("Age", "must be 25 or younger"),
                 new ValidationFailure("Password", "must contain at least 8 characters"),
                 new ValidationFailure("Password", "must contain a digit"),
                 new ValidationFailure("Password", "must contain upper case letter"),
                 new ValidationFailure("Password", "must contain lower case letter"),
-            };
+            ];
 
         // Act
         BadRequestException exception = new(validationMessage, failures);

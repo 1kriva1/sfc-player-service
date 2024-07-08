@@ -33,7 +33,7 @@ public class PlayerConfiguration : IEntityTypeConfiguration<PlayerEntity>
 
         builder.HasMany(e => e.Tags)
            .WithOne(e => e.Player)
-           .HasForeignKey(DbConstants.PLAYER_FOREIGN_KEY);
+           .HasForeignKey(DatabaseConstants.PLAYER_FOREIGN_KEY);
 
         builder.HasOne(e => e.Points)
            .WithOne(e => e.Player)
@@ -42,7 +42,7 @@ public class PlayerConfiguration : IEntityTypeConfiguration<PlayerEntity>
 
         builder.HasMany(e => e.Stats)
            .WithOne(e => e.Player)
-           .HasForeignKey(DbConstants.PLAYER_FOREIGN_KEY);
+           .HasForeignKey(DatabaseConstants.PLAYER_FOREIGN_KEY);
 
         builder.HasOne(e => e.User)
            .WithOne(e => e.Player)
