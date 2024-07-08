@@ -17,7 +17,7 @@ public class ExceptionHandlerMiddleware
 {
     private readonly RequestDelegate _next;
 
-    private readonly IDictionary<Type, Handler> _exceptionHandlers;
+    private readonly Dictionary<Type, Handler> _exceptionHandlers;
 
     public ExceptionHandlerMiddleware(RequestDelegate next)
     {

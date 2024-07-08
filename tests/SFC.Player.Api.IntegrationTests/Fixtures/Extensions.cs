@@ -1,29 +1,21 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http.Headers;
-using System.Security.Claims;
-using System.Text;
+﻿using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 using SFC.Player.Infrastructure.Persistence;
 
 namespace SFC.Player.Api.IntegrationTests.Fixtures;
 public static class Extensions
 {
-    public static HttpClient SetAuthenticationToken(this HttpClient client, Guid userId)
+    public static HttpClient SetAuthenticationToken(this HttpClient client, bool forbidden = false,
+        string? accessToken = null)
     {
-        JwtSecurityToken jwtToken = new(
-           Constants.JwtSettings.Issuer,
-           Constants.JwtSettings.Audience,
-           new List<Claim> { new(ClaimTypes.NameIdentifier, userId.ToString()) },
-           expires: DateTime.Now.AddMinutes(1),
-           signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Constants.JwtSettings.Key)), SecurityAlgorithms.HmacSha256)
-       );
-
-        string token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
-
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        string token = accessToken ?? (forbidden 
+            ? Constants.PLAYER_ACCESS_TOKEN_FORBIDDEN 
+            : Constants.PLAYER_ACCESS_TOKEN_VALID_0);
+        client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", token);
 
         return client;
     }
@@ -33,6 +25,10 @@ public static class Extensions
         context.Database.EnsureCreated();
 
         context.Players.ExecuteDelete();
+
+        context.Users.ExecuteDelete();
+
+        context.IdentityUsers.ExecuteDelete();
 
         context.FootballPositions.ExecuteDelete();
 
@@ -58,6 +54,6 @@ public static class Extensions
 
         context.StatTypes.AddRange(Constants.STAT_TYPES);
 
-        context.SaveChanges();        
+        context.SaveChanges();
     }
 }

@@ -17,7 +17,7 @@ public abstract class BaseDataEntityConfiguration<TEntity> : IEntityTypeConfigur
                .IsRequired(true);
 
         builder.Property(e => e.Title)
-               .HasMaxLength(DbConstants.TITLE_VALUE_MAX_LENGTH)
+               .HasMaxLength(DatabaseConstants.TITLE_VALUE_MAX_LENGTH)
                .IsRequired(true);
 
         builder.Property(e => e.CreatedDate)

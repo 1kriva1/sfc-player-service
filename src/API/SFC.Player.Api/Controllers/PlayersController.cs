@@ -15,11 +15,12 @@ using SFC.Player.Application.Models.Players.Get;
 using SFC.Player.Application.Models.Players.Find;
 using SFC.Player.Application.Models.Players.GetByUser;
 using SFC.Player.Application.Models.Base;
+using SFC.Player.Application.Common.Constants;
 
 namespace SFC.Player.Api.Controllers;
 
-[Authorize]
 [ProducesResponseType(typeof(BaseResponse), StatusCodes.Status401Unauthorized)]
+[ProducesResponseType(typeof(BaseResponse), StatusCodes.Status403Forbidden)]
 public class PlayersController : ApiControllerBase
 {
     /// <summary>
@@ -30,7 +31,9 @@ public class PlayersController : ApiControllerBase
     /// <response code="201">Returns **new** created player.</response>
     /// <response code="400">Returns **validation** errors.</response>
     /// <response code="401">Returns when **failed** authentication.</response>
+    /// <response code="403">Returns when **failed** authorization.</response>
     [HttpPost]
+    [Authorize(Policy.GENERAL)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<CreatePlayerResponse>> CreatePlayerAsync([FromBody] CreatePlayerRequest request)
@@ -52,7 +55,9 @@ public class PlayersController : ApiControllerBase
     /// <response code="204">Returns no content if player updated **successfully**.</response>
     /// <response code="400">Returns **validation** errors.</response>
     /// <response code="401">Returns when **failed** authentication.</response>
+    /// <response code="403">Returns when **failed** authorization.</response>
     [HttpPut("{id}")]
+    [Authorize(Policy.OWN_PLAYER)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> UpdatePlayerAsync([FromRoute] long id, [FromBody] UpdatePlayerRequest request)
@@ -73,8 +78,10 @@ public class PlayersController : ApiControllerBase
     /// <returns>An ActionResult of type GetPlayerResponse</returns>
     /// <response code="200">Returns player model.</response>
     /// <response code="401">Returns when **failed** authentication.</response>
+    /// <response code="403">Returns when **failed** authorization.</response>
     /// <response code="404">Returns when player **not found** by unique identifier.</response>
     [HttpGet("{id}", Name = "GetPlayer")]
+    [Authorize(Policy.GENERAL)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<GetPlayerResponse>> GetPlayerAsync([FromRoute] long id)
@@ -91,8 +98,10 @@ public class PlayersController : ApiControllerBase
     /// </summary>
     /// <returns>An ActionResult of type GetPlayerByUserResponse</returns>
     /// <response code="200">Returns thin player model.</response>
-    /// <response code="401">Returns when JWT token **doesn't** contain player's unique identifier.</response>
+    /// <response code="401">Returns when **failed** authentication.</response>
+    /// <response code="403">Returns when **failed** authorization.</response>
     [HttpGet("byuser")]
+    [Authorize(Policy.GENERAL)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<GetPlayerByUserResponse>> GetPlayerByUserAsync()
     {
@@ -111,7 +120,9 @@ public class PlayersController : ApiControllerBase
     /// <response code="200">Returns list of players with pagination header.</response>
     /// <response code="400">Returns **validation** errors.</response>
     /// <response code="401">Returns when **failed** authentication.</response>
+    /// <response code="403">Returns when **failed** authorization.</response>
     [HttpGet("find")]
+    [Authorize(Policy.GENERAL)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<GetPlayersResponse>> GetPlayersAsync([FromQuery] GetPlayersRequest request)

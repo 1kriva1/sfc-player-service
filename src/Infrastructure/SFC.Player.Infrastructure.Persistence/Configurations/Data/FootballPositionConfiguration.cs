@@ -9,7 +9,7 @@ public class FootballPositionConfiguration : BaseDataEntityConfiguration<Footbal
 {
     public override void Configure(EntityTypeBuilder<FootballPosition> builder)
     {
-        builder.ToTable("FootballPositions", DbConstants.DATA_SCHEMA_NAME);
+        builder.ToTable("FootballPositions", DatabaseConstants.DATA_SCHEMA_NAME);
         base.Configure(builder);
     }
 }

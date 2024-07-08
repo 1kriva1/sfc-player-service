@@ -5,15 +5,20 @@ using SFC.Player.Application.Models.Players.Common;
 namespace SFC.Player.Api.IntegrationTests.Fixtures;
 public static class Constants
 {
-    public static readonly JwtSettings JwtSettings = new()
-    {
-        Issuer = "GloboTicketIdentity",
-        Audience = "GloboTicketIdentityUser",
-        Key = "73AE92E6113F4369A713A94C5A9C6B15"
-    };
+    public const string ACCEPT_LANGUAGE = "Accept-Language";
 
-    public static readonly List<PlayerStatValueModel> VALID_STATS = new()
-    {
+    public const string API_PLAYERS = "/api/players";
+
+    public const string PLAYER_ACCESS_TOKEN_VALID_0 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImIwNzg4ZDJmLTgwMDMtNDNjMS05MmE0LWVkYzc2YTdjNWRkZSIsInN1YiI6ImIwNzg4ZDJmLTgwMDMtNDNjMS05MmE0LWVkYzc2YTdjNWRkZSIsImp0aSI6ImZhMTdlNjNiIiwic2NvcGUiOlsic2ZjLnBsYXllci5mdWxsIiwicHJvZmlsZSIsIm9wZW5pZCIsIm9mZmxpbmVfYWNjZXNzIl0sImF1ZCI6InNmYy5wbGF5ZXIiLCJuYmYiOjE3MjAwMDM5MTYsImV4cCI6MTc1MTUzOTkxNiwiaWF0IjoxNzIwMDAzOTE4LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MjY2In0.KnUXpI4TD4wfKUSJTGd8Ez93-GDz_LAV4DpfZv0Am8o";
+
+    // for own player policy testing
+    public const string PLAYER_ACCESS_TOKEN_VALID_1 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjgzNkE3RkI5LTczRkUtNDEwNy05MUYyLTREOTE2MTU4RTI0MiIsInN1YiI6IjgzNkE3RkI5LTczRkUtNDEwNy05MUYyLTREOTE2MTU4RTI0MiIsImp0aSI6Ijg4MWI5NGRlIiwic2NvcGUiOlsic2ZjLnBsYXllci5mdWxsIiwicHJvZmlsZSIsIm9wZW5pZCIsIm9mZmxpbmVfYWNjZXNzIl0sImF1ZCI6InNmYy5wbGF5ZXIiLCJuYmYiOjE3MjAwMTM2MzUsImV4cCI6MTc1MTU0OTYzNSwiaWF0IjoxNzIwMDEzNjM2LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MjY2In0.3So61-18gR_T13Caj5tlJiz3QHAr6-LY9WRixLVBMa4";
+
+    //without scope
+    public const string PLAYER_ACCESS_TOKEN_FORBIDDEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImIwNzg4ZDJmLTgwMDMtNDNjMS05MmE0LWVkYzc2YTdjNWRkZSIsInN1YiI6ImIwNzg4ZDJmLTgwMDMtNDNjMS05MmE0LWVkYzc2YTdjNWRkZSIsImp0aSI6IjNjYTk5OTE0Iiwic2NvcGUiOlsicHJvZmlsZSIsIm9wZW5pZCIsIm9mZmxpbmVfYWNjZXNzIl0sImF1ZCI6InNmYy5wbGF5ZXIiLCJuYmYiOjE3MjAwMDM5MzcsImV4cCI6MTc1MTUzOTkzNywiaWF0IjoxNzIwMDAzOTM4LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MjY2In0.jn3j3PrS0VL6LXD-VgdKuGf0_70IcGxQ6kULk9ueKjw";
+
+    public static readonly List<PlayerStatValueModel> VALID_STATS =
+    [
                         new PlayerStatValueModel{ Type = 0, Value = 50 },
                         new PlayerStatValueModel{ Type = 1, Value = 50 },
                         new PlayerStatValueModel{ Type = 2, Value = 50 },
@@ -43,45 +48,45 @@ public static class Constants
                         new PlayerStatValueModel{ Type = 26, Value = 50 },
                         new PlayerStatValueModel{ Type = 27, Value = 50 },
                         new PlayerStatValueModel{ Type = 28, Value = 50 }
-    };
+    ];
 
-    public static readonly FootballPosition[] FOOTBALL_POSITIONS = new FootballPosition[] {
+    public static readonly FootballPosition[] FOOTBALL_POSITIONS = [
                         new() { Id = 0, Title = "Goalkeeper" },
                         new() { Id = 1, Title = "Defender" },
                         new() { Id = 2, Title = "Midfielder" },
                         new() { Id = 3, Title = "Forward" }
-    };
+    ];
 
-    public static readonly WorkingFoot[] WORKING_FOOTS = new WorkingFoot[] {
+    public static readonly WorkingFoot[] WORKING_FOOTS = [
                         new() { Id = 0, Title = "Right" },
                         new() { Id = 1, Title = "Left" },
                         new() { Id = 2, Title = "Both" }
-    };
+    ];
 
-    public static readonly GameStyle[] GAME_STYLES = new GameStyle[] {
+    public static readonly GameStyle[] GAME_STYLES = [
                         new() { Id = 0, Title = "Defend" },
                         new() { Id = 1, Title = "Attacking" },
                         new() { Id = 2, Title = "Aggresive" },
                         new() { Id = 3, Title = "Control" },
                         new() { Id = 4, Title = "CounterAttacks" }
-    };
+    ];
 
-    public static readonly StatCategory[] STAT_CATEGORIES = new StatCategory[] {
+    public static readonly StatCategory[] STAT_CATEGORIES = [
                         new() { Id = 0, Title = "Pace" },
                         new() { Id = 1, Title = "Shooting" },
                         new() { Id = 2, Title = "Passing" },
                         new() { Id = 3, Title = "Dribbling" },
                         new() { Id = 4, Title = "Defending" },
                         new() { Id = 5, Title = "Physicality" }
-    };
+    ];
 
-    public static readonly StatSkill[] STAT_SKILLS = new StatSkill[] {
+    public static readonly StatSkill[] STAT_SKILLS = [
                         new() { Id = 0, Title = "Physical" },
                         new() { Id = 1, Title = "Mental" },
                         new() { Id = 2, Title = "Skill" }
-    };
+    ];
 
-    public static readonly StatType[] STAT_TYPES = new StatType[] {
+    public static readonly StatType[] STAT_TYPES = [
                         new() { Id = 0, Title = "Acceleration", Category = STAT_CATEGORIES[0], Skill = STAT_SKILLS[0] },
                         new() { Id = 1, Title = "SprintSpeed", Category = STAT_CATEGORIES[0], Skill = STAT_SKILLS[0]},
                         new() { Id = 2, Title = "Positioning", Category = STAT_CATEGORIES[1], Skill = STAT_SKILLS[2]},
@@ -111,5 +116,5 @@ public static class Constants
                         new() { Id = 26, Title = "Stamina", Category = STAT_CATEGORIES[5], Skill = STAT_SKILLS[0]},
                         new() { Id = 27, Title = "Strength", Category = STAT_CATEGORIES[5], Skill = STAT_SKILLS[0]},
                         new() { Id = 28, Title = "Aggression", Category = STAT_CATEGORIES[5], Skill = STAT_SKILLS[1]}
-    };
+    ];
 }

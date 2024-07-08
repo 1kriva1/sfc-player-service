@@ -11,6 +11,6 @@ public static class HeadersExtensions
     public static void AddPaginationHeader(this HttpResponse response, PageMetadataModel metadata)
     {
         JsonSerializerOptions options = new() { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
-        response.Headers.Add(CommonConstants.PAGINATION_HEADER_KEY, JsonSerializer.Serialize(metadata, options));
+        response.Headers.Append(CommonConstants.PAGINATION_HEADER_KEY, JsonSerializer.Serialize(metadata, options));
     }
 }

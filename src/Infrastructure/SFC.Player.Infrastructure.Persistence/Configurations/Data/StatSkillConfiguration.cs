@@ -13,7 +13,7 @@ public class StatSkillConfiguration : BaseDataEntityConfiguration<StatSkill>
                .WithOne()
                .IsRequired();
 
-        builder.ToTable("StatSkills", DbConstants.DATA_SCHEMA_NAME);
+        builder.ToTable("StatSkills", DatabaseConstants.DATA_SCHEMA_NAME);
 
         base.Configure(builder);
     }

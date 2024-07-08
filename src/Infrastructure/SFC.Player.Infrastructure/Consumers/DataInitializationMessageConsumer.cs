@@ -14,39 +14,26 @@ using SFC.Player.Infrastructure.Settings;
 using Exchange = SFC.Player.Infrastructure.Settings.Exchange;
 
 namespace SFC.Player.Infrastructure.Consumers;
-public class DataInitializationMessageConsumer : IConsumer<DataInitializationMessage>
+public class DataInitializationMessageConsumer(
+    ILogger<DataInitializationMessageConsumer> logger,
+    IHostEnvironment hostEnvironment,
+    IDataRepository<FootballPosition> positionsRepository,
+    IDataRepository<GameStyle> gameStylesRepository,
+    IDataRepository<StatCategory> statCategoriesRepository,
+    IDataRepository<StatSkill> statSkillsRepository,
+    IDataRepository<StatType> statTypesRepository,
+    IDataRepository<WorkingFoot> workingFootsRepository,
+    IPlayerRepository playerRepository) : IConsumer<DataInitializationMessage>
 {
-    private readonly ILogger<DataInitializationMessageConsumer> _logger;
-    private readonly IHostEnvironment _hostEnvironment;
-    private readonly IDataRepository<FootballPosition> _positionsRepository;
-    private readonly IDataRepository<GameStyle> _gameStylesRepository;
-    private readonly IDataRepository<StatCategory> _statCategoriesRepository;
-    private readonly IDataRepository<StatSkill> _statSkillsRepository;
-    private readonly IDataRepository<StatType> _statTypesRepository;
-    private readonly IDataRepository<WorkingFoot> _workingFootsRepository;
-    private readonly IPlayerRepository _playerRepository;
-
-    public DataInitializationMessageConsumer(
-        ILogger<DataInitializationMessageConsumer> logger,
-        IHostEnvironment hostEnvironment,
-        IDataRepository<FootballPosition> positionsRepository,
-        IDataRepository<GameStyle> gameStylesRepository,
-        IDataRepository<StatCategory> statCategoriesRepository,
-        IDataRepository<StatSkill> statSkillsRepository,
-        IDataRepository<StatType> statTypesRepository,
-        IDataRepository<WorkingFoot> workingFootsRepository,
-        IPlayerRepository playerRepository)
-    {
-        _logger = logger;
-        _hostEnvironment = hostEnvironment;
-        _positionsRepository = positionsRepository;
-        _gameStylesRepository = gameStylesRepository;
-        _statCategoriesRepository = statCategoriesRepository;
-        _statSkillsRepository = statSkillsRepository;
-        _statTypesRepository = statTypesRepository;
-        _workingFootsRepository = workingFootsRepository;
-        _playerRepository = playerRepository;
-    }
+    private readonly ILogger<DataInitializationMessageConsumer> _logger = logger;
+    private readonly IHostEnvironment _hostEnvironment = hostEnvironment;
+    private readonly IDataRepository<FootballPosition> _positionsRepository = positionsRepository;
+    private readonly IDataRepository<GameStyle> _gameStylesRepository = gameStylesRepository;
+    private readonly IDataRepository<StatCategory> _statCategoriesRepository = statCategoriesRepository;
+    private readonly IDataRepository<StatSkill> _statSkillsRepository = statSkillsRepository;
+    private readonly IDataRepository<StatType> _statTypesRepository = statTypesRepository;
+    private readonly IDataRepository<WorkingFoot> _workingFootsRepository = workingFootsRepository;
+    private readonly IPlayerRepository _playerRepository = playerRepository;
 
     public async Task Consume(ConsumeContext<DataInitializationMessage> context)
     {

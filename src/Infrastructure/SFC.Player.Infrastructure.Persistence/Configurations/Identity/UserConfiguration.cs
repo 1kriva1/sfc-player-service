@@ -29,7 +29,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         if (_isSqlServer)
         {
-            builder.ToTable("Users", DbConstants.IDENTITY_SCHEMA_NAME);
+            builder.ToTable("Users", DatabaseConstants.IDENTITY_SCHEMA_NAME);
         }
         else
         {

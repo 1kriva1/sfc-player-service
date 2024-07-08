@@ -13,6 +13,7 @@
             <response code="201">Returns **new** created player.</response>
             <response code="400">Returns **validation** errors.</response>
             <response code="401">Returns when **failed** authentication.</response>
+            <response code="403">Returns when **failed** authorization.</response>
         </member>
         <member name="M:SFC.Player.Api.Controllers.PlayersController.UpdatePlayerAsync(System.Int64,SFC.Player.Application.Models.Players.Update.UpdatePlayerRequest)">
             <summary>
@@ -24,6 +25,7 @@
             <response code="204">Returns no content if player updated **successfully**.</response>
             <response code="400">Returns **validation** errors.</response>
             <response code="401">Returns when **failed** authentication.</response>
+            <response code="403">Returns when **failed** authorization.</response>
         </member>
         <member name="M:SFC.Player.Api.Controllers.PlayersController.GetPlayerAsync(System.Int64)">
             <summary>
@@ -33,6 +35,7 @@
             <returns>An ActionResult of type GetPlayerResponse</returns>
             <response code="200">Returns player model.</response>
             <response code="401">Returns when **failed** authentication.</response>
+            <response code="403">Returns when **failed** authorization.</response>
             <response code="404">Returns when player **not found** by unique identifier.</response>
         </member>
         <member name="M:SFC.Player.Api.Controllers.PlayersController.GetPlayerByUserAsync">
@@ -41,7 +44,8 @@
             </summary>
             <returns>An ActionResult of type GetPlayerByUserResponse</returns>
             <response code="200">Returns thin player model.</response>
-            <response code="401">Returns when JWT token **doesn't** contain player's unique identifier.</response>
+            <response code="401">Returns when **failed** authentication.</response>
+            <response code="403">Returns when **failed** authorization.</response>
         </member>
         <member name="M:SFC.Player.Api.Controllers.PlayersController.GetPlayersAsync(SFC.Player.Application.Models.Players.Find.GetPlayersRequest)">
             <summary>
@@ -52,6 +56,7 @@
             <response code="200">Returns list of players with pagination header.</response>
             <response code="400">Returns **validation** errors.</response>
             <response code="401">Returns when **failed** authentication.</response>
+            <response code="403">Returns when **failed** authorization.</response>
         </member>
     </members>
 </doc>

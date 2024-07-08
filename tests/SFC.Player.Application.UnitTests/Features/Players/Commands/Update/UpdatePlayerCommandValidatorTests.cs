@@ -2,10 +2,8 @@
 
 using Moq;
 
-using SFC.Player.Application.Common.Constants;
 using SFC.Player.Application.Features.Players.Commands.Update;
 using SFC.Player.Application.Features.Players.Common.Dto;
-using SFC.Player.Application.Features.Players.Common.Models;
 using SFC.Player.Application.Interfaces.Common;
 using SFC.Player.Application.Interfaces.Persistence;
 using SFC.Player.Domain.Entities.Data;
@@ -33,7 +31,6 @@ public class UpdatePlayerCommandValidatorTests
         }
     };
     private readonly Mock<IDateTimeService> _mockDateTimeService = new();
-    private readonly Mock<IUserRepository> _mockUserRepository = new();
     private readonly Mock<IStatTypeRepository> _statTypeRepository = new();
     private readonly Mock<IDataRepository<FootballPosition>> _footballPositionRepository = new();
     private readonly Mock<IDataRepository<GameStyle>> _gameStyleRepository = new();
@@ -45,7 +42,6 @@ public class UpdatePlayerCommandValidatorTests
         {
             return new(
                 _mockDateTimeService.Object,
-                _mockUserRepository.Object,
                 _statTypeRepository.Object,
                 _footballPositionRepository.Object,
                 _workingFootRepository.Object,
@@ -64,33 +60,6 @@ public class UpdatePlayerCommandValidatorTests
 
     [Fact]
     [Trait("Feature", "UpdatePlayer")]
-    public async Task Feature_UpdatePlayer_ShouldFailValidationWhenPlayerNotRelatedForUser()
-    {
-        // Arrange
-        UpdatePlayerCommand command = new()
-        {
-            PlayerId = 1,
-            Player = VALID_PLAYER,
-            UserId = MOCK_USER_ID
-        };
-
-        _mockUserRepository.Setup(r => r.AnyAsync(command.PlayerId, command.UserId)).ReturnsAsync(false);
-
-        // Act
-        ValidationResult result = await Validator.ValidateAsync(command);
-
-        // Assert
-        Assert.False(result.IsValid);
-        Assert.Single(result.Errors);
-
-        ValidationFailure failure = result.Errors.First();
-
-        Assert.Equal(Messages.PlayerNotRelatedToThisUser, failure.ErrorMessage);
-        Assert.Equal(nameof(IPlayerRelatedRequest.PlayerId), failure.PropertyName);
-    }
-
-    [Fact]
-    [Trait("Feature", "UpdatePlayer")]
     public async Task Feature_UpdatePlayer_ShouldFailValidationWhenNotFitCommonPlayerValidation()
     {
         // Arrange
@@ -103,8 +72,6 @@ public class UpdatePlayerCommandValidatorTests
         command.Player.Profile.General.FirstName = null!;
         command.Player.Profile.General.LastName = null!;
         command.Player.Profile.General.City = null!;
-
-        _mockUserRepository.Setup(r => r.AnyAsync(command.PlayerId, command.UserId)).ReturnsAsync(true);
 
         // Act
         ValidationResult result = await Validator.ValidateAsync(command);
@@ -133,8 +100,6 @@ public class UpdatePlayerCommandValidatorTests
             Player = VALID_PLAYER,
             UserId = MOCK_USER_ID
         };
-
-        _mockUserRepository.Setup(r => r.AnyAsync(command.PlayerId, command.UserId)).ReturnsAsync(true);
 
         // Act
         ValidationResult result = await Validator.ValidateAsync(command);

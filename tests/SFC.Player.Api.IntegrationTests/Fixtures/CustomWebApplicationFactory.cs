@@ -8,7 +8,6 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 using SFC.Player.Infrastructure.Consumers;
 using SFC.Player.Infrastructure.Persistence;
@@ -24,15 +23,11 @@ public class CustomWebApplicationFactory<TStartup>
     {
         builder.ConfigureServices(services =>
         {
-            ServiceDescriptor? dbContextDescriptor = services.SingleOrDefault(d =>
-                d.ServiceType == typeof(DbContextOptions<PlayerDbContext>));
+            // remove db contexts
+            RemoveServiceDescriptor<DbContextOptions<PlayerDbContext>>(services);
 
-            services.Remove(dbContextDescriptor!);
-
-            ServiceDescriptor? dbConnectionDescriptor = services.SingleOrDefault(d =>
-                d.ServiceType == typeof(DbConnection));
-
-            services.Remove(dbConnectionDescriptor!);
+            // remove db connection
+            RemoveServiceDescriptor<DbConnection>(services);
 
             // Create open SqliteConnection so EF won't automatically close it.
             services.AddSingleton<DbConnection>(container =>
@@ -43,16 +38,11 @@ public class CustomWebApplicationFactory<TStartup>
                 return connection;
             });
 
-            services.AddDbContext<PlayerDbContext>((container, options) =>
-            {
-                DbConnection connection = container.GetRequiredService<DbConnection>();
-                options.UseSqlite(connection);
-            });
+            // switch db context connection to sqllite db
+            services.AddDbContext<PlayerDbContext>(SwitchToSqliteConnection);
 
             services.AddMassTransitTestHarness(configure => configure.AddConsumer<DataInitializationMessageConsumer>());
         });
-
-        builder.UseEnvironment(TEST_ENVIROMENT);
     }
 
     public void InitializeDbForTests()
@@ -64,5 +54,17 @@ public class CustomWebApplicationFactory<TStartup>
         PlayerDbContext context = scopedServices.GetRequiredService<PlayerDbContext>();
 
         context.RefreshData();
+    }
+
+    private static void RemoveServiceDescriptor<T>(IServiceCollection services)
+    {
+        ServiceDescriptor? serviceDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(T));
+        services.Remove(serviceDescriptor!);
+    }
+
+    private static void SwitchToSqliteConnection(IServiceProvider container, DbContextOptionsBuilder options)
+    {
+        DbConnection connection = container.GetRequiredService<DbConnection>();
+        options.UseSqlite(connection);
     }
 }

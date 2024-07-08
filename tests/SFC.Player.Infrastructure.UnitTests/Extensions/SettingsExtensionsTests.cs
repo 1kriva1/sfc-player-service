@@ -9,14 +9,34 @@ public class SettingsExtensionsTests
 {
     [Fact]
     [Trait("Extension", "Settings")]
-    public void Extension_Settings_ShouldGetJwtSettings()
+    public void Extension_Settings_ShouldReturnUseAuthentication()
     {
         // Arrange
+        Dictionary<string, string> initialData = new() { { "Authentication", "true" } };
+        ConfigurationManager configuration = new();
+        configuration.AddInMemoryCollection(initialData!);
+
+        // Act
+        bool result = configuration.UseAuthentication();
+
+        // Assert
+        Assert.True(result);
+    }
+
+    [Fact]
+    [Trait("Extension", "Settings")]
+    public void Extension_Settings_ShouldGetIdentitySettings()
+    {
+        // Arrange
+        string authority = "https://localhost:7266",
+            audience = "sfc.player",
+            claimType = "scope",
+            claimValue = "sfc.player.full";
         Dictionary<string, string> initialData = new()
         {
-            {"Jwt:Key", "key"},
-            {"Jwt:Issuer", "issuer"},
-            {"Jwt:Audience", "audience"}
+            {"Identity:Authority", authority},
+            {"Identity:Audience", audience},
+            {$"Identity:RequireClaims:{claimType}:0", claimValue}
         };
 
         IConfigurationRoot configuration = new ConfigurationBuilder()
@@ -24,13 +44,18 @@ public class SettingsExtensionsTests
             .Build();
 
         // Act
-        JwtSettings result = configuration.GetJwtSettings();
+        IdentitySettings result = configuration.GetIdentitySettings();
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal("key", result.Key);
-        Assert.Equal("issuer", result.Issuer);
-        Assert.Equal("audience", result.Audience);
+        Assert.Equal(authority, result.Authority);
+        Assert.Equal(audience, result.Audience);
+        Assert.Single(result.RequireClaims);
+
+        KeyValuePair<string, IEnumerable<string>> claim = result.RequireClaims.First();
+        Assert.Equal(claimType, claim.Key);
+        Assert.Single(claim.Value);
+        Assert.Equal(claimValue, claim.Value.First());
     }
 
     [Fact]

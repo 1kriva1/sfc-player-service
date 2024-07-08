@@ -1,6 +1,6 @@
 ﻿namespace SFC.Player.Application.Common.Constants;
 
-public static class DbConstants
+public static class DatabaseConstants
 {
     public const string DEFAULT_SCHEMA_NAME = "Player";
 

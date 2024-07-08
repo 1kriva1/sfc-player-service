@@ -1,10 +1,12 @@
 ﻿using MassTransit;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 using SFC.Player.Application.Interfaces.Common;
+using SFC.Player.Infrastructure.Authorization.OwnPlayer;
 using SFC.Player.Infrastructure.Extensions;
 using SFC.Player.Infrastructure.Services;
 using SFC.Player.Infrastructure.Services.Hosted;
@@ -14,13 +16,13 @@ public static class InfrastructureRegistration
 {
     public static void AddInfrastructureServices(this WebApplicationBuilder builder)
     {
+        builder.Services.AddHttpContextAccessor();
+
         builder.Services.AddRedis(builder.Configuration);
 
         builder.Services.AddMassTransit(builder.Configuration);
 
-        builder.Services.AddCache(builder.Configuration);
-
-        builder.Services.AddTransient<IDateTimeService, DateTimeService>();
+        builder.Services.AddCache(builder.Configuration);       
 
         builder.Services.AddSingleton<IUriService>(o =>
         {
@@ -29,8 +31,14 @@ public static class InfrastructureRegistration
             return new UriService(string.Concat(request.Scheme, "://", request.Host.ToUriComponent()));
         });
 
-        builder.Services.AddHostedService<DatabaseResetHostedService>();
+        // custom services
+        builder.Services.AddTransient<IDateTimeService, DateTimeService>();
 
+        // hosted services
+        builder.Services.AddHostedService<DatabaseResetHostedService>();
         builder.Services.AddHostedService<DataInitializationHostedService>();
+
+        // authorization
+        builder.Services.AddScoped<IAuthorizationHandler, OwnPlayerHandler>();
     }
 }

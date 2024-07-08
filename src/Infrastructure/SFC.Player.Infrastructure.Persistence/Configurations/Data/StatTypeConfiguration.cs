@@ -18,7 +18,7 @@ public class StatTypeConfiguration : BaseDataEntityConfiguration<StatType>
                .WithMany(e => e.Types)
                .IsRequired();
 
-        builder.ToTable("StatTypes", DbConstants.DATA_SCHEMA_NAME);
+        builder.ToTable("StatTypes", DatabaseConstants.DATA_SCHEMA_NAME);
         base.Configure(builder);
     }
 }

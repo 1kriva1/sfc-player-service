@@ -40,7 +40,7 @@ public class PlayersDbContextTests
 
         string? defaultSchema = context.Model.GetDefaultSchema();
 
-        Assert.Equal(DbConstants.DEFAULT_SCHEMA_NAME, defaultSchema);
+        Assert.Equal(DatabaseConstants.DEFAULT_SCHEMA_NAME, defaultSchema);
     }
 
     [Fact]

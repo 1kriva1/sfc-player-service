@@ -30,7 +30,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
     public async Task API_Integration_Create_ShouldReturnSuccess()
     {
         // Act
-        HttpResponseMessage response = await CreateNewPlayer(Guid.NewGuid());
+        HttpResponseMessage response = await CreateNewPlayer();
 
         // Assert
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
@@ -81,10 +81,21 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
         JsonContent content = JsonContent.Create(request);
 
         // Act
-        HttpResponseMessage response = await client.PostAsync("/api/players", content);
+        HttpResponseMessage response = await client.PostAsync(Constants.API_PLAYERS, content);
 
         // Assert
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    [Trait("API", "Integration")]
+    public async Task API_Integration_Create_ShouldReturnForbidden()
+    {
+        // Act
+        HttpResponseMessage response = await CreateNewPlayer(true);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
     }
 
     [Fact]
@@ -93,7 +104,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
     {
         // Arrange
         HttpClient client = _factory.CreateClient()
-                                    .SetAuthenticationToken(Guid.NewGuid());
+                                    .SetAuthenticationToken();
 
         CreatePlayerRequest request = new()
         {
@@ -122,7 +133,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
         JsonContent content = JsonContent.Create(request);
 
         // Act
-        HttpResponseMessage response = await client.PostAsync("/api/players", content);
+        HttpResponseMessage response = await client.PostAsync(Constants.API_PLAYERS, content);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -146,7 +157,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
     {
         // Arrange
         HttpClient client = _factory.CreateClient()
-                                    .SetAuthenticationToken(Guid.NewGuid());
+                                    .SetAuthenticationToken();
 
         CreatePlayerRequest request = new()
         {
@@ -174,10 +185,10 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
 
         JsonContent content = JsonContent.Create(request);
 
-        client.DefaultRequestHeaders.Add("Accept-Language", CommonConstants.SUPPORTED_CULTURES[1]);
+        client.DefaultRequestHeaders.Add(Constants.ACCEPT_LANGUAGE, CommonConstants.SUPPORTED_CULTURES[1]);
 
         // Act
-        HttpResponseMessage response = await client.PostAsync("/api/players", content);
+        HttpResponseMessage response = await client.PostAsync(Constants.API_PLAYERS, content);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -197,11 +208,10 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
     public async Task API_Integration_Update_ShouldReturnSuccess()
     {
         // Arrange
-        Guid userId = Guid.NewGuid();
-        long newPlayerId = await GetNewPlayerId(userId);
+        long newPlayerId = await GetNewPlayerId();
 
         HttpClient client = _factory.CreateClient()
-                                    .SetAuthenticationToken(userId);
+                                    .SetAuthenticationToken();
 
         UpdatePlayerRequest request = new()
         {
@@ -231,7 +241,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
         JsonContent content = JsonContent.Create(request);
 
         // Act
-        HttpResponseMessage response = await client.PutAsync($"/api/players/{newPlayerId}", content);
+        HttpResponseMessage response = await client.PutAsync($"{Constants.API_PLAYERS}/{newPlayerId}", content);
 
         // Assert
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
@@ -242,7 +252,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
     public async Task API_Integration_Update_ShouldReturnUnauthorized()
     {
         // Arrange
-        long newPlayerId = await GetNewPlayerId(Guid.NewGuid());
+        long newPlayerId = await GetNewPlayerId();
 
         HttpClient client = _factory.CreateClient();
 
@@ -274,7 +284,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
         JsonContent content = JsonContent.Create(request);
 
         // Act
-        HttpResponseMessage response = await client.PutAsync($"/api/players/{newPlayerId}", content);
+        HttpResponseMessage response = await client.PutAsync($"{Constants.API_PLAYERS}/{newPlayerId}", content);
 
         // Assert
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
@@ -282,14 +292,102 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
 
     [Fact]
     [Trait("API", "Integration")]
+    public async Task API_Integration_Update_ShouldReturnForbidden()
+    {
+        // Arrange
+        long newPlayerId = await GetNewPlayerId();
+
+        HttpClient client = _factory.CreateClient()
+                                    .SetAuthenticationToken(true);
+
+        UpdatePlayerRequest request = new()
+        {
+            Player = new UpdatePlayerModel
+            {
+                Profile = new PlayerProfileModel
+                {
+                    General = new PlayerGeneralProfileModel
+                    {
+                        FirstName = "Ira",
+                        LastName = "Kryvoruk",
+                        City = "Kyiv"
+                    },
+                    Football = new PlayerFootballProfileModel
+                    {
+                        Position = 3
+                    }
+                },
+                Stats = new PlayerStatsModel
+                {
+                    Points = new PlayerStatPointsModel { Available = 2, Used = 1 },
+                    Values = Constants.VALID_STATS
+                }
+            }
+        };
+
+        JsonContent content = JsonContent.Create(request);
+
+        // Act
+        HttpResponseMessage response = await client.PutAsync($"{Constants.API_PLAYERS}/{newPlayerId}", content);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+    }
+
+    [Fact]
+    [Trait("API", "Integration")]
+    public async Task API_Integration_Update_ShouldReturnForbiddenWhenUpdateNotOwnPlayer()
+    {
+        // Arrange
+        await GetNewPlayerId(Constants.PLAYER_ACCESS_TOKEN_VALID_0);
+        long anotherUserNewPlayerId = await GetNewPlayerId(Constants.PLAYER_ACCESS_TOKEN_VALID_1);
+
+        HttpClient client = _factory.CreateClient()
+                                    .SetAuthenticationToken(false, Constants.PLAYER_ACCESS_TOKEN_VALID_0);
+
+        UpdatePlayerRequest request = new()
+        {
+            Player = new UpdatePlayerModel
+            {
+                Profile = new PlayerProfileModel
+                {
+                    General = new PlayerGeneralProfileModel
+                    {
+                        FirstName = "Ira",
+                        LastName = "Kryvoruk",
+                        City = "Kyiv"
+                    },
+                    Football = new PlayerFootballProfileModel
+                    {
+                        Position = 3
+                    }
+                },
+                Stats = new PlayerStatsModel
+                {
+                    Points = new PlayerStatPointsModel { Available = 2, Used = 1 },
+                    Values = Constants.VALID_STATS
+                }
+            }
+        };
+
+        JsonContent content = JsonContent.Create(request);
+
+        // Act
+        HttpResponseMessage response = await client.PutAsync($"{Constants.API_PLAYERS}/{anotherUserNewPlayerId}", content);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+    }
+
+    [Fact]
+    [Trait("API", "Integration")]
     public async Task API_Integration_Update_ShouldReturnBadRequest()
     {
         // Arrange
-        Guid userId = Guid.NewGuid();
-        long newPlayerId = await GetNewPlayerId(userId);
+        long newPlayerId = await GetNewPlayerId();
 
         HttpClient client = _factory.CreateClient()
-                                    .SetAuthenticationToken(userId);
+                                    .SetAuthenticationToken();
 
         UpdatePlayerRequest request = new()
         {
@@ -318,7 +416,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
         JsonContent content = JsonContent.Create(request);
 
         // Act
-        HttpResponseMessage response = await client.PutAsync($"/api/players/{newPlayerId}", content);
+        HttpResponseMessage response = await client.PutAsync($"{Constants.API_PLAYERS}/{newPlayerId}", content);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -341,11 +439,10 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
     public async Task API_Integration_Update_ShouldReturnLocalizedBadRequest()
     {
         // Arrange
-        Guid userId = Guid.NewGuid();
-        long newPlayerId = await GetNewPlayerId(userId);
+        long newPlayerId = await GetNewPlayerId();
 
         HttpClient client = _factory.CreateClient()
-                                    .SetAuthenticationToken(userId);
+                                    .SetAuthenticationToken();
 
         UpdatePlayerRequest request = new()
         {
@@ -373,10 +470,10 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
 
         JsonContent content = JsonContent.Create(request);
 
-        client.DefaultRequestHeaders.Add("Accept-Language", CommonConstants.SUPPORTED_CULTURES[1]);
+        client.DefaultRequestHeaders.Add(Constants.ACCEPT_LANGUAGE, CommonConstants.SUPPORTED_CULTURES[1]);
 
         // Act
-        HttpResponseMessage response = await client.PutAsync($"/api/players/{newPlayerId}", content);
+        HttpResponseMessage response = await client.PutAsync($"{Constants.API_PLAYERS}/{newPlayerId}", content);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -387,7 +484,7 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
 
         Assert.Equal("Валідаційна помилка.", responseValue!.Message);
         Assert.Equal("'FirstName' не може бути порожнім.", responseValue!.Errors!["Player.Profile.General.FirstName"].FirstOrDefault());
-    }
+    }    
 
     #endregion Update
 
@@ -398,14 +495,13 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
     public async Task API_Integration_Get_ShouldReturnSuccess()
     {
         // Arrange
-        Guid userId = Guid.NewGuid();
-        long newPlayerId = await GetNewPlayerId(userId);
+        long newPlayerId = await GetNewPlayerId();
 
         HttpClient client = _factory.CreateClient()
-                                    .SetAuthenticationToken(userId);
+                                    .SetAuthenticationToken();
 
         // Act
-        HttpResponseMessage response = await client.GetAsync($"/api/players/{newPlayerId}");
+        HttpResponseMessage response = await client.GetAsync($"{Constants.API_PLAYERS}/{newPlayerId}");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -426,15 +522,32 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
     public async Task API_Integration_Get_ShouldReturnUnauthorize()
     {
         // Arrange
-        long newPlayerId = await GetNewPlayerId(Guid.NewGuid());
+        long newPlayerId = await GetNewPlayerId();
 
         HttpClient client = _factory.CreateClient();
 
         // Act
-        HttpResponseMessage response = await client.GetAsync($"/api/players/{newPlayerId}");
+        HttpResponseMessage response = await client.GetAsync($"{Constants.API_PLAYERS}/{newPlayerId}");
 
         // Assert
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    [Trait("API", "Integration")]
+    public async Task API_Integration_Get_ShouldReturnForbidden()
+    {
+        // Arrange
+        long newPlayerId = await GetNewPlayerId();
+
+        HttpClient client = _factory.CreateClient()
+                                    .SetAuthenticationToken(true);
+
+        // Act
+        HttpResponseMessage response = await client.GetAsync($"{Constants.API_PLAYERS}/{newPlayerId}");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
     }
 
     [Fact]
@@ -443,10 +556,10 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
     {
         // Arrange
         HttpClient client = _factory.CreateClient()
-                                    .SetAuthenticationToken(Guid.NewGuid());
+                                    .SetAuthenticationToken();
 
         // Act
-        HttpResponseMessage response = await client.GetAsync($"/api/players/{1}");
+        HttpResponseMessage response = await client.GetAsync($"{Constants.API_PLAYERS}/{1}");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -466,11 +579,11 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
     {
         // Arrange
         HttpClient client = _factory.CreateClient()
-                                    .SetAuthenticationToken(Guid.NewGuid());
-        client.DefaultRequestHeaders.Add("Accept-Language", CommonConstants.SUPPORTED_CULTURES[1]);
+                                    .SetAuthenticationToken();
+        client.DefaultRequestHeaders.Add(Constants.ACCEPT_LANGUAGE, CommonConstants.SUPPORTED_CULTURES[1]);
 
         // Act
-        HttpResponseMessage response = await client.GetAsync($"/api/players/{1}");
+        HttpResponseMessage response = await client.GetAsync($"{Constants.API_PLAYERS}/{1}");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -491,14 +604,13 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
     public async Task API_Integration_GetByUser_ShouldReturnSuccess()
     {
         // Arrange
-        Guid userId = Guid.NewGuid();
-        await CreateNewPlayer(userId);
+        await CreateNewPlayer();
 
         HttpClient client = _factory.CreateClient()
-                                    .SetAuthenticationToken(userId);
+                                    .SetAuthenticationToken();
 
         // Act
-        HttpResponseMessage response = await client.GetAsync("/api/players/byuser");
+        HttpResponseMessage response = await client.GetAsync($"{Constants.API_PLAYERS}/byuser");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -519,15 +631,14 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
     public async Task API_Integration_GetByUser_ShouldReturnLocalizedSuccess()
     {
         // Arrange
-        Guid userId = Guid.NewGuid();
-        await CreateNewPlayer(userId);
+        await CreateNewPlayer();
 
         HttpClient client = _factory.CreateClient()
-                                    .SetAuthenticationToken(userId);
-        client.DefaultRequestHeaders.Add("Accept-Language", CommonConstants.SUPPORTED_CULTURES[1]);
+                                    .SetAuthenticationToken();
+        client.DefaultRequestHeaders.Add(Constants.ACCEPT_LANGUAGE, CommonConstants.SUPPORTED_CULTURES[1]);
 
         // Act
-        HttpResponseMessage response = await client.GetAsync("/api/players/byuser");
+        HttpResponseMessage response = await client.GetAsync($"{Constants.API_PLAYERS}/byuser");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -544,15 +655,32 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
     public async Task API_Integration_GetByUser_ShouldReturnUnauthorize()
     {
         // Arrange
-        await CreateNewPlayer(Guid.NewGuid());
+        await CreateNewPlayer();
 
         HttpClient client = _factory.CreateClient();
 
         // Act
-        HttpResponseMessage response = await client.GetAsync("/api/players/byuser");
+        HttpResponseMessage response = await client.GetAsync($"{Constants.API_PLAYERS}/byuser");
 
         // Assert
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    [Trait("API", "Integration")]
+    public async Task API_Integration_GetByUser_ShouldReturnForbidden()
+    {
+        // Arrange
+        await CreateNewPlayer();
+
+        HttpClient client = _factory.CreateClient()
+                                    .SetAuthenticationToken(true);
+
+        // Act
+        HttpResponseMessage response = await client.GetAsync($"{Constants.API_PLAYERS}/byuser");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
     }
 
     [Fact]
@@ -561,10 +689,10 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
     {
         // Arrange
         HttpClient client = _factory.CreateClient()
-                                    .SetAuthenticationToken(Guid.NewGuid());
+                                    .SetAuthenticationToken();
 
         // Act
-        HttpResponseMessage response = await client.GetAsync("/api/players/byuser");
+        HttpResponseMessage response = await client.GetAsync($"{Constants.API_PLAYERS}/byuser");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -589,15 +717,14 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
     public async Task API_Integration_GetPlayers_ShouldReturnSuccess()
     {
         // Arrange
-        Guid userId = Guid.NewGuid();
-        await CreateNewPlayer(userId);
+        await CreateNewPlayer();
 
         HttpClient client = _factory.CreateClient()
-                                    .SetAuthenticationToken(userId);
+                                    .SetAuthenticationToken();
 
         // Act
         HttpResponseMessage response = await client
-            .GetAsync("/api/players/find?Pagination.Page=1&Pagination.Size=10&Sorting[0].Name=Height&Sorting[0].Direction=Descending&Filter.Profile.General.Name=Andrii");
+            .GetAsync($"{Constants.API_PLAYERS}/find?Pagination.Page=1&Pagination.Size=10&Sorting[0].Name=Height&Sorting[0].Direction=Descending&Filter.Profile.General.Name=Andrii");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -618,16 +745,15 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
     public async Task API_Integration_GetPlayers_ShouldReturnLocalizedSuccess()
     {
         // Arrange
-        Guid userId = Guid.NewGuid();
-        await CreateNewPlayer(userId);
+        await CreateNewPlayer();
 
         HttpClient client = _factory.CreateClient()
-                                    .SetAuthenticationToken(userId);
-        client.DefaultRequestHeaders.Add("Accept-Language", CommonConstants.SUPPORTED_CULTURES[1]);
+                                    .SetAuthenticationToken();
+        client.DefaultRequestHeaders.Add(Constants.ACCEPT_LANGUAGE, CommonConstants.SUPPORTED_CULTURES[1]);
 
         // Act
         HttpResponseMessage response = await client
-            .GetAsync("/api/players/find?Pagination.Page=1&Pagination.Size=10&Sorting[0].Name=Height&Sorting[0].Direction=Descending&Filter.Profile.General.Name=Andrii");
+            .GetAsync($"{Constants.API_PLAYERS}/find?Pagination.Page=1&Pagination.Size=10&Sorting[0].Name=Height&Sorting[0].Direction=Descending&Filter.Profile.General.Name=Andrii");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -644,16 +770,34 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
     public async Task API_Integration_GetPlayers_ShouldReturnUnauthorize()
     {
         // Arrange
-        await CreateNewPlayer(Guid.NewGuid());
+        await CreateNewPlayer();
 
         HttpClient client = _factory.CreateClient();
 
         // Act
         HttpResponseMessage response = await client
-            .GetAsync("/api/players/find?Pagination.Page=1&Pagination.Size=10&Sorting[0].Name=Height&Sorting[0].Direction=Descending&Filter.Profile.General.Name=Andrii");
+            .GetAsync($"{Constants.API_PLAYERS}/find?Pagination.Page=1&Pagination.Size=10&Sorting[0].Name=Height&Sorting[0].Direction=Descending&Filter.Profile.General.Name=Andrii");
 
         // Assert
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    [Trait("API", "Integration")]
+    public async Task API_Integration_GetPlayers_ShouldReturnForbidden()
+    {
+        // Arrange
+        await CreateNewPlayer();
+
+        HttpClient client = _factory.CreateClient()
+                                    .SetAuthenticationToken(true);
+
+        // Act
+        HttpResponseMessage response = await client
+            .GetAsync($"{Constants.API_PLAYERS}/find?Pagination.Page=1&Pagination.Size=10&Sorting[0].Name=Height&Sorting[0].Direction=Descending&Filter.Profile.General.Name=Andrii");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
     }
 
     [Fact]
@@ -662,11 +806,11 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
     {
         // Arrange
         HttpClient client = _factory.CreateClient()
-                                    .SetAuthenticationToken(Guid.NewGuid());
+                                    .SetAuthenticationToken();
 
         // Act
         HttpResponseMessage response = await client
-            .GetAsync("/api/players/find?Pagination.Page=1&Pagination.Size=10&Sorting[0].Name=Height&Sorting[0].Direction=Descending&Filter.Profile.General.Name=Kelly");
+            .GetAsync($"{Constants.API_PLAYERS}/find?Pagination.Page=1&Pagination.Size=10&Sorting[0].Name=Height&Sorting[0].Direction=Descending&Filter.Profile.General.Name=Kelly");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -688,11 +832,11 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
     {
         // Arrange
         HttpClient client = _factory.CreateClient()
-                                    .SetAuthenticationToken(Guid.NewGuid());
+                                    .SetAuthenticationToken();
 
         // Act
         HttpResponseMessage response = await client
-            .GetAsync("/api/players/find?Pagination.Page=1&Pagination.Size=10" +
+            .GetAsync($"{Constants.API_PLAYERS}/find?Pagination.Page=1&Pagination.Size=10" +
             "&Sorting[0].Name=Height&Sorting[0].Direction=Descending" +
             "&Filter.Profile.General.Tags[0]=zik&Filter.Profile.General.Tags[1]=zik");
 
@@ -718,13 +862,13 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
     {
         // Arrange
         HttpClient client = _factory.CreateClient()
-                                    .SetAuthenticationToken(Guid.NewGuid());
+                                    .SetAuthenticationToken();
 
-        client.DefaultRequestHeaders.Add("Accept-Language", CommonConstants.SUPPORTED_CULTURES[1]);
+        client.DefaultRequestHeaders.Add(Constants.ACCEPT_LANGUAGE, CommonConstants.SUPPORTED_CULTURES[1]);
 
         // Act
         HttpResponseMessage response = await client
-            .GetAsync("/api/players/find?Pagination.Page=1&Pagination.Size=10" +
+            .GetAsync($"{Constants.API_PLAYERS}/find?Pagination.Page=1&Pagination.Size=10" +
             "&Sorting[0].Name=Height&Sorting[0].Direction=Descending" +
             "&Filter.Profile.General.Tags[0]=zik&Filter.Profile.General.Tags[1]=zik");
 
@@ -742,15 +886,14 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
     public async Task API_Integration_GetPlayers_ShouldReturnPaginationHeader()
     {
         // Arrange
-        Guid userId = Guid.NewGuid();
-        await CreateNewPlayer(userId);
+        await CreateNewPlayer();
 
         HttpClient client = _factory.CreateClient()
-                                    .SetAuthenticationToken(userId);
+                                    .SetAuthenticationToken();
 
         // Act
         HttpResponseMessage response = await client
-            .GetAsync("/api/players/find?Pagination.Page=1&Pagination.Size=10&Sorting[0].Name=Height&Sorting[0].Direction=Descending&Filter.Profile.General.Name=Andrii");
+            .GetAsync($"{Constants.API_PLAYERS}/find?Pagination.Page=1&Pagination.Size=10&Sorting[0].Name=Height&Sorting[0].Direction=Descending&Filter.Profile.General.Name=Andrii");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -766,10 +909,10 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
 
     #endregion GetPlayers
 
-    private async Task<HttpResponseMessage> CreateNewPlayer(Guid userId)
+    private async Task<HttpResponseMessage> CreateNewPlayer(bool forbidden = false, string? accessToken = null)
     {
         HttpClient client = _factory.CreateClient()
-                                    .SetAuthenticationToken(userId);
+                                    .SetAuthenticationToken(forbidden, accessToken);
 
         CreatePlayerRequest request = new()
         {
@@ -798,12 +941,12 @@ public class PlayersControllerTests : IClassFixture<CustomWebApplicationFactory<
 
         JsonContent content = JsonContent.Create(request);
 
-        return await client.PostAsync("/api/players", content);
+        return await client.PostAsync(Constants.API_PLAYERS, content);
     }
 
-    private async Task<long> GetNewPlayerId(Guid userId)
+    private async Task<long> GetNewPlayerId(string? accessToken = null)
     {
-        HttpResponseMessage createPlayerResponse = await CreateNewPlayer(userId);
+        HttpResponseMessage createPlayerResponse = await CreateNewPlayer(false, accessToken);
 
         string createPlayerResponseString = await createPlayerResponse.Content.ReadAsStringAsync();
 
