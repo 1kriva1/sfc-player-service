@@ -1,0 +1,14 @@
+﻿syntax = "proto3";
+
+package sfc_player;
+
+import "google/protobuf/duration.proto";
+
+option csharp_namespace = "SFC.Player.Contracts.Models.Player.General";
+
+message PlayerAvailability
+{
+    google.protobuf.Duration from = 1;
+    google.protobuf.Duration to = 2;
+    repeated int32 days = 3;
+}

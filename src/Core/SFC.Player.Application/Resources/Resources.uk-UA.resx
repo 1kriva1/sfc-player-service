@@ -138,8 +138,8 @@
   <data name="InvalidBirthdayMinValue" xml:space="preserve">
     <value>'{PropertyName}' має бути меншою за сьогоднішню дату.</value>
   </data>
-  <data name="InvalidPhotoExtension" xml:space="preserve">
-    <value>Недійсний формат фотографії.</value>
+  <data name="FileExtensionInvalid" xml:space="preserve">
+    <value>Недійсний формат файлу.</value>
   </data>
   <data name="InvalidTagsSize" xml:space="preserve">
     <value>Кількість '{0}' має бути меншою або дорівнювати {1}.</value>

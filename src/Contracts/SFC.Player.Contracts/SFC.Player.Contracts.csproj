@@ -1,0 +1,59 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageId>SFC.Player.Contracts</PackageId>
+    <Version>0.0.3</Version>
+    <Authors>Andrii Kryvoruk</Authors>
+    <Company>SFC</Company>
+    <Product>SFC</Product>
+    <PackageTags>Street Football Club;SFC;contracts</PackageTags>
+    <Description>
+      Contracts from Player service for SFC project
+    </Description>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Headers\auditable_header.proto" />
+    <None Remove="Headers\pagination_header.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.29.3" />
+    <PackageReference Include="Grpc.Core.Api" Version="2.67.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.69.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Enums\sorting_direction.proto" />
+    <Protobuf Include="Headers\auditable_header.proto" />
+    <Protobuf Include="Headers\pagination_header.proto" />
+    <Protobuf Include="Messages\Player\General\Find\get_players_response.proto" />
+    <Protobuf Include="Messages\Player\General\Find\get_players_request.proto" />
+    <Protobuf Include="Messages\Player\General\Find\Filters\get_players_filter.proto" />
+    <Protobuf Include="Messages\Player\General\Find\Filters\get_players_profile_filter.proto" />
+    <Protobuf Include="Messages\Player\General\Find\Filters\get_players_stats_filter.proto" />
+    <Protobuf Include="Messages\Player\General\Find\Filters\get_players_general_profile_filter.proto" />
+    <Protobuf Include="Messages\Player\General\Find\Filters\get_players_football_profile_filter.proto" />
+    <Protobuf Include="Messages\Player\General\Find\Filters\get_players_stats_by_skill_range_limit.proto" />
+    <Protobuf Include="Models\Common\range_limit.proto" />
+    <Protobuf Include="Messages\Player\General\Find\Filters\get_players_availability_limit.proto" />
+    <Protobuf Include="Messages\Player\General\Get\get_player_request.proto" />
+    <Protobuf Include="Messages\Player\General\Get\get_player_response.proto" />
+    <Protobuf Include="Models\Common\sorting.proto" />
+    <Protobuf Include="Models\Common\pagination.proto" />
+    <Protobuf Include="Models\Player\General\player_availability.proto" />
+    <Protobuf Include="Models\Player\General\player_stat_value.proto" />
+    <Protobuf Include="Models\Player\General\player.proto" />
+    <Protobuf Include="Models\Player\General\player_football_profile.proto" />
+    <Protobuf Include="Models\Player\General\player_general_profile.proto" />
+    <Protobuf Include="Models\Player\General\player_profile.proto" />
+    <Protobuf Include="Models\Player\General\player_stats.proto" />
+    <Protobuf Include="Models\Player\General\player_stat_points.proto" />
+    <Protobuf Include="Services\player_service.proto" />
+  </ItemGroup>
+
+</Project>

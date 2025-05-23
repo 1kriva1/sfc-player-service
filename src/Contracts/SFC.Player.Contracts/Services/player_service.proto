@@ -1,0 +1,15 @@
+﻿syntax = "proto3";
+
+package sfc_player;
+
+import "Messages/Player/General/Get/get_player_request.proto";
+import "Messages/Player/General/Get/get_player_response.proto";
+import "Messages/Player/General/Find/get_players_request.proto";
+import "Messages/Player/General/Find/get_players_response.proto";
+
+option csharp_namespace = "SFC.Player.Contracts.Services";
+
+service PlayerService {
+    rpc GetPlayer(GetPlayerRequest) returns (GetPlayerResponse);
+    rpc GetPlayers(GetPlayersRequest) returns (GetPlayersResponse);
+}

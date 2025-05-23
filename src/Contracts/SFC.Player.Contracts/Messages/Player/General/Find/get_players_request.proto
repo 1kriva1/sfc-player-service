@@ -1,0 +1,16 @@
+﻿syntax = "proto3";
+
+package sfc_player;
+
+import "Models/Common/pagination.proto";
+import "Models/Common/sorting.proto";
+import "Messages/Player/General/Find/Filters/get_players_filter.proto";
+
+option csharp_namespace = "SFC.Player.Contracts.Messages.Player.General.Find";
+
+message GetPlayersRequest
+{
+    Pagination pagination = 1;
+    repeated Sorting sorting = 2;
+    GetPlayersFilter filter = 3;
+}

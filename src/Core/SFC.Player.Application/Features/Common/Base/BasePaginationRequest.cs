@@ -1,5 +1,5 @@
 ﻿using SFC.Player.Application.Features.Common.Dto.Pagination;
-using SFC.Player.Application.Features.Common.Dto;
+using SFC.Player.Application.Features.Common.Dto.Common;
 
 namespace SFC.Player.Application.Features.Common.Base;
 public abstract class BasePaginationRequest<TResponse, TFilter> : Request<TResponse>
@@ -9,20 +9,4 @@ public abstract class BasePaginationRequest<TResponse, TFilter> : Request<TRespo
     public IEnumerable<SortingDto> Sorting { get; set; } = default!;
 
     public TFilter Filter { get; set; } = default!;
-
-    public string Route { get; set; } = default!;
-
-    public string QueryString { get; set; } = default!;
-
-    public BasePaginationRequest<TResponse, TFilter> SetRoute(string route)
-    {
-        Route = route;
-        return this;
-    }
-
-    public BasePaginationRequest<TResponse, TFilter> SetQueryString(string queryString)
-    {
-        QueryString = queryString;
-        return this;
-    }
 }

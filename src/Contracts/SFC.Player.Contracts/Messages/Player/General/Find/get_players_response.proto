@@ -1,0 +1,12 @@
+﻿syntax = "proto3";
+
+package sfc_player;
+
+import "Models/Player/General/player.proto";
+
+option csharp_namespace = "SFC.Player.Contracts.Messages.Player.General.Find";
+
+message GetPlayersResponse
+{
+    repeated Player items = 1;
+}

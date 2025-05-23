@@ -1,0 +1,14 @@
+﻿syntax = "proto3";
+
+package sfc_player;
+
+import "Models/Player/General/player_general_profile.proto";
+import "Models/Player/General/player_football_profile.proto";
+
+option csharp_namespace = "SFC.Player.Contracts.Models.Player.General";
+
+message PlayerProfile
+{
+    PlayerGeneralProfile general = 1;
+    PlayerFootballProfile football = 2;
+}

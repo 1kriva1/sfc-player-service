@@ -138,8 +138,8 @@
   <data name="InvalidBirthdayMinValue" xml:space="preserve">
     <value>'{PropertyName}' must be less than today's date.</value>
   </data>
-  <data name="InvalidPhotoExtension" xml:space="preserve">
-    <value>Invalid photo extension.</value>
+  <data name="FileExtensionInvalid" xml:space="preserve">
+    <value>Invalid file extension.</value>
   </data>
   <data name="InvalidTagsSize" xml:space="preserve">
     <value>The length of '{0}' must be less or equal to {1}.</value>

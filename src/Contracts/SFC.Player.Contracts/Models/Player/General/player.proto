@@ -1,0 +1,16 @@
+﻿syntax = "proto3";
+
+package sfc_player;
+
+import "Models/Player/General/player_profile.proto";
+import "Models/Player/General/player_stats.proto";
+
+option csharp_namespace = "SFC.Player.Contracts.Models.Player.General";
+
+message Player
+{
+    int64 id = 1;
+    string user_id = 2;
+    PlayerProfile profile = 3;
+    PlayerStats stats = 4;
+}

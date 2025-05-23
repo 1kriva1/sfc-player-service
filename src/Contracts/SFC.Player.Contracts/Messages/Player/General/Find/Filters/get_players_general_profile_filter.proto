@@ -1,0 +1,20 @@
+﻿syntax = "proto3";
+
+package sfc_player;
+
+import "google/protobuf/wrappers.proto";
+import "Models/Common/range_limit.proto";
+import "Messages/Player/General/Find/Filters/get_players_availability_limit.proto";
+
+option csharp_namespace = "SFC.Player.Contracts.Models.Player.General.Find.Filters";
+
+message GetPlayersGeneralProfileFilter
+{
+    google.protobuf.StringValue name = 1;
+    google.protobuf.StringValue city = 2;
+    repeated string tags = 3;
+    RangeLimit years = 4;
+    GetPlayersAvailabilityLimit availability = 5;
+    google.protobuf.BoolValue free_play = 6;
+    google.protobuf.BoolValue has_photo = 7;
+}

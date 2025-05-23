@@ -1,0 +1,11 @@
+﻿syntax = "proto3";
+
+package sfc_player;
+
+option csharp_namespace = "SFC.Player.Contracts.Models.Common";
+
+message Pagination
+{
+    int32 page = 1;
+    int32 size = 2;
+}

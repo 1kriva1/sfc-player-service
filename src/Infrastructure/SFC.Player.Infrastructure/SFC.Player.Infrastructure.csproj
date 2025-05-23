@@ -1,22 +1,25 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
         <ProjectReference Include="..\..\Core\SFC.Player.Application\SFC.Player.Application.csproj" />
         <ProjectReference Include="..\SFC.Player.Infrastructure.Persistence\SFC.Player.Infrastructure.Persistence.csproj" />
+        <ProjectReference Include="..\..\Contracts\SFC.Player.Messages\SFC.Player.Messages.csproj" />
+        <ProjectReference Include="..\..\Contracts\SFC.Player.Contracts\SFC.Player.Contracts.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Grpc.AspNetCore" Version="2.67.0" />
+      <PackageReference Include="Grpc.StatusProto" Version="2.67.0" />
+      <PackageReference Include="IdentityModel" Version="7.0.0" />
+      <PackageReference Include="IdentityModel.AspNetCore" Version="4.3.0" />
       <PackageReference Include="MassTransit" Version="8.2.3" />
       <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.3" />
       <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.6" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.1" />
-      <PackageReference Include="SFC.Data.Messages" Version="0.0.1" />
+      <PackageReference Include="SFC.Data.Messages" Version="0.0.8" />
+      <PackageReference Include="SFC.Identity.Contracts" Version="0.0.3" />
+      <PackageReference Include="SFC.Identity.Messages" Version="0.0.6" />
+      <PackageReference Include="SFC.Team.Contracts" Version="0.0.1" />  
     </ItemGroup>
 
 </Project>

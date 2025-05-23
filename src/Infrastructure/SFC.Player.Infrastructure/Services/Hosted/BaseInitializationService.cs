@@ -2,14 +2,9 @@
 using Microsoft.Extensions.Logging;
 
 namespace SFC.Player.Infrastructure.Services.Hosted;
-public abstract class BaseInitializationService : IHostedService
+public abstract class BaseInitializationService(ILogger logger) : IHostedService
 {
-    protected readonly ILogger _logger;
-
-    public BaseInitializationService(ILogger logger)
-    {
-        _logger = logger;
-    }
+    protected ILogger Logger { get; } = logger;
 
     public virtual Task StartAsync(CancellationToken cancellationToken)
     {

@@ -10,7 +10,7 @@ public static class CacheExtensions
 {
     public static IServiceCollection AddCache(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<CacheSettings>(configuration.GetSection(CacheSettings.SECTION_KEY));
+        services.Configure<CacheSettings>(configuration.GetSection(CacheSettings.SectionKey));
         services.AddScoped<ICache, RedisCache>();
         return services;
     }

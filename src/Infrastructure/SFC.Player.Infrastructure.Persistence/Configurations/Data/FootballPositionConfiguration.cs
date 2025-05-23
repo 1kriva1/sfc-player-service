@@ -1,15 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-using SFC.Player.Application.Common.Constants;
 using SFC.Player.Domain.Entities.Data;
+using SFC.Player.Infrastructure.Persistence.Configurations.Base;
+using SFC.Player.Infrastructure.Persistence.Constants;
 
 namespace SFC.Player.Infrastructure.Persistence.Configurations.Data;
-public class FootballPositionConfiguration : BaseDataEntityConfiguration<FootballPosition>
+public class FootballPositionConfiguration : EnumDataEntityConfiguration<FootballPosition, FootballPositionEnum>
 {
     public override void Configure(EntityTypeBuilder<FootballPosition> builder)
     {
-        builder.ToTable("FootballPositions", DatabaseConstants.DATA_SCHEMA_NAME);
+        builder.ToTable("FootballPositions", DatabaseConstants.DataSchemaName);
         base.Configure(builder);
     }
 }

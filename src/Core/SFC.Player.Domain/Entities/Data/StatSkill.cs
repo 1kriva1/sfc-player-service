@@ -1,5 +1,11 @@
-﻿namespace SFC.Player.Domain.Entities.Data;
-public class StatSkill : BaseDataEntity
+﻿using SFC.Player.Domain.Common;
+
+namespace SFC.Player.Domain.Entities.Data;
+public class StatSkill : EnumDataEntity<StatSkillEnum>
 {
-    public ICollection<StatType> Types { get; set; } = new List<StatType>();
+    public StatSkill() : base() { }
+
+    public StatSkill(StatSkillEnum enumType) : base(enumType) { }
+
+    public ICollection<StatType> Types { get; init; } = [];
 }

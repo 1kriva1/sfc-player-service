@@ -4,7 +4,7 @@
         <name>SFC.Player.Api</name>
     </assembly>
     <members>
-        <member name="M:SFC.Player.Api.Controllers.PlayersController.CreatePlayerAsync(SFC.Player.Application.Models.Players.Create.CreatePlayerRequest)">
+        <member name="M:SFC.Player.Api.Controllers.PlayersController.CreatePlayerAsync(SFC.Player.Api.Infrastructure.Models.Player.General.Create.CreatePlayerRequest)">
             <summary>
             Create new player.
             </summary>
@@ -15,7 +15,7 @@
             <response code="401">Returns when **failed** authentication.</response>
             <response code="403">Returns when **failed** authorization.</response>
         </member>
-        <member name="M:SFC.Player.Api.Controllers.PlayersController.UpdatePlayerAsync(System.Int64,SFC.Player.Application.Models.Players.Update.UpdatePlayerRequest)">
+        <member name="M:SFC.Player.Api.Controllers.PlayersController.UpdatePlayerAsync(System.Int64,SFC.Player.Api.Infrastructure.Models.Player.General.Update.UpdatePlayerRequest)">
             <summary>
             Update existing player.
             </summary>
@@ -47,7 +47,7 @@
             <response code="401">Returns when **failed** authentication.</response>
             <response code="403">Returns when **failed** authorization.</response>
         </member>
-        <member name="M:SFC.Player.Api.Controllers.PlayersController.GetPlayersAsync(SFC.Player.Application.Models.Players.Find.GetPlayersRequest)">
+        <member name="M:SFC.Player.Api.Controllers.PlayersController.GetPlayersAsync(SFC.Player.Api.Infrastructure.Models.Player.General.Find.GetPlayersRequest)">
             <summary>
             Return list of players
             </summary>
@@ -57,6 +57,673 @@
             <response code="400">Returns **validation** errors.</response>
             <response code="401">Returns when **failed** authentication.</response>
             <response code="403">Returns when **failed** authorization.</response>
+        </member>
+        <member name="M:SFC.Player.Api.Infrastructure.Extensions.GrpcExtensions.MapInternalService(Microsoft.AspNetCore.Builder.GrpcServiceEndpointConventionBuilder,System.String)">
+            <summary>
+            Without RequireHost WebApi and Grpc not working together
+            RequireHost distinguish webapi and grpc by port value
+            Also required Kestrel endpoint configuration in appSettings
+            </summary>
+            <param name="builder"></param>
+            <param name="url"></param>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Base.BaseErrorResponse">
+            <summary>
+            **Base** response model with **errors**.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Base.BaseErrorResponse.Errors">
+            <summary>
+            Response result errors in key/value representation.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Base.BaseListResponse`1">
+            <summary>
+            **Base** response model with **list** of items.
+            </summary>
+            <typeparam name="T">Any type of model.</typeparam>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Base.BaseListResponse`1.Items">
+            <summary>
+            **List** of items.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Base.BasePaginationRequest`1">
+            <summary>
+            **Base** pagination request.
+            </summary>
+            <typeparam name="T">Any type of filter model.</typeparam>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Base.BasePaginationRequest`1.Pagination">
+            <summary>
+            Pagination model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Base.BasePaginationRequest`1.Sorting">
+            <summary>
+            Sorting model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Base.BasePaginationRequest`1.Filter">
+            <summary>
+            Generic filter model.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Base.BaseResponse">
+            <summary>
+            **Base** response model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Base.BaseResponse.Success">
+            <summary>
+            Determined if response has **success** result.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Base.BaseResponse.Message">
+            <summary>
+            Describe response **result**.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Common.RangeLimitModel`1">
+            <summary>
+            **Generic** range limit model.
+            </summary>
+            <typeparam name="T">Any type that can be **compared**.</typeparam>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Common.RangeLimitModel`1.From">
+            <summary>
+            Range **from**.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Common.RangeLimitModel`1.To">
+            <summary>
+            Range **to**.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Common.SortingModel">
+            <summary>
+            **Sorting** model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Common.SortingModel.Name">
+            <summary>
+            **Name of property** by which sorting will be performed.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Common.SortingModel.Direction">
+            <summary>
+            Sorting **direction** (ascending or descending).
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Pagination.PageLinksModel">
+            <summary>
+            **Pagination** links model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Pagination.PageLinksModel.FirstPage">
+            <summary>
+            Link to first page.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Pagination.PageLinksModel.LastPage">
+            <summary>
+            Link to last page.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Pagination.PageLinksModel.NextPage">
+            <summary>
+            Link to next page.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Pagination.PageLinksModel.PreviousPage">
+            <summary>
+            Link to previous page.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Pagination.PageMetadataModel">
+            <summary>
+            **Pagination** metadata model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Pagination.PageMetadataModel.CurrentPage">
+            <summary>
+            **Current** page.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Pagination.PageMetadataModel.TotalPages">
+            <summary>
+            Total **pages** count.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Pagination.PageMetadataModel.PageSize">
+            <summary>
+            Page **size**.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Pagination.PageMetadataModel.TotalCount">
+            <summary>
+            Total **items** count.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Pagination.PageMetadataModel.HasPreviousPage">
+            <summary>
+            Describe if **previous** page **exist** for defined filters and page size.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Pagination.PageMetadataModel.HasNextPage">
+            <summary>
+            Describe if **next** page **exist** for defined filters and page size.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Pagination.PageMetadataModel.Links">
+            <summary>
+            Links model.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Pagination.PaginationModel">
+            <summary>
+            **Pagination** model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Pagination.PaginationModel.Page">
+            <summary>
+            Requested **page**.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Pagination.PaginationModel.Size">
+            <summary>
+            Requested page **size**.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Common.BasePlayerModel">
+            <summary>
+            **Base** player model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.BasePlayerModel.Profile">
+            <summary>
+            Player's profile model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.BasePlayerModel.Stats">
+            <summary>
+            Player's stats model.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerAvailabilityModel">
+            <summary>
+            Player's **availability** model (when player is available to play).
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerAvailabilityModel.Days">
+            <summary>
+            Days of week.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerFootballProfileModel">
+            <summary>
+            Player's **football** profile model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerFootballProfileModel.Height">
+            <summary>
+            Height.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerFootballProfileModel.Weight">
+            <summary>
+            Weight.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerFootballProfileModel.Position">
+            <summary>
+            Position on field.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerFootballProfileModel.AdditionalPosition">
+            <summary>
+            Second level **position** on field.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerFootballProfileModel.WorkingFoot">
+            <summary>
+            Describe what **foot** player prefer to use.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerFootballProfileModel.Number">
+            <summary>
+            Preferred **number** on T-Shirt.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerFootballProfileModel.GameStyle">
+            <summary>
+            **Style** of play.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerFootballProfileModel.Skill">
+            <summary>
+            **Dribbling** skill value.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerFootballProfileModel.WeakFoot">
+            <summary>
+            **Week foot** skill value.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerFootballProfileModel.PhysicalCondition">
+            <summary>
+            Physical condition value.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerGeneralProfileModel">
+            <summary>
+            Player's **general** profile model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerGeneralProfileModel.FirstName">
+            <summary>
+            First name.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerGeneralProfileModel.LastName">
+            <summary>
+            Last name.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerGeneralProfileModel.Photo">
+            <summary>
+            Photo/avatar.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerGeneralProfileModel.Biography">
+            <summary>
+            Biography.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerGeneralProfileModel.Birthday">
+            <summary>
+            Date of birth.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerGeneralProfileModel.City">
+            <summary>
+            **City** where player will play football.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerGeneralProfileModel.FreePlay">
+            <summary>
+             Describe if player can **pay** for football matches.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerGeneralProfileModel.Tags">
+            <summary>
+            Player's **tags**.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerGeneralProfileModel.Availability">
+            <summary>
+            Player's **availability** model.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerModel">
+            <summary>
+            Player model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerModel.Id">
+            <summary>
+            Unique identifier.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerProfileModel">
+            <summary>
+            Player **profile** model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerProfileModel.General">
+            <summary>
+            General profile.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerProfileModel.Football">
+            <summary>
+            Football profile.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerStatPointsModel">
+            <summary>
+            Player' **stats points** model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerStatPointsModel.Available">
+            <summary>
+            Available points.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerStatPointsModel.Used">
+            <summary>
+            Used points.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerStatsModel">
+            <summary>
+            Player stats model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerStatsModel.Points">
+            <summary>
+            Stats points.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerStatsModel.Values">
+            <summary>
+            Stats.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerStatValueModel">
+            <summary>
+            Player stat value model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerStatValueModel.Type">
+            <summary>
+            Type of stat
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Common.PlayerStatValueModel.Value">
+            <summary>
+            Stat value.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Create.CreatePlayerModel">
+            <summary>
+            **Create** player model.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Create.CreatePlayerRequest">
+            <summary>
+            **Create** player request.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Create.CreatePlayerRequest.Player">
+            <summary>
+            Player model.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Create.CreatePlayerResponse">
+            <summary>
+            **Create** player response model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Create.CreatePlayerResponse.Player">
+            <summary>
+            Player model.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersAvailabilityLimitModel">
+            <summary>
+            Get players **availability filter** model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersAvailabilityLimitModel.Days">
+            <summary>
+            Day of week.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersFilterModel">
+            <summary>
+            Get players filter model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersFilterModel.Profile">
+            <summary>
+            Profile filter model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersFilterModel.Stats">
+            <summary>
+            Stats filter model.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersFootballProfileFilterModel">
+            <summary>
+            Get players **football profile filter** model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersFootballProfileFilterModel.Height">
+            <summary>
+            Height.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersFootballProfileFilterModel.Weight">
+            <summary>
+            Weight.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersFootballProfileFilterModel.Positions">
+            <summary>
+            List of **positions** on field.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersFootballProfileFilterModel.WorkingFoot">
+            <summary>
+            What **foot** player prefer to use.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersFootballProfileFilterModel.GameStyles">
+            <summary>
+            **Style** of play.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersFootballProfileFilterModel.Skill">
+            <summary>
+            **Dribbling** skill value.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersFootballProfileFilterModel.PhysicalCondition">
+            <summary>
+            Physical condition value.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersGeneralProfileFilterModel">
+            <summary>
+            Get players **general profile filter** model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersGeneralProfileFilterModel.Name">
+            <summary>
+            Name (first and last).
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersGeneralProfileFilterModel.City">
+            <summary>
+            **City** where player will play football.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersGeneralProfileFilterModel.Tags">
+            <summary>
+            Player's **tags**.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersGeneralProfileFilterModel.Years">
+            <summary>
+            Range limit for players age.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersGeneralProfileFilterModel.Availability">
+            <summary>
+            Player's **availability** model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersGeneralProfileFilterModel.FreePlay">
+            <summary>
+             Describe if player can **pay** for football matches.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersGeneralProfileFilterModel.HasPhoto">
+            <summary>
+             Describe if player must have uploaded photo.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersProfileFilterModel">
+            <summary>
+            Get players **profile filter** model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersProfileFilterModel.General">
+            <summary>
+            General profile.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersProfileFilterModel.Football">
+            <summary>
+            Football profile.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersStatsBySkillRangeLimitModel">
+            <summary>
+            Range limit by **stat skill**.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersStatsBySkillRangeLimitModel.Skill">
+            <summary>
+            Stat skill unique identifier.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersStatsFilterModel">
+            <summary>
+            Get players **stats filter** model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersStatsFilterModel.Total">
+            <summary>
+            Filter by total rating.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersStatsFilterModel.Physical">
+            <summary>
+            Filter by physical stats rating.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersStatsFilterModel.Mental">
+            <summary>
+            Filter by mental stats rating.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersStatsFilterModel.Skill">
+            <summary>
+            Filter by skill stats rating.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Find.Filters.GetPlayersStatsFilterModel.Raiting">
+            <summary>
+            Filter by rating.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Find.GetPlayersRequest">
+            <summary>
+            **Get** players request.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Find.GetPlayersResponse">
+            <summary>
+            **Get** players response model.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.GetByUser.GetByUserPlayerFootballProfileModel">
+            <summary>
+            Player's **football** profile model for get by user request.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.GetByUser.GetByUserPlayerFootballProfileModel.Position">
+            <summary>
+            Position on field.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.GetByUser.GetByUserPlayerGeneralProfileModel">
+            <summary>
+            Player's **general** profile model for get by user request.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.GetByUser.GetByUserPlayerGeneralProfileModel.FirstName">
+            <summary>
+            First name.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.GetByUser.GetByUserPlayerGeneralProfileModel.LastName">
+            <summary>
+            Last name.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.GetByUser.GetByUserPlayerGeneralProfileModel.Photo">
+            <summary>
+            Photo/avatar.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.GetByUser.GetByUserPlayerModel">
+            <summary>
+            Player model for get by user request.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.GetByUser.GetByUserPlayerModel.Id">
+            <summary>
+            Unique identifier.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.GetByUser.GetByUserPlayerModel.Profile">
+            <summary>
+            Player profile model.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.GetByUser.GetByUserPlayerProfileModel">
+            <summary>
+            Player **profile** model for get by user request.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.GetByUser.GetByUserPlayerProfileModel.General">
+            <summary>
+            General profile.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.GetByUser.GetByUserPlayerProfileModel.Football">
+            <summary>
+            Football profile.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.GetByUser.GetPlayerByUserResponse">
+            <summary>
+            **Get** player by user response model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.GetByUser.GetPlayerByUserResponse.Player">
+            <summary>
+            Player model.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Get.GetPlayerResponse">
+            <summary>
+            **Get** player response model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Get.GetPlayerResponse.Player">
+            <summary>
+            Player model.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Update.UpdatePlayerModel">
+            <summary>
+            **Update** player model.
+            </summary>
+        </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Update.UpdatePlayerRequest">
+            <summary>
+            **Update** player request.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Update.UpdatePlayerRequest.Player">
+            <summary>
+            Player model.
+            </summary>
         </member>
     </members>
 </doc>

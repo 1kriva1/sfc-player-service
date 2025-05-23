@@ -1,0 +1,22 @@
+﻿syntax = "proto3";
+
+package sfc_player;
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+import "Models/Player/General/player_availability.proto";
+
+option csharp_namespace = "SFC.Player.Contracts.Models.Player.General";
+
+message PlayerGeneralProfile
+{
+    string first_name = 1;
+    string last_name = 2;
+    google.protobuf.StringValue photo = 3;
+    google.protobuf.StringValue biography = 4;
+    google.protobuf.Timestamp birthday = 5;
+    string city = 6;
+    bool free_play = 7;
+    repeated string tags = 8;
+    PlayerAvailability availability = 9;
+}

@@ -1,12 +1,15 @@
-﻿using FluentValidation;
+﻿using System.Globalization;
+using System.Text;
+
+using FluentValidation;
 
 namespace SFC.Player.Application.Common.Extensions;
 public static class ValidationExtensions
 {
-    public static IRuleBuilderOptions<C, string> RequiredProperty<C>(this IRuleBuilderInitial<C, string> builder, 
+    public static IRuleBuilderOptions<T, string> RequiredProperty<T>(this IRuleBuilderInitial<T, string> builder,
         int? maximumLength = null, string? propertyName = null)
     {
-        IRuleBuilderOptions<C, string> options = builder.NotEmpty();
+        IRuleBuilderOptions<T, string> options = builder.NotEmpty();
 
         if (maximumLength.HasValue)
         {
@@ -19,5 +22,15 @@ public static class ValidationExtensions
         }
 
         return options;
+    }
+
+    public static string BuildValidationMessage(this string value, params object[] args)
+    {
+        return string.Format(CultureInfo.InvariantCulture, CompositeFormat.Parse(value), args);
+    }
+
+    public static IRuleBuilderOptions<T, TProperty> WithException<T, TProperty>(this IRuleBuilderOptions<T, TProperty> rule, Exception exception)
+    {
+        return rule.WithState(x => exception);
     }
 }
