@@ -12,6 +12,4 @@ public class PageMetadataDto
     public bool HasPreviousPage => CurrentPage > 1;
 
     public bool HasNextPage => CurrentPage < TotalPages;
-
-    public PageLinksDto Links { get; set; } = default!;
 }

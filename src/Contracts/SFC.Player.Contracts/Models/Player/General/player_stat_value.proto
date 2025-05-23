@@ -1,0 +1,11 @@
+﻿syntax = "proto3";
+
+package sfc_player;
+
+option csharp_namespace = "SFC.Player.Contracts.Models.Player.General";
+
+message PlayerStatValue
+{
+    int32 type = 1;
+    int32 value = 2;
+}

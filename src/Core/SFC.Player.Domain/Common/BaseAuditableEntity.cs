@@ -2,7 +2,7 @@
 
 namespace SFC.Player.Domain.Common;
 
-public abstract class BaseAuditableEntity<I> : BaseEntity<I>, IAuditableEntity
+public abstract class BaseAuditableEntity<TId> : BaseEntity<TId>, IAuditableEntity
 {
     public DateTime CreatedDate { get; set; }
 

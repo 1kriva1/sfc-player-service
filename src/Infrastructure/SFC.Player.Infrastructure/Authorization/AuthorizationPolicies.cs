@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-using SFC.Player.Application.Common.Constants;
 using SFC.Player.Infrastructure.Authorization.OwnPlayer;
+using SFC.Player.Infrastructure.Constants;
 
 namespace SFC.Player.Infrastructure.Authorization;
 public static class AuthorizationPolicies
@@ -9,7 +9,7 @@ public static class AuthorizationPolicies
     public static PolicyModel General(IDictionary<string, IEnumerable<string>> claims)
     {
         AuthorizationPolicyBuilder builder = GetGeneralPolicyBuilder(claims);
-        return BuildPolicyModel(Policy.GENERAL, builder);
+        return BuildPolicyModel(Policy.General, builder);
     }
 
     public static PolicyModel OwnPlayer(IDictionary<string, IEnumerable<string>> claims)
@@ -17,7 +17,7 @@ public static class AuthorizationPolicies
         AuthorizationPolicyBuilder builder = GetGeneralPolicyBuilder(claims)
             .AddRequirements(new OwnPlayerRequirement());
 
-        return BuildPolicyModel(Policy.OWN_PLAYER, builder);
+        return BuildPolicyModel(Policy.OwnPlayer, builder);
     }
 
     #region Private

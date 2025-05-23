@@ -1,15 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-using SFC.Player.Application.Common.Constants;
 using SFC.Player.Domain.Entities.Data;
+using SFC.Player.Infrastructure.Persistence.Configurations.Base;
+using SFC.Player.Infrastructure.Persistence.Constants;
 
 namespace SFC.Player.Infrastructure.Persistence.Configurations.Data;
-public class WorkingFootConfiguration : BaseDataEntityConfiguration<WorkingFoot>
+public class WorkingFootConfiguration : EnumDataEntityConfiguration<WorkingFoot, WorkingFootEnum>
 {
     public override void Configure(EntityTypeBuilder<WorkingFoot> builder)
     {
-        builder.ToTable("WorkingFoots", DatabaseConstants.DATA_SCHEMA_NAME);
+        builder.ToTable("WorkingFoots", DatabaseConstants.DataSchemaName);
         base.Configure(builder);
     }
 }

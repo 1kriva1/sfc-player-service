@@ -1,0 +1,14 @@
+﻿syntax = "proto3";
+
+package sfc_player;
+
+import "Models/Player/General/player_stat_points.proto";
+import "Models/Player/General/player_stat_value.proto";
+
+option csharp_namespace = "SFC.Player.Contracts.Models.Player.General";
+
+message PlayerStats
+{
+    PlayerStatPoints points = 1;
+    repeated PlayerStatValue values = 2;
+}

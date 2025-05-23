@@ -1,39 +1,29 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.Storage;
 
-using SFC.Player.Application.Common.Constants;
 using SFC.Player.Domain.Entities.Identity;
-
-using PlayerUser = SFC.Player.Domain.Entities.User;
+using SFC.Player.Infrastructure.Persistence.Configurations.Base;
+using SFC.Player.Infrastructure.Persistence.Constants;
 
 namespace SFC.Player.Infrastructure.Persistence.Configurations.Identity;
-public class UserConfiguration : IEntityTypeConfiguration<User>
+public class UserConfiguration(bool isSqlServer)
+     : AuditableReferenceEntityConfiguration<User, Guid>
 {
-    private readonly bool _isSqlServer;
+    private readonly bool _isSqlServer = isSqlServer;
 
-    public UserConfiguration(bool isSqlServer)
+    public override void Configure(EntityTypeBuilder<User> builder)
     {
-        _isSqlServer = isSqlServer;
-    }
-
-    public void Configure(EntityTypeBuilder<User> builder)
-    {
-        builder.HasKey(e => e.Id);
-
-        builder.HasOne(e => e.PlayerUser)
-               .WithOne(e => e.IdentityUser)
-               .HasForeignKey<PlayerUser>(u => u.Id)
-               .IsRequired(true);
+        ArgumentNullException.ThrowIfNull(builder);
 
         if (_isSqlServer)
         {
-            builder.ToTable("Users", DatabaseConstants.IDENTITY_SCHEMA_NAME);
+            builder.ToTable("Users", DatabaseConstants.IdentitySchemaName);
         }
         else
         {
             builder.ToTable("Identity_Users");
-        }        
+        }
+
+        base.Configure(builder);
     }
 }

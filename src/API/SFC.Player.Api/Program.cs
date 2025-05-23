@@ -1,4 +1,4 @@
-using SFC.Player.Api.Extensions;
+using SFC.Player.Api.Infrastructure.Extensions;
 using SFC.Player.Infrastructure.Persistence;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);

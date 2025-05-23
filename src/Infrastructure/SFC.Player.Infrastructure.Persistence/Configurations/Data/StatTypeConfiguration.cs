@@ -1,24 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-using SFC.Player.Application.Common.Constants;
-using SFC.Player.Domain.Entities;
 using SFC.Player.Domain.Entities.Data;
+using SFC.Player.Infrastructure.Persistence.Configurations.Base;
+using SFC.Player.Infrastructure.Persistence.Constants;
 
 namespace SFC.Player.Infrastructure.Persistence.Configurations.Data;
-public class StatTypeConfiguration : BaseDataEntityConfiguration<StatType>
+public class StatTypeConfiguration : EnumDataEntityConfiguration<StatType, StatTypeEnum>
 {
     public override void Configure(EntityTypeBuilder<StatType> builder)
     {
-        builder.HasOne(e => e.Category)
-               .WithMany(e => e.Types)
-               .IsRequired();
-
-        builder.HasOne(e => e.Skill)
-               .WithMany(e => e.Types)
-               .IsRequired();
-
-        builder.ToTable("StatTypes", DatabaseConstants.DATA_SCHEMA_NAME);
+        builder.ToTable("StatTypes", DatabaseConstants.DataSchemaName);
         base.Configure(builder);
     }
 }

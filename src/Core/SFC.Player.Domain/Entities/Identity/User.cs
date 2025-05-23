@@ -1,11 +1,4 @@
-﻿using SFC.Player.Domain.Common.Interfaces;
-
-using PlayerUser = SFC.Player.Domain.Entities.User;
+﻿using SFC.Player.Domain.Common;
 
 namespace SFC.Player.Domain.Entities.Identity;
-public class User : BaseEntity<Guid>, IExternalAuditableEntity
-{
-    public PlayerUser PlayerUser { get; set; } = default!;
-
-    public DateTime CreatedDate { get; set; }
-}
+public class User : BaseAuditableReferenceEntity<Guid> { }

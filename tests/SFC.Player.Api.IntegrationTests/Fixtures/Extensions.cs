@@ -1,59 +1,59 @@
-﻿using System.Net.Http.Headers;
-using System.Runtime.CompilerServices;
+﻿//using System.Net.Http.Headers;
+//using System.Runtime.CompilerServices;
 
-using Microsoft.EntityFrameworkCore;
+//using Microsoft.EntityFrameworkCore;
 
-using SFC.Player.Infrastructure.Persistence;
+//using SFC.Player.Domain.Entities.Data;
+//using SFC.Player.Infrastructure.Persistence;
+//using SFC.Player.Infrastructure.Persistence.Contexts;
 
-namespace SFC.Player.Api.IntegrationTests.Fixtures;
-public static class Extensions
-{
-    public static HttpClient SetAuthenticationToken(this HttpClient client, bool forbidden = false,
-        string? accessToken = null)
-    {
-        string token = accessToken ?? (forbidden 
-            ? Constants.PLAYER_ACCESS_TOKEN_FORBIDDEN 
-            : Constants.PLAYER_ACCESS_TOKEN_VALID_0);
-        client.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", token);
+//namespace SFC.Player.Api.IntegrationTests.Fixtures;
+//public static class Extensions
+//{
+//    public static HttpClient SetAuthenticationToken(this HttpClient client, bool forbidden = false,
+//        string? accessToken = null)
+//    {
+//        string token = accessToken ?? (forbidden 
+//            ? Constants.PLAYER_ACCESS_TOKEN_FORBIDDEN 
+//            : Constants.PLAYER_ACCESS_TOKEN_VALID_0);
+//        client.DefaultRequestHeaders.Authorization =
+//            new AuthenticationHeaderValue("Bearer", token);
 
-        return client;
-    }
+//        return client;
+//    }
 
-    public static void RefreshData(this PlayerDbContext context)
-    {
-        context.Database.EnsureCreated();
+//    public static void RefreshData(this PlayerDbContext context, IdentityDbContext identityContext, DataDbContext dataContext)
+//    {
+//        context.Database.EnsureCreated();
 
-        context.Players.ExecuteDelete();
+//        context.Players.ExecuteDelete();
 
-        context.Users.ExecuteDelete();
+//        identityContext.Users.ExecuteDelete();
 
-        context.IdentityUsers.ExecuteDelete();
+//        dataContext.FootballPositions.ExecuteDelete();
 
-        context.FootballPositions.ExecuteDelete();
+//        dataContext.WorkingFoots.ExecuteDelete();
 
-        context.WorkingFoots.ExecuteDelete();
+//        dataContext.GameStyles.ExecuteDelete();
 
-        context.GameStyles.ExecuteDelete();
+//        dataContext.StatCategories.ExecuteDelete();
 
-        context.StatCategories.ExecuteDelete();
+//        dataContext.StatSkills.ExecuteDelete();
 
-        context.StatSkills.ExecuteDelete();
+//        dataContext.StatTypes.ExecuteDelete();
 
-        context.StatTypes.ExecuteDelete();
+//        dataContext.Set<FootballPosition>().AddRange(Constants.FOOTBALL_POSITIONS);
 
-        context.FootballPositions.AddRange(Constants.FOOTBALL_POSITIONS);
+//        dataContext.Set<WorkingFoot>().AddRange(Constants.WORKING_FOOTS);
 
-        context.WorkingFoots.AddRange(Constants.WORKING_FOOTS);
+//        dataContext.Set<GameStyle>().AddRange(Constants.GAME_STYLES);
 
-        context.GameStyles.AddRange(Constants.GAME_STYLES);
+//        dataContext.Set<StatCategory>().AddRange(Constants.STAT_CATEGORIES);
 
-        context.StatCategories.AddRange(Constants.STAT_CATEGORIES);
+//        dataContext.Set<StatSkill>().AddRange(Constants.STAT_SKILLS);
 
-        context.StatSkills.AddRange(Constants.STAT_SKILLS);
+//        dataContext.Set<StatType>().AddRange(Constants.STAT_TYPES);
 
-        context.StatTypes.AddRange(Constants.STAT_TYPES);
-
-        context.SaveChanges();
-    }
-}
+//        context.SaveChanges();
+//    }
+//}

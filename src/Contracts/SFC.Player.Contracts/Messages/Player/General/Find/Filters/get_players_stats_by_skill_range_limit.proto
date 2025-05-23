@@ -1,0 +1,14 @@
+﻿syntax = "proto3";
+
+package sfc_player;
+
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "SFC.Player.Contracts.Models.Player.General.Find.Filters";
+
+message GetPlayersStatsBySkillRangeLimit
+{
+    google.protobuf.Int32Value from = 1;
+    google.protobuf.Int32Value to = 2;
+    int32 skill = 3;
+}

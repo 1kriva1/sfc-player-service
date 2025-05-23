@@ -1,24 +1,25 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
-using SFC.Player.Api.Extensions;
 using SFC.Player.Application.Features.Common.Base;
-using SFC.Player.Application.Features.Players.Commands.Create;
-using SFC.Player.Application.Features.Players.Commands.Update;
-using SFC.Player.Application.Features.Players.Queries.Get;
-using SFC.Player.Application.Features.Players.Queries.Find;
-using SFC.Player.Application.Features.Players.Queries.Find.Dto.Filters;
-using SFC.Player.Application.Models.Common.Pagination;
-using SFC.Player.Application.Models.Players.Update;
-using SFC.Player.Application.Models.Players.Create;
-using SFC.Player.Application.Models.Players.Get;
-using SFC.Player.Application.Models.Players.Find;
-using SFC.Player.Application.Models.Players.GetByUser;
-using SFC.Player.Application.Models.Base;
-using SFC.Player.Application.Common.Constants;
+using SFC.Player.Application.Features.Player.Commands.Create;
+using SFC.Player.Application.Features.Player.Commands.Update;
+using SFC.Player.Application.Features.Player.Queries.Get;
+using SFC.Player.Application.Features.Player.Queries.Find;
+using SFC.Player.Application.Features.Player.Queries.Find.Dto.Filters;
+using SFC.Player.Api.Infrastructure.Extensions;
+using SFC.Player.Api.Infrastructure.Models.Base;
+using SFC.Player.Infrastructure.Constants;
+using SFC.Player.Application.Features.Player.Queries.GetByUser;
+using SFC.Player.Api.Infrastructure.Models.Pagination;
+using SFC.Player.Api.Infrastructure.Models.Player.General.Create;
+using SFC.Player.Api.Infrastructure.Models.Player.General.Find;
+using SFC.Player.Api.Infrastructure.Models.Player.General.Get;
+using SFC.Player.Api.Infrastructure.Models.Player.General.GetByUser;
+using SFC.Player.Api.Infrastructure.Models.Player.General.Update;
 
 namespace SFC.Player.Api.Controllers;
 
+[Tags("Players")]
 [ProducesResponseType(typeof(BaseResponse), StatusCodes.Status401Unauthorized)]
 [ProducesResponseType(typeof(BaseResponse), StatusCodes.Status403Forbidden)]
 public class PlayersController : ApiControllerBase
@@ -33,15 +34,14 @@ public class PlayersController : ApiControllerBase
     /// <response code="401">Returns when **failed** authentication.</response>
     /// <response code="403">Returns when **failed** authorization.</response>
     [HttpPost]
-    [Authorize(Policy.GENERAL)]
+    [Authorize(Policy.General)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<CreatePlayerResponse>> CreatePlayerAsync([FromBody] CreatePlayerRequest request)
     {
-        CreatePlayerCommand command = Mapper.Map<CreatePlayerCommand>(request)
-                                            .SetUserId<CreatePlayerCommand>(UserService.UserId);
+        CreatePlayerCommand command = Mapper.Map<CreatePlayerCommand>(request);
 
-        CreatePlayerViewModel player = await Mediator.Send(command);
+        CreatePlayerViewModel player = await Mediator.Send(command).ConfigureAwait(true);
 
         return CreatedAtRoute("GetPlayer", new { id = player.Player.Id }, Mapper.Map<CreatePlayerResponse>(player));
     }
@@ -57,16 +57,15 @@ public class PlayersController : ApiControllerBase
     /// <response code="401">Returns when **failed** authentication.</response>
     /// <response code="403">Returns when **failed** authorization.</response>
     [HttpPut("{id}")]
-    [Authorize(Policy.OWN_PLAYER)]
+    [Authorize(Policy.OwnPlayer)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> UpdatePlayerAsync([FromRoute] long id, [FromBody] UpdatePlayerRequest request)
     {
         UpdatePlayerCommand command = Mapper.Map<UpdatePlayerCommand>(request)
-                                            .SetUserId<UpdatePlayerCommand>(UserService.UserId)
                                             .SetPlayerId(id);
 
-        await Mediator.Send(command);
+        await Mediator.Send(command).ConfigureAwait(true);
 
         return NoContent();
     }
@@ -81,14 +80,14 @@ public class PlayersController : ApiControllerBase
     /// <response code="403">Returns when **failed** authorization.</response>
     /// <response code="404">Returns when player **not found** by unique identifier.</response>
     [HttpGet("{id}", Name = "GetPlayer")]
-    [Authorize(Policy.GENERAL)]
+    [Authorize(Policy.General)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<GetPlayerResponse>> GetPlayerAsync([FromRoute] long id)
     {
-        GetPlayerQuery query = new() { PlayerId = id, UserId = UserService.UserId };
+        GetPlayerQuery query = new() { PlayerId = id };
 
-        GetPlayerViewModel player = await Mediator.Send(query);
+        GetPlayerViewModel player = await Mediator.Send(query).ConfigureAwait(true);
 
         return Ok(Mapper.Map<GetPlayerResponse>(player));
     }
@@ -101,13 +100,13 @@ public class PlayersController : ApiControllerBase
     /// <response code="401">Returns when **failed** authentication.</response>
     /// <response code="403">Returns when **failed** authorization.</response>
     [HttpGet("byuser")]
-    [Authorize(Policy.GENERAL)]
+    [Authorize(Policy.General)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<GetPlayerByUserResponse>> GetPlayerByUserAsync()
     {
-        GetPlayerByUserQuery query = new() { UserId = UserService.UserId };
+        GetPlayerByUserQuery query = new();
 
-        GetPlayerByUserViewModel? player = await Mediator.Send(query);
+        GetPlayerByUserViewModel? player = await Mediator.Send(query).ConfigureAwait(true);
 
         return Ok(Mapper.Map<GetPlayerByUserResponse>(player) ?? GetPlayerByUserResponse.SuccessResult);
     }
@@ -122,19 +121,19 @@ public class PlayersController : ApiControllerBase
     /// <response code="401">Returns when **failed** authentication.</response>
     /// <response code="403">Returns when **failed** authorization.</response>
     [HttpGet("find")]
-    [Authorize(Policy.GENERAL)]
+    [Authorize(Policy.General)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<GetPlayersResponse>> GetPlayersAsync([FromQuery] GetPlayersRequest request)
     {
-        BasePaginationRequest<GetPlayersViewModel, GetPlayersFilterDto> query = Mapper.Map<GetPlayersQuery>(request)
-                                               .SetUserId<GetPlayersQuery>(UserService.UserId)
-                                               .SetRoute(Request.Path.Value!)
-                                               .SetQueryString(Request.QueryString.Value!);
+        BasePaginationRequest<GetPlayersViewModel, GetPlayersFilterDto> query = Mapper.Map<GetPlayersQuery>(request);
 
-        GetPlayersViewModel result = await Mediator.Send(query);
+        GetPlayersViewModel result = await Mediator.Send(query).ConfigureAwait(true);
 
-        Response.AddPaginationHeader(Mapper.Map<PageMetadataModel>(result.Metadata));
+        PageMetadataModel metadata = Mapper.Map<PageMetadataModel>(result.Metadata)
+                                           .SetLinks(UriService, Request.QueryString.Value!, Request.Path.Value!);
+
+        Response.AddPaginationHeader(metadata);
 
         return Ok(Mapper.Map<GetPlayersResponse>(result));
     }

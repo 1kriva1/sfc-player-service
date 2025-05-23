@@ -1,19 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-using SFC.Player.Application.Common.Constants;
 using SFC.Player.Domain.Entities.Data;
+using SFC.Player.Infrastructure.Persistence.Configurations.Base;
+using SFC.Player.Infrastructure.Persistence.Constants;
 
 namespace SFC.Player.Infrastructure.Persistence.Configurations.Data;
-public class StatSkillConfiguration : BaseDataEntityConfiguration<StatSkill>
+public class StatSkillConfiguration : EnumDataEntityConfiguration<StatSkill, StatSkillEnum>
 {
     public override void Configure(EntityTypeBuilder<StatSkill> builder)
     {
         builder.HasMany(e => e.Types)
                .WithOne()
-               .IsRequired();
+               .HasForeignKey(t => t.SkillId)
+               .IsRequired(true);
 
-        builder.ToTable("StatSkills", DatabaseConstants.DATA_SCHEMA_NAME);
+        builder.ToTable("StatSkills", DatabaseConstants.DataSchemaName);
 
         base.Configure(builder);
     }

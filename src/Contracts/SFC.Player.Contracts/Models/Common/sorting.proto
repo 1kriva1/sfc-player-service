@@ -1,0 +1,13 @@
+﻿syntax = "proto3";
+
+package sfc_player;
+
+import "Enums/sorting_direction.proto";
+
+option csharp_namespace = "SFC.Player.Contracts.Models.Common";
+
+message Sorting
+{
+    string name = 1;
+    SortingDirection direction = 2;
+}

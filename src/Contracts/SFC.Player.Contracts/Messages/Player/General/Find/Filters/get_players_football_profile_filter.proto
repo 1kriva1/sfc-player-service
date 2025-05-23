@@ -1,0 +1,19 @@
+﻿syntax = "proto3";
+
+package sfc_player;
+
+import "google/protobuf/wrappers.proto";
+import "Models/Common/range_limit.proto";
+
+option csharp_namespace = "SFC.Player.Contracts.Models.Player.General.Find.Filters";
+
+message GetPlayersFootballProfileFilter
+{
+    RangeLimit height = 1;
+    RangeLimit weight = 2;
+    repeated google.protobuf.Int32Value positions = 3;
+    google.protobuf.Int32Value working_foot = 4;
+    repeated google.protobuf.Int32Value game_styles = 5;
+    google.protobuf.Int32Value skill = 6;
+    google.protobuf.Int32Value physical_condition = 7;
+}

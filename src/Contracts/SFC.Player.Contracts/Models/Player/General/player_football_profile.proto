@@ -1,0 +1,21 @@
+﻿syntax = "proto3";
+
+package sfc_player;
+
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "SFC.Player.Contracts.Models.Player.General";
+
+message PlayerFootballProfile
+{
+    google.protobuf.Int32Value height = 1;
+    google.protobuf.Int32Value weight = 2;
+    google.protobuf.Int32Value position = 3;
+    google.protobuf.Int32Value additional_position = 4;
+    google.protobuf.Int32Value working_foot = 5;
+    google.protobuf.Int32Value number = 6;
+    google.protobuf.Int32Value game_style = 7;
+    google.protobuf.Int32Value skill = 8;
+    google.protobuf.Int32Value weak_foot = 9;
+    google.protobuf.Int32Value physical_condition = 10;
+}

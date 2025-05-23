@@ -1,7 +1,13 @@
-﻿namespace SFC.Player.Domain.Entities.Data;
-public class StatType : BaseDataEntity
-{
-    public StatCategory Category { get; set; } = default!;
+﻿using SFC.Player.Domain.Common;
 
-    public StatSkill Skill { get; set; } = default!;
+namespace SFC.Player.Domain.Entities.Data;
+public class StatType : EnumDataEntity<StatTypeEnum>
+{
+    public StatType() : base() { }
+
+    public StatType(StatTypeEnum enumType) : base(enumType) { }
+
+    public StatCategoryEnum CategoryId { get; set; }
+
+    public StatSkillEnum SkillId { get; set; }
 }

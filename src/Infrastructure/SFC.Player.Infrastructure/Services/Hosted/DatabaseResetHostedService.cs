@@ -2,7 +2,8 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-using SFC.Player.Infrastructure.Persistence;
+using SFC.Player.Application.Common.Enums;
+using SFC.Player.Infrastructure.Persistence.Contexts;
 
 namespace SFC.Player.Infrastructure.Services.Hosted;
 public class DatabaseResetHostedService(
@@ -15,7 +16,10 @@ public class DatabaseResetHostedService(
 
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Data Initialization Hosted Service running.");
+        EventId eventId = new((int)RequestId.DatabaseReset, Enum.GetName(RequestId.DatabaseReset));
+        Action<ILogger, Exception?> logStartExecution = LoggerMessage.Define(LogLevel.Information, eventId,
+            "Data Initialization Hosted Service running.");
+        logStartExecution(Logger, null);
 
         using IServiceScope scope = _services.CreateScope();
 
@@ -23,9 +27,11 @@ public class DatabaseResetHostedService(
 
         if (_hostEnvironment.IsDevelopment())
         {
-            await context.Database.EnsureDeletedAsync(cancellationToken);
+            await context.Database.EnsureDeletedAsync(cancellationToken)
+                                  .ConfigureAwait(false);
         }
 
-        await context.Database.EnsureCreatedAsync(cancellationToken);
+        await context.Database.EnsureCreatedAsync(cancellationToken)
+                              .ConfigureAwait(false);
     }
 }

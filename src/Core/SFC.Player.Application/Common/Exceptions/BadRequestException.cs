@@ -6,6 +6,21 @@ public class BadRequestException : Exception
 {
     public Dictionary<string, IEnumerable<string>> Errors { get; }
 
+    public BadRequestException()
+    {
+        Errors = [];
+    }
+
+    public BadRequestException(string message) : base(message)
+    {
+        Errors = [];
+    }
+
+    public BadRequestException(string message, Exception innerException) : base(message, innerException)
+    {
+        Errors = [];
+    }
+
     public BadRequestException(string message, Dictionary<string, IEnumerable<string>> errors) : base(message)
     {
         Errors = errors;

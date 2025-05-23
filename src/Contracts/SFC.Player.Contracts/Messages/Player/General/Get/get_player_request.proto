@@ -1,0 +1,10 @@
+﻿syntax = "proto3";
+
+package sfc_player;
+
+option csharp_namespace = "SFC.Player.Contracts.Messages.Player.General.Get";
+
+message GetPlayerRequest
+{
+    int64 id = 1;
+}

@@ -1,0 +1,11 @@
+﻿syntax = "proto3";
+
+package sfc_player;
+
+option csharp_namespace = "SFC.Player.Contracts.Enums";
+
+enum SortingDirection
+{
+    Ascending = 0;
+    Descending = 1;
+}
