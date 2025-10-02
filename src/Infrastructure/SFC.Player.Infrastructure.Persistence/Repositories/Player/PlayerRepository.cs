@@ -14,31 +14,16 @@ public class PlayerRepository(PlayerDbContext context)
     public override Task<PlayerEntity?> GetByIdAsync(long id)
     {
         return Context.Players
-                    .Include(p => p.GeneralProfile)
-                    .Include(p => p.FootballProfile)
-                    .Include(p => p.Availability)
-                    .Include(p => p.Availability.Days)
-                    .Include(p => p.Points)
-                    .Include(p => p.Tags)
-                    .Include(p => p.Stats).ThenInclude(x => x.Type)
-                    .Include(p => p.Photo)
-                    .FirstOrDefaultAsync(p => p.Id == id);
+                      .IncludePlayer()
+                      .FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public override Task<PagedList<PlayerEntity>> FindAsync(FindParameters<PlayerEntity> parameters)
     {
         return Context.Players
-                    .Include(p => p.GeneralProfile)
-                    .Include(p => p.FootballProfile)
-                    .Include(p => p.Availability)
-                    .Include(p => p.Availability.Days)
-                    .Include(p => p.Points)
-                    .Include(p => p.Tags)
-                    .Include(p => p.Stats)
-                    .ThenInclude(x => x.Type)
-                    .Include(p => p.Photo)
-                    .AsQueryable()
-                    .PaginateAsync(parameters);
+                      .IncludePlayer()
+                      .AsQueryable()
+                      .PaginateAsync(parameters);
     }
 
     public async Task<PlayerEntity[]> AddRangeIfNotExistsAsync(params PlayerEntity[] entities)
@@ -63,17 +48,10 @@ public class PlayerRepository(PlayerDbContext context)
     public async Task<IEnumerable<PlayerEntity>> GetByUserIdsAsync(IEnumerable<Guid> userIds)
     {
         return await Context.Players
-            .Include(p => p.GeneralProfile)
-            .Include(p => p.FootballProfile)
-            .Include(p => p.Availability)
-            .Include(p => p.Availability.Days)
-            .Include(p => p.Points)
-            .Include(p => p.Tags)
-            .Include(p => p.Stats).ThenInclude(x => x.Type)
-            .Include(p => p.Photo)
-            .Where(player => userIds.Contains(player.UserId))
-            .ToListAsync()
-            .ConfigureAwait(false);
+                            .IncludePlayer()
+                            .Where(player => userIds.Contains(player.UserId))
+                            .ToListAsync()
+                            .ConfigureAwait(false);
     }
 
     public Task<bool> AnyAsync(Guid userId)
