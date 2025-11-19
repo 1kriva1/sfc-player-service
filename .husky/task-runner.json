@@ -15,6 +15,12 @@
       "args": [ "test", "SFC.Player.sln", "--no-restore", "--no-build", "/p:CollectCoverage=true", "/p:CoverletOutput=../coverage/code_coverage", "/p:CoverletOutputFormat=opencover", "/p:Threshold=0", "/p:ThresholdStat=total" ]
     },
     {
+      "name": "dotnet-build",
+      "group": "pre-commit-operations",
+      "command": "dotnet",
+      "args": [ "build", "SFC.Player.sln", "--no-restore", "--configuration", "Release" ]
+    },
+    {
       "name": "dotnet-reportgenerator-create",
       "group": "pre-push-operations",
       "command": "reportgenerator",
