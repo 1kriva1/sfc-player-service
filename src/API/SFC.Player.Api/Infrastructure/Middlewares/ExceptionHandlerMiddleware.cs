@@ -1,14 +1,13 @@
 ﻿using System.Net;
 using System.Text.Json;
 
+using SFC.Player.Api.Infrastructure.Models.Base;
 using SFC.Player.Application.Common.Constants;
 using SFC.Player.Application.Common.Exceptions;
-
-using Localization = SFC.Player.Application.Common.Constants.Localization;
+using SFC.Player.Infrastructure.Constants;
 
 using ExceptionType = System.Exception;
-using SFC.Player.Api.Infrastructure.Models.Base;
-using SFC.Player.Infrastructure.Constants;
+using Localization = SFC.Player.Application.Common.Constants.Localization;
 
 namespace SFC.Player.Api.Infrastructure.Middlewares;
 
@@ -59,7 +58,7 @@ public class ExceptionHandlerMiddleware
 
         context.Response.StatusCode = (int)response.StatusCode;
 
-        context.Response.ContentType = context.Request.ContentType ?? CommonConstants.ContentType;
+        context.Response.ContentType = context.Request.ContentType ?? CommonConstants.JsonContentType;
 
         return context.Response.WriteAsync(JsonSerializer.Serialize(response.Result));
     }

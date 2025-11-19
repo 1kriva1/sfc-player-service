@@ -20,7 +20,7 @@ public static class AuthenticationExtensions
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
              .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
              {
-                 if (!builder.Environment.IsDevelopment() || builder.Configuration.UseAuthentication())
+                 if (builder.Environment.IsProduction() || builder.Configuration.UseAuthentication())
                  {
                      options.Authority = identitySettings.Authority;
                      options.Audience = identitySettings.Audience;

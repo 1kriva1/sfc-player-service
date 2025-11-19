@@ -16,10 +16,12 @@ public static class MetadataSeed
 
         builder.SeedEnumValues<MetadataDomain, MetadataDomainEnum>(@enum => new MetadataDomain(@enum));
 
+        MetadataStateEnum seedState = isDevelopment ? MetadataStateEnum.Required : MetadataStateEnum.NotRequired;
+
         List<MetadataEntity> metadata = [
             new MetadataEntity { Service = MetadataServiceEnum.Data, Domain = MetadataDomainEnum.Data, Type = MetadataTypeEnum.Initialization, State = MetadataStateEnum.Required },
-            new MetadataEntity { Service = MetadataServiceEnum.Identity, Domain = MetadataDomainEnum.User, Type = MetadataTypeEnum.Seed, State = isDevelopment ? MetadataStateEnum.Required : MetadataStateEnum.NotRequired },
-            new MetadataEntity { Service = MetadataServiceEnum.Player, Domain = MetadataDomainEnum.Player, Type = MetadataTypeEnum.Seed, State = isDevelopment ? MetadataStateEnum.Required : MetadataStateEnum.NotRequired }
+            new MetadataEntity { Service = MetadataServiceEnum.Identity, Domain = MetadataDomainEnum.User, Type = MetadataTypeEnum.Seed, State = seedState },
+            new MetadataEntity { Service = MetadataServiceEnum.Player, Domain = MetadataDomainEnum.Player, Type = MetadataTypeEnum.Seed, State = seedState }
         ];
 
         builder.Entity<MetadataEntity>().HasData(metadata);

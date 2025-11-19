@@ -58,15 +58,6 @@
             <response code="401">Returns when **failed** authentication.</response>
             <response code="403">Returns when **failed** authorization.</response>
         </member>
-        <member name="M:SFC.Player.Api.Infrastructure.Extensions.GrpcExtensions.MapInternalService(Microsoft.AspNetCore.Builder.GrpcServiceEndpointConventionBuilder,System.String)">
-            <summary>
-            Without RequireHost WebApi and Grpc not working together
-            RequireHost distinguish webapi and grpc by port value
-            Also required Kestrel endpoint configuration in appSettings
-            </summary>
-            <param name="builder"></param>
-            <param name="url"></param>
-        </member>
         <member name="T:SFC.Player.Api.Infrastructure.Models.Base.BaseErrorResponse">
             <summary>
             **Base** response model with **errors**.

@@ -3,13 +3,39 @@
   "profiles": {
     "SFC.Player": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:7366",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "https://+:7366;http://+:7365",
+        "ASPNETCORE_HTTPS_PORT": "7366",
+        "ConnectionStrings__Database": "Server=127.0.0.1,1433;Database=Player;User Id=sfc;Password=Test1234!;TrustServerCertificate=True;",
+        "ConnectionStrings__RabbitMq": "rabbitmq://localhost:5672",
+        "ConnectionStrings__Redis": "localhost:6379",
+        "Endpoints__Identity__Uri": "https://localhost:7266"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:7366;http://localhost:7365",
+      "httpPort": 7365,
+      "useSSL": true,
+      "sslPort": 7366,
+      "nativeDebugging": true
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "https://+:7366;http://+:7365",
+        "ASPNETCORE_HTTPS_PORT": "7366"
+      },
+      "mycontainer": "sfc-player",
+      "DockerfileRunArguments": "--network sfc-network",
+      "httpPort": 7365,
+      "useSSL": true,
+      "sslPort": 7366,
+      "containerName": "sfc-player"
     }
   }
 }

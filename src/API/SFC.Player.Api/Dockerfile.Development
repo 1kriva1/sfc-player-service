@@ -1,0 +1,19 @@
+﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+
+LABEL service="SFC.Player.Api" author="Kryvoruk Andrii" email="krivorukandrey@gmail.com"
+
+USER root
+
+ARG HTTP_PORT=8080
+ARG HTTPS_PORT=8081
+
+ENV ASPNETCORE_ENVIRONMENT=Development
+
+WORKDIR /app
+
+COPY [".", "."]
+
+EXPOSE $HTTP_PORT
+EXPOSE $HTTPS_PORT
+
+ENTRYPOINT ["bash", "/app/src/API/SFC.Player.Api/entrypoint.Development.sh"]
