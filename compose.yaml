@@ -1,0 +1,37 @@
+﻿name: sfc-player
+include:
+   - compose.Infrastructure.yaml
+x-build-args: &build_args
+  args:
+    BUILD_CONFIGURATION: Release
+services:
+  sfc-player:
+    extends:
+      file: compose.Common.yaml
+      service: sfc-player  
+    image: kryvorukandrii/sfc.player:latest
+    build:
+      dockerfile: src/API/SFC.Player.Api/Dockerfile
+      <<: *build_args
+    env_file:
+      - environments/api/api.Production.env
+  sfc-data:
+    extends:
+      file: compose.Common.yaml
+      service: sfc-data  
+    image: kryvorukandrii/sfc.data:latest
+    build:
+      dockerfile: ../sfc-data-service/src/API/SFC.Data.Api/Dockerfile
+      <<: *build_args
+    env_file:
+      - ../sfc-data-service/environments/api/api.Production.env
+  sfc-identity:
+    extends:
+      file: compose.Common.yaml
+      service: sfc-identity  
+    image: kryvorukandrii/sfc.identity:latest
+    build:
+      dockerfile: ../sfc-identity-service/src/API/SFC.Identity.Api/Dockerfile
+      <<: *build_args
+    env_file:
+      - ../sfc-identity-service/environments/api/api.Production.env  

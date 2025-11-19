@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using SFC.Player.Application;
-using SFC.Player.Infrastructure.Persistence;
+﻿using SFC.Player.Application;
 using SFC.Player.Infrastructure;
-using SFC.Player.Application.Common.Constants;
 using SFC.Player.Infrastructure.Constants;
+using SFC.Player.Infrastructure.Persistence;
 
 namespace SFC.Player.Api.Infrastructure.Extensions;
 
@@ -29,6 +27,8 @@ public static class StartupExtensions
         {
             builder.AddSwagger();
         }
+
+        builder.Services.AddHealthChecks();
 
         return builder.Build();
     }
@@ -57,6 +57,8 @@ public static class StartupExtensions
         app.UseAuthorization();
 
         app.UseCustomExceptionHandler();
+
+        app.MapHealthChecks("/health");
 
         app.MapControllers();
 

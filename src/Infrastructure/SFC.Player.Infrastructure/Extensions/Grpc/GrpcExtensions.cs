@@ -35,7 +35,7 @@ public static class GrpcExtensions
         services.AddScoped<ITokenProvider, TokenProvider>();
 
         services.AddGrpc(environment, settings)
-                .AddGrpcEndpoints(settings);
+                .AddGrpcEndpoints(environment, settings);
     }
 
     public static DateTime? GetDeadLineValue(this IConfiguration configuration)
@@ -65,7 +65,7 @@ public static class GrpcExtensions
         });
     }
 
-    private static void AddGrpcEndpoints(this IGrpcServerBuilder services, GrpcSettings settings)
+    private static void AddGrpcEndpoints(this IGrpcServerBuilder services, IWebHostEnvironment environment, GrpcSettings settings)
     {
 #pragma warning disable CA2000 // Dispose objects before losing scope
         ILoggerFactory loggerFactory = LoggerFactory.Create(b => b.AddConsole());
@@ -76,21 +76,27 @@ public static class GrpcExtensions
             switch (endpoint.Value.Key)
             {
                 case Endpoint.Identity:
-                    services.Services.AddGrpcClient<IdentityServiceClient>(endpoint.Value, settings.Retry, loggerFactory);
+                    services.Services.AddGrpcClient<IdentityServiceClient>(endpoint.Value, settings.Retry, loggerFactory, environment);
                     break;
                 default:
                     throw new NotImplementedException($"Not implemented Grpc Api for Id: {endpoint.Key}");
-            };
+            }
         }
     }
 
     private static void AddGrpcClient<T>(this IServiceCollection services,
-        GrpcEndpoint endpoint, GrpcRetrySettings? retrySettings, ILoggerFactory loggerFactory) where T : class
+        GrpcEndpoint endpoint, GrpcRetrySettings? retrySettings, ILoggerFactory loggerFactory, IWebHostEnvironment environment) where T : class
     {
         services.AddGrpcClient<T>(options => options.ConfigureGrpcClient(endpoint, retrySettings))
                 .AddClientInterceptors(loggerFactory)
                 .EnableCallContextPropagation(o => o.SuppressContextNotFoundErrors = true)
-                .AddCallCredentials((context, metadata, serviceProvider) => SetTokenAsync(endpoint, context, metadata, serviceProvider));
+                .AddCallCredentials((context, metadata, serviceProvider) => SetTokenAsync(endpoint, context, metadata, serviceProvider))
+                .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback = environment.IsDevelopment()
+                            ? HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                            : null
+                });
     }
 
     private static void ConfigureGrpcClient(this GrpcClientFactoryOptions options, GrpcEndpoint endpoint, GrpcRetrySettings? retrySettings)

@@ -32,7 +32,7 @@ public static class SettingsExtensions
         => configuration.GetSection(GrpcSettingsDevelopment.SectionKey)
                         .Get<GrpcSettingsDevelopment>()!;
 
-    public static KestrelSettings GetKestrelSettings(this IConfiguration configuration)
-        => configuration.GetSection(KestrelSettings.SectionKey)
-                        .Get<KestrelSettings>()!;
+    public static RedisSettings GetRedisSettings(this IConfiguration configuration)
+        => configuration.GetSection(RedisSettings.SectionKey)
+                        .Get<RedisSettings>()!;
 }

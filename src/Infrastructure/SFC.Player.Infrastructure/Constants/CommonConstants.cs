@@ -10,5 +10,7 @@ public static class CommonConstants
 
     public const string AuditableHeaderKey = "X-Auditable";
 
-    public const string ContentType = "application/json";
+    public const string JsonContentType = "application/json";
+
+    public const string GrpcContentType = "application/grpc";
 }

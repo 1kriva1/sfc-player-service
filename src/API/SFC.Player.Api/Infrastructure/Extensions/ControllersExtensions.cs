@@ -1,9 +1,10 @@
-﻿using SFC.Player.Application;
-using Microsoft.AspNetCore.Mvc;
-using SFC.Player.Application.Common.Constants;
+﻿using Microsoft.AspNetCore.Mvc;
+
 using SFC.Player.Api.Infrastructure.Extensions;
-using SFC.Player.Api.Infrastructure.Models.Base;
 using SFC.Player.Api.Infrastructure.Filters;
+using SFC.Player.Api.Infrastructure.Models.Base;
+using SFC.Player.Application;
+using SFC.Player.Application.Common.Constants;
 using SFC.Player.Infrastructure.Constants;
 
 namespace SFC.Player.Api.Infrastructure.Extensions;
@@ -20,8 +21,8 @@ public static class ControllersExtensions
             configure.ReturnHttpNotAcceptable = true;
 
             // Accept and Content-Type headers filters
-            configure.Filters.Add(new ProducesAttribute(CommonConstants.ContentType));
-            configure.Filters.Add(new ConsumesAttribute(CommonConstants.ContentType));
+            configure.Filters.Add(new ProducesAttribute(CommonConstants.JsonContentType, CommonConstants.GrpcContentType));
+            configure.Filters.Add(new ConsumesAttribute(CommonConstants.JsonContentType, CommonConstants.GrpcContentType));
 
             // Global responses filters
             configure.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status406NotAcceptable));
