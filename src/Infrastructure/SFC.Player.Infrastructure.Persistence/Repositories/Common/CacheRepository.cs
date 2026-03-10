@@ -26,7 +26,7 @@ public class CacheRepository<TEntity, TContext, TId>(Repository<TEntity, TContex
                                     .ConfigureAwait(false);
 
             await Cache.SetAsync(CacheKey, list)
-                        .ConfigureAwait(false);
+                       .ConfigureAwait(false);
         }
 
         return list;

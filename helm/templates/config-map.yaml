@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sfc-player-config-map
+  namespace: sfc  
+  labels:
+    app.kubernetes.io/name: sfc-player
+    app.kubernetes.io/component: configuration
+    app.kubernetes.io/part-of: sfc
+    app.kubernetes.io/instance: production
+    app.kubernetes.io/managed-by: kubectl
+  annotations:
+    owner: "krivorukandrey@gmail.com"
+    purpose: "Configuration map for Player component in SFC application"
+immutable: true
+data:  
+  ASPNETCORE_ENVIRONMENT: "Production"

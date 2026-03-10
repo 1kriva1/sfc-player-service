@@ -74,16 +74,11 @@
 volumes:
   sfc-mssql-volume:
     name: sfc-mssql-volume
-    external: true
   sfc-redis-volume:
     name: sfc-redis-volume
-    external: true
   sfc-rabbitmq-volume:
     name: sfc-rabbitmq-volume
-    external: true
 networks:
   sfc-network:
     name: sfc-network  
-    driver: bridge
-    external: true
-  
+    driver: bridge  

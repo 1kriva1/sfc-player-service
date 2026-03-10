@@ -478,3 +478,7 @@ $RECYCLE.BIN/
 
 # Tests coverage
 tests/coverage
+
+# Helm
+*.tgz
+helm/*.lock

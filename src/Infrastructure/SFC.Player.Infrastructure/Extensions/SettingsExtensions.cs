@@ -9,8 +9,8 @@ using SFC.Player.Infrastructure.Settings.RabbitMq;
 namespace SFC.Player.Infrastructure.Extensions;
 public static class SettingsExtensions
 {
-    public static bool UseAuthentication(this ConfigurationManager configuration)
-        => configuration.GetValue<bool>(SettingConstants.Authentication, true);
+    public static bool UseAuthentication(this IConfiguration configuration)
+        => configuration.GetValue(SettingConstants.Authentication, true);
 
     public static IdentitySettings GetIdentitySettings(this IConfiguration configuration)
         => configuration.GetSection(IdentitySettings.SectionKey)
