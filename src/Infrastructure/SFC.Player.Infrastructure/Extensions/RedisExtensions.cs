@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Caching.StackExchangeRedis;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 using SFC.Player.Infrastructure.Settings;
 
@@ -22,5 +24,23 @@ public static class RedisExtensions
                 Password = settings.Password
             };
         });
+    }
+
+    public static RedisCache GetRedisCache(string instanceName, IConfiguration configuration)
+    {
+        RedisSettings settings = configuration.GetRedisSettings();
+
+        RedisCacheOptions redisOptions = new()
+        {
+            InstanceName = $"{instanceName}:",
+            ConfigurationOptions = new ConfigurationOptions
+            {
+                EndPoints = { configuration.GetConnectionString("Redis")! },
+                User = settings.User,
+                Password = settings.Password
+            }
+        };
+
+        return new RedisCache(Options.Create(redisOptions));
     }
 }

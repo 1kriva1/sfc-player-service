@@ -47,10 +47,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="entrypoint.Common.sh">
-      <DependentUpon>entrypoint.sh</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="entrypoint.Development.sh">
       <DependentUpon>entrypoint.sh</DependentUpon>
     </None>

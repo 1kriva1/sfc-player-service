@@ -16,7 +16,7 @@ public class DataCacheRepository<TEntity, TContext, TEnum>(DataRepository<TEntit
     public Task<bool> AnyAsync(TEnum id)
     {
         return Cache.TryGet(CacheKey, out IReadOnlyList<TEntity> list)
-        ? Task.FromResult(list.Any(u => u.Id.Equals(id)))
+            ? Task.FromResult(list.Any(u => u.Id.Equals(id)))
             : _repository.AnyAsync(id);
     }
 

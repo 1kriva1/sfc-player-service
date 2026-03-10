@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sfc-player
+  namespace: sfc
+  labels:
+    app.kubernetes.io/name: sfc-player
+    app.kubernetes.io/component: network
+    app.kubernetes.io/part-of: sfc
+    app.kubernetes.io/instance: production
+    app.kubernetes.io/managed-by: kubectl
+  annotations:
+    owner: "krivorukandrey@gmail.com"
+    purpose: "Internal ClusterIP service for Player component in SFC application"
+spec:
+  selector:
+    app.kubernetes.io/name: sfc-player
+  type: ClusterIP
+  ports:
+    - name: sfc-player-cluster-service-http-port
+      protocol: TCP
+      port: 7365
+      targetPort: 7365
+    - name: sfc-player-cluster-service-https-port
+      protocol: TCP
+      port: 7366
+      targetPort: 7366
+  internalTrafficPolicy: Cluster
