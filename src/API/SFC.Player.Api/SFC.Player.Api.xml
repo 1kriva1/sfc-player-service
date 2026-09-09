@@ -621,6 +621,16 @@
             **Get** players response model.
             </summary>
         </member>
+        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Get.GetPlayerResponse">
+            <summary>
+            **Get** player response model.
+            </summary>
+        </member>
+        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Get.GetPlayerResponse.Player">
+            <summary>
+            Player model.
+            </summary>
+        </member>
         <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.GetByUser.GetByUserPlayerFootballProfileModel">
             <summary>
             Player's **football** profile model for get by user request.
@@ -687,16 +697,6 @@
             </summary>
         </member>
         <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.GetByUser.GetPlayerByUserResponse.Player">
-            <summary>
-            Player model.
-            </summary>
-        </member>
-        <member name="T:SFC.Player.Api.Infrastructure.Models.Player.General.Get.GetPlayerResponse">
-            <summary>
-            **Get** player response model.
-            </summary>
-        </member>
-        <member name="P:SFC.Player.Api.Infrastructure.Models.Player.General.Get.GetPlayerResponse.Player">
             <summary>
             Player model.
             </summary>

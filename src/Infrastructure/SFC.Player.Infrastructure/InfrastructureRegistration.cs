@@ -28,9 +28,9 @@ public static class InfrastructureRegistration
 {
     public static void AddInfrastructureServices(this WebApplicationBuilder builder)
     {
-        builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        builder.Services.AddAutoMapper(config => { }, Assembly.GetExecutingAssembly());
 
-        builder.Services.AddHttpContextAccessor();        
+        builder.Services.AddHttpContextAccessor();
 
         builder.Services.AddAccessTokenManagement();
 
@@ -68,6 +68,6 @@ public static class InfrastructureRegistration
         builder.Services.AddHostedService<DataInitializationHostedService>();
 
         // authorization
-        builder.Services.AddScoped<IAuthorizationHandler, OwnPlayerHandler>();        
+        builder.Services.AddScoped<IAuthorizationHandler, OwnPlayerHandler>();
     }
 }

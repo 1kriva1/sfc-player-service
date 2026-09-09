@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Reflection;
 
-using System.Reflection;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SFC.Player.Api.Infrastructure;
 
@@ -8,8 +8,8 @@ public static class ApiRegistration
 {
     public static void AddApiServices(this IServiceCollection services)
     {
-        services.AddAutoMapper(Assembly.GetExecutingAssembly());        
+        services.AddAutoMapper(config => { }, Assembly.GetExecutingAssembly());
         services.Configure<MvcOptions>(options => options.AllowEmptyInputInBodyModelBinding = true);
-        services.AddCors();        
+        services.AddCors();
     }
 }
