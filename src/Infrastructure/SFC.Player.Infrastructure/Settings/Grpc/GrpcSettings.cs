@@ -18,6 +18,13 @@ public class GrpcEndpoint
 
 public class GrpcEndpointAuthentication
 {
+    public required GrpcEndpointAuthenticationClient ExchangeToken { get; set; }
+
+    public required GrpcEndpointAuthenticationClient ClientCredentials { get; set; }
+}
+
+public class GrpcEndpointAuthenticationClient
+{
     public required string ClientId { get; set; }
 
     public required string ClientSecret { get; set; }
