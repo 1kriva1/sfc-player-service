@@ -5,7 +5,7 @@ using IdentityModel.Client;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
 
 using SFC.Player.Application.Common.Constants;
 using SFC.Player.Application.Common.Exceptions;
@@ -21,14 +21,12 @@ public interface ITokenProvider
 }
 
 public class TokenProvider(
-    ILogger<TokenProvider> logger,
     IHttpClientFactory httpClientFactory,
     IConfiguration configuration,
     IClientAccessTokenCache clientAccessTokenCache,
     IHttpContextAccessor httpContextAccessor,
     IWebHostEnvironment environment) : ITokenProvider
 {
-    private readonly ILogger<TokenProvider> _logger = logger;
     private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
     private readonly IConfiguration _configuration = configuration;
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
@@ -37,167 +35,143 @@ public class TokenProvider(
 
     public async Task<string> GetTokenAsync(GrpcEndpoint endpoint, CancellationToken cancellationToken)
     {
-        try
+        if (_environment.IsDevelopment() && !_configuration.UseAuthentication())
         {
-#pragma warning disable CA1848 // Use the LoggerMessage delegates
-            _logger.LogInformation("Starting token acquisition for gRPC endpoint.");
+            GrpcEndpointAuthenticationDevelopment? devEndpointAuthentication = GetDevelopmentAuthentication(endpoint.Key);
 
-            if (!_environment.UseAuthentication(_configuration))
+            if (devEndpointAuthentication is not null)
             {
-                _logger.LogInformation("Authentication disabled by environment. Attempting development token for endpoint '{EndpointKey}'.", endpoint.Key);
-
-                GrpcEndpointAuthenticationDevelopment? devEndpointAuthentication = GetDevelopmentAuthentication(endpoint.Key);
-
-                if (devEndpointAuthentication is not null)
-                {
-                    _logger.LogInformation("Development token provided for endpoint '{EndpointKey}'.", endpoint.Key);
-                    return devEndpointAuthentication.AccessToken;
-                }
-
-                _logger.LogWarning("Development auth configured but no valid token found for endpoint '{EndpointKey}'. Falling back to normal flow.", endpoint.Key);
+                return devEndpointAuthentication.AccessToken;
             }
-
-            Guid userId = _httpContextAccessor.GetUserId() ?? throw new AuthorizationException(Localization.AuthorizationError);
-
-            _logger.LogDebug("Resolved user id for token exchange. UserId: {UserId}", userId);
-
-            if (endpoint.Authentication is null)
-            {
-                _logger.LogError("Missing Authentication settings for gRPC endpoint '{EndpointKey}'.", endpoint.Key);
-                throw new ConfigurationException($"Missing Authentication settings for Grpc endpoint.");
-            }
-
-            string accessTokenCacheKey = $"{endpoint.Authentication.ClientId}_{userId}";
-
-            _logger.LogDebug("Attempting access token cache lookup. CacheKey: {CacheKey}", accessTokenCacheKey);
-
-            ClientAccessToken? clientAccessToken = await _clientAccessTokenCache.GetAsync(
-                accessTokenCacheKey,
-                new ClientAccessTokenParameters(),
-                cancellationToken).ConfigureAwait(true);
-
-            if (!string.IsNullOrWhiteSpace(clientAccessToken?.AccessToken))
-            {
-                _logger.LogInformation("Access token cache hit for client '{ClientId}'. ExpiresAt: {ExpiresAtUtc}",
-                                endpoint.Authentication.ClientId,
-                                clientAccessToken.Expiration);
-
-                _logger.LogDebug("Access token cache lookup:{AccessToken}", clientAccessToken.AccessToken);
-
-                return clientAccessToken.AccessToken;
-            }
-
-
-            _logger.LogInformation("Access token cache miss for client '{ClientId}'. Proceeding with discovery and token exchange.",
-                        endpoint.Authentication.ClientId);
-
-            IdentitySettings identitySettings = _configuration.GetIdentitySettings();
-
-            using HttpClient client = _httpClientFactory.CreateClient();
-
-            _logger.LogDebug("Requesting discovery document from authority: {Authority}", identitySettings.Authority);
-
-            DiscoveryDocumentResponse discoveryDocument = await client.GetDiscoveryDocumentAsync(identitySettings.Authority, cancellationToken)
-                                                                      .ConfigureAwait(true);
-
-            if (discoveryDocument.IsError)
-            {
-                _logger.LogError("Discovery document request failed. Error: {Error}",
-                                discoveryDocument.Error);
-
-                throw new TokenExchangeException($"Token exchanged failed: {discoveryDocument.Error}");
-            }
-
-
-            _logger.LogInformation("Discovery document retrieved. TokenEndpoint: {TokenEndpoint}",
-                        discoveryDocument.TokenEndpoint);
-
-            string incomingAccessToken = await _httpContextAccessor.GetAccessTokenAsync().ConfigureAwait(true)
-                ?? throw new AuthorizationException(Localization.AuthorizationError);
-
-            _logger.LogDebug("Incoming Access token:{AccessToken}", incomingAccessToken);
-
-            using TokenExchangeTokenRequest request = new()
-            {
-                Address = discoveryDocument.TokenEndpoint,
-                GrantType = OidcConstants.GrantTypes.TokenExchange,
-                ClientId = endpoint.Authentication.ClientId,
-                ClientSecret = endpoint.Authentication.ClientSecret,
-                SubjectToken = incomingAccessToken,
-                SubjectTokenType = OidcConstants.TokenTypeIdentifiers.AccessToken,
-                Scope = endpoint.Authentication.Scopes
-            };
-
-            _logger.LogDebug("Initiating token exchange. ClientId: {ClientId}; Scopes: {ScopesCount}",
-                        endpoint.Authentication.ClientId,
-                        endpoint.Authentication.Scopes?.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Length);
-
-            TokenResponse exchangeResponse = await client.RequestTokenExchangeTokenAsync(request, cancellationToken)
-                                                         .ConfigureAwait(true);
-
-            if (exchangeResponse.IsError)
-            {
-                _logger.LogError("Token exchange failed. Error: {Error}; ErrorDescription: {ErrorDescription}",
-                                exchangeResponse.Error,
-                                exchangeResponse.ErrorDescription);
-
-                throw new TokenExchangeException($"Token exchanged failed: {exchangeResponse.ErrorDescription}");
-            }
-
-            if (exchangeResponse.AccessToken is null)
-            {
-                _logger.LogError("Token exchange succeeded but access token was null.");
-
-                throw new TokenExchangeException("Token exchanged failed. Access token is null");
-            }
-
-            _logger.LogInformation("Token exchange succeeded. ExpiresIn (s): {ExpiresIn}",
-                        exchangeResponse.ExpiresIn);
-
-            _logger.LogDebug("Exchange Access token:{AccessToken}", exchangeResponse.AccessToken);
-
-            await _clientAccessTokenCache.SetAsync(
-                accessTokenCacheKey,
-                exchangeResponse.AccessToken,
-                exchangeResponse.ExpiresIn,
-                new ClientAccessTokenParameters(),
-                cancellationToken).ConfigureAwait(false);
-
-
-            _logger.LogInformation("Access token cached for ClientId: {ClientId} with TTL(s): {TtlSeconds}",
-                        endpoint.Authentication.ClientId,
-                        exchangeResponse.ExpiresIn);
-
-            _logger.LogInformation("Token acquisition completed successfully.");
-
-            return exchangeResponse.AccessToken;
         }
-        catch (AuthorizationException ex)
+
+        if (endpoint.Authentication is null)
         {
-            _logger.LogWarning(ex, "Authorization error during token acquisition.");
-            throw;
+            throw new ConfigurationException("Missing Authentication settings for Grpc endpoint.");
         }
-        catch (ConfigurationException ex)
+
+        Guid? userId = _httpContextAccessor.GetUserId();
+
+        return userId.HasValue
+            ? await GetTokenExchangeTokenAsync(userId, endpoint, cancellationToken).ConfigureAwait(false)
+            : await GetClientCredentialsTokenAsync(endpoint, cancellationToken).ConfigureAwait(false);
+    }
+
+    private async Task<string> GetTokenExchangeTokenAsync(Guid? userId, GrpcEndpoint endpoint, CancellationToken cancellationToken)
+    {
+        string cacheKey = $"{endpoint.Authentication!.ExchangeToken.ClientId}_{userId}";
+
+        string? cached = await GetCachedTokenAsync(cacheKey, cancellationToken).ConfigureAwait(false);
+
+        if (!string.IsNullOrWhiteSpace(cached))
         {
-            _logger.LogError(ex, "Configuration error during token acquisition.");
-            throw;
+            return cached;
         }
-        catch (TokenExchangeException ex)
+
+        string incomingAccessToken = await _httpContextAccessor.GetAccessTokenAsync().ConfigureAwait(false)
+            ?? throw new AuthorizationException(Localization.AuthorizationError);
+
+        DiscoveryDocumentResponse discovery = await GetDiscoveryDocumentAsync(cancellationToken).ConfigureAwait(false);
+
+        using TokenExchangeTokenRequest request = new()
         {
-            _logger.LogError(ex, "Token exchange error during token acquisition.");
-            throw;
-        }
-        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            Address = discovery.TokenEndpoint,
+            GrantType = OidcConstants.GrantTypes.TokenExchange,
+            ClientId = endpoint.Authentication.ExchangeToken.ClientId,
+            ClientSecret = endpoint.Authentication.ExchangeToken.ClientSecret,
+            SubjectToken = incomingAccessToken,
+            SubjectTokenType = OidcConstants.TokenTypeIdentifiers.AccessToken,
+            Scope = endpoint.Authentication.ExchangeToken.Scopes
+        };
+
+        using HttpClient client = _httpClientFactory.CreateClient();
+
+        TokenResponse response = await client
+            .RequestTokenExchangeTokenAsync(request, cancellationToken)
+            .ConfigureAwait(false);
+
+        return await HandleTokenResponseAsync(cacheKey, response, "Token exchange failed", cancellationToken).ConfigureAwait(false);
+    }
+
+    private async Task<string> GetClientCredentialsTokenAsync(GrpcEndpoint endpoint, CancellationToken cancellationToken)
+    {
+        string cacheKey = $"{endpoint.Authentication!.ClientCredentials.ClientId}_background";
+
+        string? cached = await GetCachedTokenAsync(cacheKey, cancellationToken).ConfigureAwait(false);
+
+        if (!string.IsNullOrWhiteSpace(cached))
         {
-            _logger.LogWarning("Token acquisition cancelled by caller.");
-            throw;
+            return cached;
         }
-        catch (Exception ex)
+
+        DiscoveryDocumentResponse discovery = await GetDiscoveryDocumentAsync(cancellationToken).ConfigureAwait(false);
+
+        using ClientCredentialsTokenRequest request = new()
         {
-            _logger.LogError(ex, "Unexpected error during token acquisition.");
-            throw;
+            Address = discovery.TokenEndpoint,
+            ClientId = endpoint.Authentication.ClientCredentials.ClientId,
+            ClientSecret = endpoint.Authentication.ClientCredentials.ClientSecret,
+            Scope = endpoint.Authentication.ClientCredentials.Scopes
+        };
+
+        using HttpClient client = _httpClientFactory.CreateClient();
+
+        TokenResponse response = await client
+            .RequestClientCredentialsTokenAsync(request, cancellationToken)
+            .ConfigureAwait(false);
+
+        return await HandleTokenResponseAsync(cacheKey, response, "Client credentials failed", cancellationToken).ConfigureAwait(false);
+    }
+
+    private async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(CancellationToken cancellationToken)
+    {
+        IdentitySettings identitySettings = _configuration.GetIdentitySettings();
+
+        using HttpClient client = _httpClientFactory.CreateClient();
+
+        DiscoveryDocumentResponse discovery = await client
+            .GetDiscoveryDocumentAsync(identitySettings.Authority, cancellationToken)
+            .ConfigureAwait(false);
+
+        return discovery.IsError
+            ? throw new TokenExchangeException(discovery.Error ?? "Discovery document request failed.")
+            : discovery;
+    }
+
+    private async Task<string?> GetCachedTokenAsync(string cacheKey, CancellationToken cancellationToken)
+    {
+        ClientAccessToken? token = await _clientAccessTokenCache.GetAsync(
+            cacheKey,
+            new ClientAccessTokenParameters(),
+            cancellationToken).ConfigureAwait(false);
+
+        return token?.AccessToken;
+    }
+
+    private async Task<string> HandleTokenResponseAsync(
+        string cacheKey,
+        TokenResponse response,
+        string errorPrefix,
+        CancellationToken cancellationToken)
+    {
+        if (response.IsError)
+        {
+            throw new TokenExchangeException($"{errorPrefix}: {response.ErrorDescription}");
         }
-#pragma warning restore CA1848 // Use the LoggerMessage delegates
+
+        if (string.IsNullOrWhiteSpace(response.AccessToken))
+        {
+            throw new TokenExchangeException($"{errorPrefix}: access token is null");
+        }
+
+        await _clientAccessTokenCache.SetAsync(
+            cacheKey,
+            response.AccessToken,
+            response.ExpiresIn,
+            new ClientAccessTokenParameters(),
+            cancellationToken).ConfigureAwait(false);
+
+        return response.AccessToken;
     }
 
     private GrpcEndpointAuthenticationDevelopment? GetDevelopmentAuthentication(string endpointKey)

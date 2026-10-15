@@ -25,6 +25,13 @@ public abstract class BaseReference<TEntity, TId, TDto>(IMapper mapper)
 
         if (reference is not null)
         {
+            // check again
+            // before direct insert
+            // because of rabbitmq parallel work
+            entity = await GetFromLocalAsync(id, cancellationToken).ConfigureAwait(true);
+
+            if (entity is not null) return entity;
+
             entity = _mapper.Map<TEntity>(reference);
 
             await AddLocalAsync(entity, cancellationToken).ConfigureAwait(false);
